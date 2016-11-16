@@ -7,8 +7,8 @@ conda config --set always_yes yes --set changeps1 no
 conda update -q conda
 
 # create test environement
-conda create --quite -n env python=$TRAVIS_PYTHON_VERSION numpy
-source activate env
+conda create -q -n test python=$TRAVIS_PYTHON_VERSION numpy scipy
+source activate test
 
 # install requirements
 pip install -r requirements.txt
