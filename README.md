@@ -6,7 +6,7 @@ TensorFlow needs to be installed before running the training script.
 
 To install the required python packages (except TensorFlow), run:
 
-```
+```sh
 pip3 install -r requirements.txt
 ```
 
@@ -14,14 +14,14 @@ pip3 install -r requirements.txt
 
 Install the test requirements:
 
-```
+```sh
 pip3 install -r requirements_test.txt
 ```
 
 Run the suite
 
-```
-TODO
+```sh
+./bin/test.sh
 ```
 
 ## Related projects
