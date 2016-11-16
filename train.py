@@ -1,8 +1,9 @@
+"""Training script for the Graph-based Image Classification.
+"""
+
 from __future__ import print_function
 
 import argparse
-import sys
-import os
 import json
 
 import tensorflow as tf
@@ -15,9 +16,10 @@ EPOCHS = int(1e5)  # 50.000
 CHECKPOINT_EVERY = 50
 
 
-# Parses the given arguments and overrides their corresponding default values.
-# Returns all arguments as a dictionary.
 def get_arguments():
+    """Parses the arguments from the terminal and overrides their corresponding
+    default values. Returns all arguments in a dictionary."""
+
     parser = argparse.ArgumentParser(description='Training script for the '
                                      'Graph-based Image Classification')
 
@@ -36,23 +38,9 @@ def get_arguments():
     return parser.parse_args()
 
 
-def save(saver, sess, checkpoint_dir, step):
-    print('Storing checkpoint to %s...' % (checkpoint_dir), end=' ')
-    sys.stdout.flush()  # don't wait for buffer before writing to the terminal
-
-    if not os.path.exists(checkpoint_dir):
-        os.makedirs(checkpoint_dir)
-
-    model_name = 'model.ckpt'
-    checkpoint_path = os.path.join(checkpoint_dir, model_name)
-
-    # save checkpoint with version suffix
-    saver.save(sess, checkpoint_path, global_step=step)
-
-    print('Done.')
-
-
 def main():
+    """Runs the training."""
+
     args = get_arguments()
 
     # load the json network parameter from disk
