@@ -17,7 +17,7 @@ CHECKPOINT_EVERY = 50
 
 # Parses the given arguments and overrides their corresponding default values.
 # Returns all arguments as a dictionary.
-def get__arguments():
+def get_arguments():
     parser = argparse.ArgumentParser(description='Training script for the '
                                      'Graph-based Image Classification')
 
@@ -37,7 +37,7 @@ def get__arguments():
 
 
 def save(saver, sess, checkpoint_dir, step):
-    print('Storing checkpoint to {} ...'.format(checkpoint_dir), end="")
+    print('Storing checkpoint to %s...' % (checkpoint_dir), end=' ')
     sys.stdout.flush()  # don't wait for buffer before writing to the terminal
 
     if not os.path.exists(checkpoint_dir):
@@ -46,8 +46,7 @@ def save(saver, sess, checkpoint_dir, step):
     model_name = 'model.ckpt'
     checkpoint_path = os.path.join(checkpoint_dir, model_name)
 
-    # save checkpoint and version
-    # step == 0 => save to model-0.ckpt
+    # save checkpoint with version suffix
     saver.save(sess, checkpoint_path, global_step=step)
 
     print('Done.')
