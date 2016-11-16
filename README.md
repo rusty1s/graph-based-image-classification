@@ -25,5 +25,5 @@ pip install -r requirements_test.txt
 Run the suite
 
 ```bash
-./bin/test.sh
+./ci/test.sh
 ```

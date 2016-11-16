@@ -11,5 +11,3 @@ install:
     - source bin/install.sh
 script:
     - bash ci/test.sh
-notifications:
-    email: true
