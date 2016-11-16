@@ -7,7 +7,7 @@ import json
 
 import tensorflow as tf
 
-# Arguments: Look up the help parameter for additional information.
+# Possible arguments (look up each help parameter for additional information)
 DATA = './data'
 NETWORK_PARAMS = './network_params.json'
 LEARNING_RATE = 1e-3
@@ -16,7 +16,7 @@ CHECKPOINT_EVERY = 50
 
 
 # Parses the given arguments and overrides their corresponding default values.
-# Returns all arguments in a dictionary.
+# Returns all arguments as a dictionary.
 def get__arguments():
     parser = argparse.ArgumentParser(description='Training script for the '
                                      'Graph-based Image Classification')
@@ -59,8 +59,6 @@ def main():
     # load the json network parameter from disk
     with open(args.network_params, 'r') as f:
         network_params = json.load(f)
-
-
 
 
 # only run if the script is executed directly
