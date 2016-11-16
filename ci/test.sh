@@ -1,4 +1,4 @@
 #!/bin/sh
 
 pep8 **/*.py && \
-nosetests test
+nosetests test --with-coverage

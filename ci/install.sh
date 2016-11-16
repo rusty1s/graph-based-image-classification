@@ -7,7 +7,7 @@ conda config --set always_yes yes --set changeps1 no
 conda update -q conda
 
 # create test environement
-conda create -q -n test python=$TRAVIS_PYTHON_VERSION numpy scipy
+conda create -q -n test python=$TRAVIS_PYTHON_VERSION numpy scipy codecov
 source activate test
 
 # install requirements
