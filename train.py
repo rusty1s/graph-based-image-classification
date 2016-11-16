@@ -16,7 +16,7 @@ def get_arguments():
     parser.add_argument('--network_params', type=str, default=NETWORK_PARAMS,
                         help='JSON file with the network parameters')
     parser.add_argument('--learning_rate', type=float, default=LEARNING_RATE,
-                        help='Learning raate for training')
+                        help='Learning rate for training')
 
     return parser.parse_args()
 
@@ -27,6 +27,7 @@ def main():
     # load the json network parameter from disk
     with open(args.network_params, 'r') as f:
         network_params = json.load(f)
+
 
 # only execute if the script is executed directly
 if __name__ == '__main__':
