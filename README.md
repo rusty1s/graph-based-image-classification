@@ -1,13 +1,13 @@
 # A TensorFlow implementation of Graph-based Image Classification
 
-[![Build Status](https://travis-ci.org/rusty1s/graph-based-image-classification.png?branch=master)](https://travis-ci.org/rusty1s/graph-based-image-classification)
+[![Build Status](https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master)](https://travis-ci.org/rusty1s/graph-based-image-classification)
+[![codecov.io Code Coverage](https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg?maxAge=2592000)](https://codecov.io/github/rusty1s/graph-based-image-classification?branch=master)
 
 This is a TensorFlow implementation of the [Graph-based Convolutional Neural Network for Image Classification](https://github.com/rusty1s/deep-learning/tree/master/thesis).
 
-## Why? [![start with why](https://img.shields.io/badge/start%20with-why%3F-brightgreen.svg?style=flat)](http://www.ted.com/talks/simon_sinek_how_great_leaders_inspire_action)
-
 ## Requirements
 
+Project is tested on Python 2.7, 3.4 and 3.5.
 TensorFlow needs to be installed before running the script.
 TensorFlow 0.11.0 and the current `master` version are supported.
 
