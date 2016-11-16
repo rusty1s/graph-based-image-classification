@@ -1,12 +1,14 @@
 # Graph-based Image Classification
 
+## Why? [![start with why](https://img.shields.io/badge/start%20with-why%3F-brightgreen.svg?style=flat)](http://www.ted.com/talks/simon_sinek_how_great_leaders_inspire_action)
+
 ## Requirements
 
 TensorFlow needs to be installed before running the training script.
 
 To install the required python packages (except TensorFlow), run:
 
-```sh
+```bash
 pip3 install -r requirements.txt
 ```
 
@@ -14,13 +16,13 @@ pip3 install -r requirements.txt
 
 Install the test requirements:
 
-```sh
+```bash
 pip3 install -r requirements_test.txt
 ```
 
 Run the suite
 
-```sh
+```bash
 ./bin/test.sh
 ```
 
