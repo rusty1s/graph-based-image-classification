@@ -6,8 +6,12 @@ export PATH="$HOME/miniconda/bin:$PATH"
 conda config --set always_yes yes --set changeps1 no
 conda update -q conda
 
-conda create -q -n test python=$TRAVIS_PYTHON_VERSION numpy scipy
-source activate test
+# create test environement
+conda create --quite -n env python=$TRAVIS_PYTHON_VERSION numpy
+source activate env
+
+# install requirements
+pip install -r requirements.txt
 pip install -r requirements_test.txt
 
 if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then
