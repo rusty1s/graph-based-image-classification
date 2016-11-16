@@ -1,4 +1,6 @@
-# A TensorFlow implementation of Graph-based Image Classification [![Build Status](https://travis-ci.org/rusty1s/graph-based-image-classification.png?branch=master)](https://travis-ci.org/rusty1s/graph-based-image-classification)
+# A TensorFlow implementation of Graph-based Image Classification
+
+[![Build Status](https://travis-ci.org/rusty1s/graph-based-image-classification.png?branch=master)](https://travis-ci.org/rusty1s/graph-based-image-classification)
 
 This is a TensorFlow implementation of the [Graph-based Convolutional Neural Network for Image Classification](https://github.com/rusty1s/deep-learning/tree/master/thesis).
 
@@ -6,7 +8,8 @@ This is a TensorFlow implementation of the [Graph-based Convolutional Neural Net
 
 ## Requirements
 
-TensorFlow needs to be installed before running the training script.
+TensorFlow needs to be installed before running the script.
+TensorFlow 0.11.0 and the current `master` version are supported.
 
 To install the required python packages (except TensorFlow), run:
 
