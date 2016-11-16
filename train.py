@@ -29,6 +29,6 @@ def main():
         network_params = json.load(f)
 
 
-# only execute if the script is executed directly
+# only run if the script is executed directly
 if __name__ == '__main__':
     main()
