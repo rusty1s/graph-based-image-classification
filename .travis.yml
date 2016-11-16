@@ -13,3 +13,5 @@ install:
     - source ci/install.sh
 script:
     - bash ci/test.sh
+notifications:
+    email: false
