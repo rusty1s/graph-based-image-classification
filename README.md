@@ -1,4 +1,4 @@
-# A TensorFlow implementation of Graph-based Image Classification
+# A TensorFlow implementation of Graph-based Image Classification [![Build Status](https://travis-ci.org/rusty1s/graph-based-image-classification.png?branch=master)](https://travis-ci.org/rusty1s/graph-based-image-classification)
 
 This is a TensorFlow implementation of the [Graph-based Convolutional Neural Network for Image Classification](https://github.com/rusty1s/deep-learning/tree/master/thesis).
 
