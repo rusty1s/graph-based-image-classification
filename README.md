@@ -1,4 +1,4 @@
-# Graph-based image classification
+# Graph-based Image Classification
 
 ## Requirements
 
@@ -26,5 +26,5 @@ TODO
 
 ## Related projects
 
-This project is an implementation of my master thesis on graphical machine learning.
-You can find the repository for all the additional information [here](https://github.com/rusty1s/deep-learning) (german).
+This project is an implementation of my master thesis on machine learning.
+You can find the repository for all the additional information [here](https://github.com/rusty1s/deep-learning) **(german)**.
