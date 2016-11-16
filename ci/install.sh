@@ -10,6 +10,8 @@ conda update -q conda
 conda create -q -n test python=$TRAVIS_PYTHON_VERSION numpy scipy
 source activate test
 
+pip install codecov
+
 # install requirements
 pip install -r requirements.txt
 pip install -r requirements_test.txt
