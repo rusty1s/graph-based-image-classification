@@ -22,7 +22,7 @@ Install the test requirements:
 pip install -r requirements_test.txt
 ```
 
-Run the suite
+Run the test suite:
 
 ```bash
 ./ci/test.sh
