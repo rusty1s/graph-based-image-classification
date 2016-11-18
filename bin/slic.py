@@ -61,7 +61,6 @@ def main():
     # apply SLIC and extract the supplied number of segments
     # segments = slic(image, n_segments=args.segments, sigma=5)
 
-
     # mark_boundaries(image, segments)
     # io.imsave('seg)-{}'.format(args.image), image)
     # print(segments)
