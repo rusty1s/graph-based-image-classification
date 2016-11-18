@@ -7,7 +7,7 @@ import argparse
 import json
 
 import tensorflow as tf
-from pynauty import *
+from pynauty import Graph
 
 from helper import io
 
