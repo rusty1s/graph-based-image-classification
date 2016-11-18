@@ -7,6 +7,7 @@ import argparse
 import json
 
 import tensorflow as tf
+from pynauty import *
 
 from helper import io
 
@@ -53,3 +54,7 @@ def main():
 # only run if the script is executed directly
 if __name__ == '__main__':
     main()
+
+g = Graph(5)
+g.connect_vertex(0, [1, 2, 3])
+print(g)

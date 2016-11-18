@@ -12,10 +12,7 @@ source activate test
 
 pip install codecov
 
-# install requirements
-pip install -r requirements.txt
-pip install -r requirements_test.txt
-
+# install TensorFlow
 if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then
   pip install https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-$TENSORFLOW-cp27-none-linux_x86_64.whl
 elif [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then
@@ -23,3 +20,18 @@ elif [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then
 elif [[ $TRAVIS_PYTHON_VERSION == "3.5" ]]; then
   pip install https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-$TENSORFLOW-cp35-cp35m-linux_x86_64.whl
 fi
+
+# install nauty and its python wrapper pynauty
+curl https://web.cs.dal.ca/~peter/software/pynauty/pynauty-0.6.0.tar.gz | tar xz
+
+curl http://pallini.di.uniroma1.it/nauty$NAUTY.tar.gz | tar xz
+mv nauty$NAUTY pynauty-$PYNAUTY/nauty
+
+cd pynauty-$PYNAUTY && make user-ins -C pynauty-$PYNAUTY
+
+make pynauty -C pynauty-$PYNAUTY
+make user-ins -C pynauty-$PYNAUTY
+
+# install requirements
+pip install -r requirements.txt
+pip install -r requirements_test.txt
