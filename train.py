@@ -8,12 +8,14 @@ import json
 
 import tensorflow as tf
 
+from helper import io
+
 # Possible arguments (look up each help parameter for additional information)
 DATA = './data'
 NETWORK_PARAMS = './network_params.json'
 LEARNING_RATE = 1e-3
 EPOCHS = int(1e5)  # 50.000
-CHECKPOINT_EVERY = 50
+CHECKPOINT_STEP = 50
 
 
 def get_arguments():
@@ -31,8 +33,8 @@ def get_arguments():
                         help='Learning rate for training')
     parser.add_argument('--epochs', type=int, default=EPOCHS,
                         help='Number of training steps')
-    parser.add_argument('--checkpoint_every', type=int,
-                        default=CHECKPOINT_EVERY,
+    parser.add_argument('--checkpoint_step', type=int,
+                        default=CHECKPOINT_STEP,
                         help='How many steps to save each checkpoint after')
 
     return parser.parse_args()
