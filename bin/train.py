@@ -11,11 +11,11 @@ from pynauty import Graph
 
 from helper import io
 
-# Possible arguments (look up each help parameter for additional information)
-DATA = './data'
-NETWORK_PARAMS = './network_params.json'
+# possible arguments (look up each help parameter for additional information)
+DATA = '../data'
+NETWORK_PARAMS = '../network_params.json'
 LEARNING_RATE = 1e-3
-EPOCHS = int(1e5)  # 50.000
+EPOCHS = int(1e5)  # 100.000
 CHECKPOINT_STEP = 50
 
 
@@ -54,7 +54,3 @@ def main():
 # only run if the script is executed directly
 if __name__ == '__main__':
     main()
-
-g = Graph(5)
-g.connect_vertex(0, [1, 2, 3])
-print(g)
