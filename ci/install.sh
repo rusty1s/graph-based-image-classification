@@ -22,13 +22,9 @@ elif [[ $TRAVIS_PYTHON_VERSION == "3.5" ]]; then
 fi
 
 # install nauty and its python wrapper pynauty
-curl https://web.cs.dal.ca/~peter/software/pynauty/pynauty-0.6.0.tar.gz | tar xz
+curl https://web.cs.dal.ca/~peter/software/pynauty/pynauty-$PYNAUTY.tar.gz | tar xz
 curl http://pallini.di.uniroma1.it/nauty$NAUTY.tar.gz | tar xz
-
-ls
 mv nauty$NAUTY pynauty-$PYNAUTY/nauty
-
-cd pynauty-$PYNAUTY && make user-ins -C pynauty-$PYNAUTY
 
 make pynauty -C pynauty-$PYNAUTY
 make user-ins -C pynauty-$PYNAUTY
