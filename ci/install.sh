@@ -32,10 +32,6 @@ mv pynauty-$PYNAUTY .sources/pynauty
 make pynauty -C .sources/pynauty
 make user-ins -C .sources/pynauty
 
-# install dependencies for sckit-image
-# don't sure whether i need (test it!)
-# apt-get install -y libfreetype6-dev
-
 # install requirements
 pip install -r requirements.txt
 pip install -r requirements_test.txt

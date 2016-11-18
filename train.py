@@ -1,4 +1,4 @@
-"""Training script for the Graph-based Image Classification.
+"""Training script for the Graph-based Image Classification
 """
 
 from __future__ import print_function
@@ -9,7 +9,7 @@ import json
 import tensorflow as tf
 from pynauty import Graph
 
-from helper import io
+from src.helper import io
 
 # possible arguments (look up each help parameter for additional information)
 DATA = '../data'

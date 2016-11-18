@@ -1,38 +1,39 @@
-"""SLIC Superpixel segmentation script.
+"""SLIC Superpixel segmentation script
 """
 
 from __future__ import print_function
 
 import argparse
 
-from skimage import io
-from skimage.util import img_as_float
-from skimage.segmentation import slic
+from src.superpixel import image_to_slic
 from skimage.segmentation import mark_boundaries
 # import matplotlib.pyplot as plt
 
 # possible arguments (look up each help parameter for additional information)
 SEGMENTS = 100
-COMPACTNESS = 10
-SIGMA = 1
+COMPACTNESS = 10.0
+MAX_ITERATIONS = 10
+SIGMA = 0.0
 
 
 def get_arguments():
     """Parses the arguments from the terminal and overrides their corresponding
     default values. Returns all arguments in a dictionary."""
 
-    parser = argparse.ArgumentParser(description='Superpixel '
+    parser = argparse.ArgumentParser(description='SLIC Superpixel '
                                      'segmentation script')
 
     parser.add_argument('-i', '--image', required=True, type=str,
                         help='Path to the image')
     parser.add_argument('--segments', type=str, default=SEGMENTS,
                         help='Number of segments')
-    parser.add_argument('--compactness', type=str, default=COMPACTNESS,
+    parser.add_argument('--compactness', type=float, default=COMPACTNESS,
                         help='Balances color proximity and space proximity. '
                         'A higher value gives more weight to space proximity '
                         'making superpixel shapes more square/cubic.')
-    parser.add_argument('--sigma', type=str, default=SIGMA,
+    parser.add_argument('--max-iterations', type=int, default=MAX_ITERATIONS,
+                        help='Maaximum number of iterations of k-means')
+    parser.add_argument('--sigma', type=float, default=SIGMA,
                         help='Width of gaussian smoothing kernel for pre-'
                         'processing')
     parser.add_argument('-o', '--output', type=str,
@@ -46,9 +47,6 @@ def main():
 
     args = get_arguments()
 
-    # load the image and convert it to a floating point data type
-    # image = img_as_float(io.imread(args.image))
-
     # give output default value if none was passed
     if not args.output:
         path = args.image.split('/')
@@ -59,7 +57,10 @@ def main():
         output = args.output
 
     # apply SLIC and extract the supplied number of segments
-    # segments = slic(image, n_segments=args.segments, sigma=5)
+    segments = image_to_slic(args.image, segments=args.segments,
+                             compactness=args.compactness,
+                             max_iterations=args.max_iterations,
+                             sigma=args.sigma)
 
     # mark_boundaries(image, segments)
     # io.imsave('seg)-{}'.format(args.image), image)
@@ -71,7 +72,7 @@ def main():
 #     ax.imshow()
 #     plt.axis('off')
     if not args.output:
-        print('Output save in {}'.format(output))
+        print('Output saved in {}'.format(output))
 
 
 # only run if the script is executed directly
