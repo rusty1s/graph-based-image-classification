@@ -12,8 +12,8 @@ Project is tested on Python 2.7, 3.4 and 3.5.
 [TensorFlow](https://www.tensorflow.org/versions/r0.11/get_started/os_setup.html#pip-installation), [nauty](http://pallini.di.uniroma1.it/) and its python wrapper [pynauty](https://web.cs.dal.ca/~peter/software/pynauty/html/install.html) need to be installed before running the script.
 See [`install.sh`](https://github.com/rusty1s/graph-based-image-classification/blob/master/ci/install.sh) for information on how to do so.
 
-**Supported Versions:**
-* TensorFlow: 0.11.0 and the current `master` version
+**Tested Versions:**
+* TensorFlow: 0.11.0
 * nauty: 26r7
 * pynauty: 0.6.0
 
