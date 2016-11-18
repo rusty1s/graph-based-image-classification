@@ -14,6 +14,7 @@ See [`install.sh`](https://github.com/rusty1s/graph-based-image-classification/b
 
 **Supported Versions:**
 * TensorFlow: 0.11.0 and the current `master` version
+* nauty: 26r7
 * pynauty: 0.6.0
 
 To install the additional required python packages, run:
