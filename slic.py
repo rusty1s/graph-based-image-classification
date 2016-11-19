@@ -81,6 +81,7 @@ def main():
 
     # write the image to the specified output path
     cv2.imwrite(args.output, image)
+
     print('Output: {}'.format(args.output))
     print('Runtime: {0:.4f} sec'.format(time.time() - start_time))
 
