@@ -68,10 +68,15 @@ def main():
                              max_iterations=args.max_iterations,
                              sigma=args.sigma)
 
-    for (i, segment_val) in enumerate(np.unique(segments)):
+    # iterate over all segment values
+    for segment in np.unique(segments):
+        # build a mask for each segment
         mask = np.zeros(image.shape[:2], dtype="uint8")
-        mask[segments == segment_val] = 255
-        contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        mask[segments == segment] = 255
+
+        # find and draw the contour of the mask into the image
+        contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
+                                               cv2.CHAIN_APPROX_SIMPLE)
         cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
 
     # write the image to the specified output path
