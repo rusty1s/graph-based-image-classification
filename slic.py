@@ -4,10 +4,12 @@
 from __future__ import print_function
 
 import argparse
+import time
+import cv2
+import numpy as np
 
-from src.superpixel import image_to_slic
-from skimage.segmentation import mark_boundaries
-# import matplotlib.pyplot as plt
+from superpixel import image_to_slic
+
 
 # possible arguments (look up each help parameter for additional information)
 SEGMENTS = 100
@@ -25,7 +27,7 @@ def get_arguments():
 
     parser.add_argument('-i', '--image', required=True, type=str,
                         help='Path to the image')
-    parser.add_argument('--segments', type=str, default=SEGMENTS,
+    parser.add_argument('--segments', type=int, default=SEGMENTS,
                         help='Number of segments')
     parser.add_argument('--compactness', type=float, default=COMPACTNESS,
                         help='Balances color proximity and space proximity. '
@@ -39,40 +41,43 @@ def get_arguments():
     parser.add_argument('-o', '--output', type=str,
                         help='Path and name to the superpixel segmented image')
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    # give output default value dependent on input if none was passed
+    if not args.output:
+        path = args.image.split('/')
+        name = path[-1].split('.')
+        name = '{}-super.{}'.format('.'.join(name[:-1]), name[-1])
+        args.output = '{}/{}'.format('/'.join(path[:-1]), name)
+
+    return args
 
 
 def main():
     """Runs the SLIC superpixel segmentation."""
 
+    start_time = time.time()
     args = get_arguments()
 
-    # give output default value if none was passed
-    if not args.output:
-        path = args.image.split('/')
-        name = path[-1].split('.')
-        name = '{}-super.{}'.format('.'.join(name[:-1]), name[-1])
-        output = '{}/{}'.format('/'.join(path[:-1]), name)
-    else:
-        output = args.output
+    # load the image from file
+    image = cv2.imread(args.image)
 
-    # apply SLIC and extract the supplied number of segments
-    segments = image_to_slic(args.image, segments=args.segments,
+    # apply SLIC and extract the supplied segments
+    segments = image_to_slic(image, segments=args.segments,
                              compactness=args.compactness,
                              max_iterations=args.max_iterations,
                              sigma=args.sigma)
 
-    # mark_boundaries(image, segments)
-    # io.imsave('seg)-{}'.format(args.image), image)
-    # print(segments)
+    for (i, segment_val) in enumerate(np.unique(segments)):
+        mask = np.zeros(image.shape[:2], dtype="uint8")
+        mask[segments == segment_val] = 255
+        contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
 
-#     # show the output of SLIC
-#     fig = plt.figure('Superpixels -- {} segments'.format(args.segments))
-#     ax = fig.add_subplit(1, 1, 1)
-#     ax.imshow()
-#     plt.axis('off')
-    if not args.output:
-        print('Output saved in {}'.format(output))
+    # write the image to the specified output path
+    cv2.imwrite(args.output, image)
+    print('Output: {}'.format(args.output))
+    print('Runtime: {0:.4f} sec'.format(time.time() - start_time))
 
 
 # only run if the script is executed directly
