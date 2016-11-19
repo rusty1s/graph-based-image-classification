@@ -69,10 +69,11 @@ def main():
                              sigma=args.sigma)
 
     # iterate over all segment values
-    for segment in np.unique(segments):
+    segment_values = np.unique(segments)
+    for segment_value in segment_values:
         # build a mask for each segment
         mask = np.zeros(image.shape[:2], dtype="uint8")
-        mask[segments == segment] = 255
+        mask[segments == segment_value] = 255
 
         # find and draw the contour of the mask into the image
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
@@ -82,8 +83,9 @@ def main():
     # write the image to the specified output path
     cv2.imwrite(args.output, image)
 
-    print('Output: {}'.format(args.output))
+    print('Number of segments generated: {}'.format(len(segment_values)))
     print('Runtime: {0:.4f} sec'.format(time.time() - start_time))
+    print('Output: {}'.format(args.output))
 
 
 # only run if the script is executed directly
