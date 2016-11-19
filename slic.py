@@ -57,17 +57,18 @@ def get_arguments():
 def main():
     """Runs the SLIC superpixel segmentation."""
 
-    start_time = time.time()
     args = get_arguments()
 
     # load the image from file
     image = cv2.imread(args.image)
 
     # apply SLIC and extract the supplied segments
+    start_time = time.time()
     segments = image_to_slic(image, segments=args.segments,
                              compactness=args.compactness,
                              max_iterations=args.max_iterations,
                              sigma=args.sigma)
+    print('Runtime: {0:.4f}s'.format(time.time() - start_time))
 
     # iterate over all segment values
     segment_values = np.unique(segments)
@@ -76,6 +77,8 @@ def main():
         mask = np.zeros(image.shape[:2], dtype="uint8")
         mask[segments == segment_value] = 255
 
+        mean_c = cv2.mean(image, mask)
+
         # find the contour of the mask
         contours = cv2.findContours(mask, cv2.RETR_EXTERNAL,
                                     cv2.CHAIN_APPROX_SIMPLE)
@@ -83,7 +86,8 @@ def main():
         # grab the tuples based on whether we are using OpenCV 2.4 or OpenCV 3
         contours = contours[0] if imutils.is_cv2() else contours[1]
 
-        cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
+        cv2.drawContours(image, contours, -1, mean_c, -1)
+        # cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
 
         for contour in contours:
             # compute the center of the contour
@@ -92,14 +96,13 @@ def main():
                 c_x = int(M['m10'] / M['m00'])
                 c_y = int(M['m01'] / M['m00'])
 
-                cv2.circle(image, (c_x, c_y), 4, (0, 0, 255), -1,
+                cv2.circle(image, (c_x, c_y), 4, mean_c, -1,
                            lineType=cv2.CV_AA)
 
     # write the image to the specified output path
     cv2.imwrite(args.output, image)
 
     print('Number of segments generated: {}'.format(len(segment_values)))
-    print('Runtime: {0:.4f} sec'.format(time.time() - start_time))
     print('Output: {}'.format(args.output))
 
 

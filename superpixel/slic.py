@@ -1,8 +1,6 @@
 """ SLIC superpixel segmentation
 """
 
-from skimage.io import imread
-from skimage.util import img_as_float
 from skimage.segmentation import slic
 
 
