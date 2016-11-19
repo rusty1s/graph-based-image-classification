@@ -5,6 +5,7 @@ from __future__ import print_function
 
 import argparse
 import time
+import imutils
 import cv2
 import numpy as np
 
@@ -75,10 +76,24 @@ def main():
         mask = np.zeros(image.shape[:2], dtype="uint8")
         mask[segments == segment_value] = 255
 
-        # find and draw the contour of the mask into the image
-        contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
-                                               cv2.CHAIN_APPROX_SIMPLE)
+        # find the contour of the mask
+        contours = cv2.findContours(mask, cv2.RETR_EXTERNAL,
+                                    cv2.CHAIN_APPROX_SIMPLE)
+
+        # grab the tuples based on whether we are using OpenCV 2.4 or OpenCV 3
+        contours = contours[0] if imutils.is_cv2() else contours[1]
+
         cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
+
+        for contour in contours:
+            # compute the center of the contour
+            M = cv2.moments(contour)
+            if M['m00'] > 0.0:
+                c_x = int(M['m10'] / M['m00'])
+                c_y = int(M['m01'] / M['m00'])
+
+                cv2.circle(image, (c_x, c_y), 4, (0, 0, 255), -1,
+                           lineType=cv2.CV_AA)
 
     # write the image to the specified output path
     cv2.imwrite(args.output, image)
