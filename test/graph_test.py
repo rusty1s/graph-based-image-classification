@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 from nose.tools import *
-from pynauty import Graph, certificate
+from pynauty import Graph
 
 
 def test_graph():
