@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master)](https://travis-ci.org/rusty1s/graph-based-image-classification)
 [![codecov.io Code Coverage](https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg?maxAge=2592000)](https://codecov.io/github/rusty1s/graph-based-image-classification?branch=master)
 
-This is a TensorFlow implementation of the [Graph-based Image Classification](https://github.com/rusty1s/deep-learning/tree/master/thesis) master thesis.
+This is a TensorFlow implementation based on my "[Graph-based Image Classification](https://github.com/rusty1s/deep-learning/tree/master/thesis)" master thesis.
 
 ## Requirements
 
