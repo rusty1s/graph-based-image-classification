@@ -96,8 +96,7 @@ def main():
                 c_x = int(M['m10'] / M['m00'])
                 c_y = int(M['m01'] / M['m00'])
 
-                cv2.circle(image, (c_x, c_y), 4, mean_c, -1,
-                           lineType=cv2.CV_AA)
+                cv2.circle(image, (c_x, c_y), 4, mean_c, -1)
 
     # write the image to the specified output path
     cv2.imwrite(args.output, image)

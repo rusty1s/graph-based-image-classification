@@ -6,8 +6,9 @@ export PATH="$HOME/.miniconda/bin:$PATH"
 conda config --set always_yes yes
 
 # create test environement
-conda create -q -n test python=$TRAVIS_PYTHON_VERSION numpy
+conda create -q -n test python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib
 source activate test
+conda install -c https://conda.binstar.org/menpo opencv3
 
 # install codecov for code coverage
 pip install codecov
