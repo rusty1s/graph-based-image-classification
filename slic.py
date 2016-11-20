@@ -35,7 +35,7 @@ def get_arguments():
                         'A higher value gives more weight to space proximity '
                         'making superpixel shapes more square/cubic.')
     parser.add_argument('--max-iterations', type=int, default=MAX_ITERATIONS,
-                        help='Maaximum number of iterations of k-means')
+                        help='Maximum number of iterations of k-means')
     parser.add_argument('--sigma', type=float, default=SIGMA,
                         help='Width of gaussian smoothing kernel for pre-'
                         'processing')
