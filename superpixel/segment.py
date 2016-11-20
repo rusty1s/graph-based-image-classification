@@ -1,5 +1,5 @@
 class Segment(object):
-    def __init__(self, index, start, shape, mean, neighbors):
+    def __init__(self, index, top_left, pixel, mean, neighbors):
         self.index = index
         self.start = start
         self.shape = shape

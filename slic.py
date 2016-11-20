@@ -14,7 +14,7 @@ from superpixel import image_to_slic
 
 # possible arguments (look up each help parameter for additional information)
 SEGMENTS = 100
-COMPACTNESS = 10.0
+COMPACTNESS = 1.0
 MAX_ITERATIONS = 10
 SIGMA = 0.0
 
@@ -74,7 +74,7 @@ def main():
     segment_values = np.unique(segments)
     for segment_value in segment_values:
         # build a mask for each segment
-        mask = np.zeros(image.shape[:2], dtype="uint8")
+        mask = np.zeros(image.shape[:2], dtype=np.uint8)
         mask[segments == segment_value] = 255
 
         mean_c = cv2.mean(image, mask)
@@ -87,7 +87,7 @@ def main():
         contours = contours[0] if imutils.is_cv2() else contours[1]
 
         cv2.drawContours(image, contours, -1, mean_c, -1)
-        # cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
+        cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
 
         for contour in contours:
             # compute the center of the contour
@@ -96,7 +96,7 @@ def main():
                 c_x = int(M['m10'] / M['m00'])
                 c_y = int(M['m01'] / M['m00'])
 
-                cv2.circle(image, (c_x, c_y), 4, mean_c, -1)
+                # cv2.circle(image, (c_x, c_y), 4, (0, 0, 255), -1)
 
     # write the image to the specified output path
     cv2.imwrite(args.output, image)

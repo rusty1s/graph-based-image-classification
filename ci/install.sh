@@ -1,13 +1,18 @@
 #!/bin/sh
 
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-bash miniconda.sh -b -p "$HOME/.miniconda"
-export PATH="$HOME/.miniconda/bin:$PATH"
-conda config --set always_yes yes
+if ! type conda > /dev/null; then
+  wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  bash miniconda.sh -b -p "$HOME/.miniconda"
+  export PATH="$HOME/.miniconda/bin:$PATH"
+  conda config --set always_yes yes
+fi
 
 # create test environement
-conda create -q -n test python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib
+conda create -q -n test python=$TRAVIS_PYTHON_VERSION
 source activate test
+
+# install conda requirements
+conda install numpy scipy matplotlib
 conda install -c https://conda.binstar.org/menpo opencv3
 
 # install codecov for code coverage
@@ -27,11 +32,11 @@ curl https://web.cs.dal.ca/~peter/software/pynauty/pynauty-$PYNAUTY.tar.gz | tar
 curl http://users.cecs.anu.edu.au/~bdm/nauty/nauty$NAUTY.tar.gz | tar xz
 
 mv nauty$NAUTY pynauty-$PYNAUTY/nauty
-mkdir -p .sources
-mv pynauty-$PYNAUTY .sources/pynauty
+mkdir -p "$HOME/.sources"
+mv pynauty-$PYNAUTY "$HOME/.sources/pynauty"
 
-make pynauty -C .sources/pynauty
-make user-ins -C .sources/pynauty
+make pynauty -C "$HOME/.sources/pynauty"
+make user-ins -C "$HOME/.sources/pynauty"
 
 # install requirements
 pip install -r requirements.txt
