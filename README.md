@@ -21,7 +21,7 @@ If you have Conda installed, you can simply run
 ```bash
 ./ci/conda.sh -n graph
 ```
-to install all dependencies in a new conda environment with name `graph`.
+to install all dependencies in a new conda environment with name `"graph"`.
 
 **Tested Versions:**
 * TensorFlow: 0.11.0
