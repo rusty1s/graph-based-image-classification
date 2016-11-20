@@ -42,7 +42,13 @@ if [[ -z "$NAME" ]]; then
   exit 1
 fi
 
-# create test environement
+if ! type conda > /dev/null; then
+  wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  bash miniconda.sh -b -p "$HOME/.miniconda"
+  export PATH="$HOME/.miniconda/bin:$PATH"
+fi
+
+# create conda environement
 conda create -q -n "$NAME" python=$VERSION
 source activate "$NAME"
 

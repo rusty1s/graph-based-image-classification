@@ -17,7 +17,7 @@ To install the additional required python packages, run:
 pip install -r requirements.txt
 ```
 
-If you have Conda installed, you can simply run
+If you have Conda installed or want to install it, you can simply run
 ```bash
 ./ci/conda.sh -n graph
 ```
