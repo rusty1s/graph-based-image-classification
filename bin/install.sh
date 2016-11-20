@@ -4,12 +4,12 @@ while [[ $# -gt 1 ]]; do
   key="$1"
 
   case $key in
-    -v|--version)
-      VERSION="$2"
-      shift
-      ;;
     -n|--name)
       NAME="$2"
+      shift
+      ;;
+    --python)
+      PYTHON="$2"
       shift
       ;;
     --tensorflow)
@@ -32,7 +32,7 @@ while [[ $# -gt 1 ]]; do
 done
 
 # set default values
-VERSION="${VERSION:-3.5}"
+PYTHON="${PYTHON:-3.5}"
 TENSORFLOW="${TENSORFLOW:-0.11.0}"
 NAUTY="${NAUTY:-26r7}"
 PYNAUTY="${PYNAUTY:-0.6.0}"
@@ -42,16 +42,8 @@ if [[ -z "$NAME" ]]; then
   exit 1
 fi
 
-if ! type conda > /dev/null; then
-  wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-  bash miniconda.sh -b -p "$HOME/.miniconda"
-  rm -f miniconda.sh
-  export PATH="$HOME/.miniconda/bin:$PATH"
-  conda config --set always_yes yes
-fi
-
 # create conda environement
-conda create -q -n "$NAME" python=$VERSION
+conda create -q -n "$NAME" python=$PYTHON
 source activate "$NAME"
 
 # install conda requirements

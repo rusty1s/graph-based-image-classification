@@ -17,9 +17,9 @@ To install the additional required python packages, run:
 pip install -r requirements.txt
 ```
 
-If you have Conda installed or want to install it, you can simply run
+If you have [Miniconda](http://conda.pydata.org/docs/install/quick.html) installed, you can simply run
 ```bash
-./ci/conda.sh -n graph
+./bin/install.sh -n graph --python 3.5
 ```
 to install all dependencies (including TensorFlow and nauty/pynauty) in a new conda environment with name `"graph"`.
 
@@ -27,6 +27,7 @@ to install all dependencies (including TensorFlow and nauty/pynauty) in a new co
 * TensorFlow: 0.11.0
 * nauty: 26r7
 * pynauty: 0.6.0
+* OpenCV 3.0.0
 
 ## Running tests
 
@@ -39,5 +40,5 @@ pip install -r requirements_test.txt
 Run the test suite:
 
 ```bash
-./ci/test.sh
+./bin/test.sh
 ```

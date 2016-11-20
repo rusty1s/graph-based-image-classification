@@ -21,7 +21,7 @@ matrix:
 install:
   - source ci/install.sh
 script:
-  - bash ci/test.sh
+  - bash bin/test.sh
 after_success:
   - codecov
 notifications:
