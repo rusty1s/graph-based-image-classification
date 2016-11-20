@@ -31,6 +31,17 @@ while [[ $# -gt 1 ]]; do
   shift
 done
 
+# set default values
+VERSION="${VERSION:-3.5}"
+TENSORFLOW="${TENSORFLOW:-0.11.0}"
+NAUTY="${NAUTY:-26r7}"
+PYNAUTY="${PYNAUTY:-0.6.0}"
+
+if [[ -z "$NAME" ]]; then
+  echo "Must provide a --name argument."
+  exit 1
+fi
+
 # create test environement
 conda create -q -n "$NAME" python=$VERSION
 source activate "$NAME"
@@ -64,6 +75,5 @@ fi
 make pynauty -C "$HOME/.sources/pynauty"
 make user-ins -C "$HOME/.sources/pynauty"
 
-# install requirements
-pip install -r requirements.txt
+# install all requirements
 pip install -r requirements_test.txt

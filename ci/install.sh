@@ -7,7 +7,7 @@ if ! type conda > /dev/null; then
   conda config --set always_yes yes
 fi
 
-source ci/conda.sh -v $TRAVIS_PYTHON_VERSION -n test --tensorflow $TENSORFLOW --nauty $NAUTY --pynauty $PYNAUTY
+bash ci/conda.sh -v $TRAVIS_PYTHON_VERSION -n test --tensorflow $TENSORFLOW --nauty $NAUTY --pynauty $PYNAUTY
 
 # # create test environement
 # conda create -q -n test python=$TRAVIS_PYTHON_VERSION
@@ -40,6 +40,5 @@ source ci/conda.sh -v $TRAVIS_PYTHON_VERSION -n test --tensorflow $TENSORFLOW --
 # make pynauty -C "$HOME/.sources/pynauty"
 # make user-ins -C "$HOME/.sources/pynauty"
 
-# # install requirements
-# pip install -r requirements.txt
+# # install all requirements
 # pip install -r requirements_test.txt
