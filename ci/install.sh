@@ -23,7 +23,7 @@ fi
 
 # install nauty and its python wrapper pynauty
 curl https://web.cs.dal.ca/~peter/software/pynauty/pynauty-$PYNAUTY.tar.gz | tar xz
-curl http://pallini.di.uniroma1.it/nauty$NAUTY.tar.gz | tar xz
+curl http://users.cecs.anu.edu.au/~bdm/nauty/nauty$NAUTY.tar.gz | tar xz
 
 mv nauty$NAUTY pynauty-$PYNAUTY/nauty
 mkdir -p .sources
