@@ -23,12 +23,14 @@ def test_generate():
         [255, 255, 255, 255],
         [0,   0,   0,   255],
         ])
+    assert_equal(segments[1].center, (1.625, 0.75))
 
     assert_equal(segments[2].left, 2)
     assert_equal(segments[2].top, 0)
     assert_equal(segments[2].width, 1)
     assert_equal(segments[2].height, 1)
     testing.assert_array_equal(segments[2].mask, [[255]])
+    assert_equal(segments[2].center, (0, 0))
 
     assert_equal(segments[3].left, 0)
     assert_equal(segments[3].top, 2)
@@ -38,9 +40,11 @@ def test_generate():
         [255, 255, 255],
         [255, 0,   0],
         ])
+    assert_equal(segments[3].center, (0.75, 0.25))
 
     assert_equal(segments[4].left, 1)
     assert_equal(segments[4].top, 3)
     assert_equal(segments[4].width, 3)
     assert_equal(segments[4].height, 1)
     testing.assert_array_equal(segments[4].mask, [[255, 255, 255]])
+    assert_equal(segments[4].center, (1, 0))

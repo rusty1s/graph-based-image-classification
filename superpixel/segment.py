@@ -48,5 +48,7 @@ class Segment(object):
             s.mask = np.zeros(sliced.shape, dtype=np.uint8)
             s.mask[sliced == s.index] = 255
             s.center = ndimage.measurements.center_of_mass(s.mask)
+            # swap x,y coordinates
+            s.center = (s.center[1], s.center[0])
 
         return segments
