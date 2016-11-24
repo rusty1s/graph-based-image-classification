@@ -12,7 +12,7 @@
 [code-climate-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/gpa.svg
 [code-climate-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification
 [code-climate-issues-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/issue_count.svg
-[code-climate-issues-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification
+[code-climate-issues-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/issues
 
 This is a TensorFlow implementation based on my "[Graph-based Image Classification](https://github.com/rusty1s/deep-learning/tree/master/thesis)" master thesis.
 
