@@ -2,8 +2,8 @@
 
 [![Build Status][build-image]][build-url]
 [![Code Coverage][coverage-image]][coverage-url]
-[![Code Climate][code-climate-image]][code-climaate-url]
-[![Code Climate Issues][code-climate-issues-image]][code-climaate-issues-url]
+[![Code Climate][code-climate-image]][code-climate-url]
+[![Code Climate Issues][code-climate-issues-image]][code-climate-issues-url]
 
 [build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
 [build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
