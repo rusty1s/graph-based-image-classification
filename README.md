@@ -36,8 +36,9 @@ To install the additional required python packages, run:
 pip install -r requirements.txt
 ```
 
-If you have [Miniconda](http://conda.pydata.org/docs/install/quick.html)
-installed, you can simply run
+If you have [Miniconda
+installed](http://conda.pydata.org/docs/install/quick.html#miniconda-quick-install-requirements),
+you can simply run
 
 ```bash
 ./bin/install.sh -n graph --python 3.5
