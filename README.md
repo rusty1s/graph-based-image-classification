@@ -2,6 +2,7 @@
 
 [![Build Status][build-image]][build-url]
 [![Code Coverage][coverage-image]][coverage-url]
+[![Requirements Status][requirements-image]][requirements-url]
 [![Code Climate][code-climate-image]][code-climate-url]
 [![Code Climate Issues][code-climate-issues-image]][code-climate-issues-url]
 
@@ -9,6 +10,8 @@
 [build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
 [coverage-image]: https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg
 [coverage-url]: https://codecov.io/github/rusty1s/graph-based-image-classification?branch=master
+[requirements-image]: https://requires.io/github/rusty1s/graph-based-image-classification/requirements.svg?branch=master
+[requirements-url]: https://requires.io/github/rusty1s/graph-based-image-classification/requirements/?branch=master
 [code-climate-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/gpa.svg
 [code-climate-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification
 [code-climate-issues-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/issue_count.svg
