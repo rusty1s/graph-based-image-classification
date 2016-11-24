@@ -1,7 +1,18 @@
 # A TensorFlow implementation of Graph-based Image Classification
 
-[![Build Status](https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master)](https://travis-ci.org/rusty1s/graph-based-image-classification)
-[![codecov.io Code Coverage](https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg?maxAge=2592000)](https://codecov.io/github/rusty1s/graph-based-image-classification?branch=master)
+[![Build Status][build-image]][build-url]
+[![Code Coverage][coverage-image]][coverage-url]
+[![Code Climate][code-climate-image]][code-climaate-url]
+[![Code Climate Issues][code-climate-issues-image]][code-climaate-issues-url]
+
+[build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
+[build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
+[coverage-image]: https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg
+[coverage-url]: https://codecov.io/github/rusty1s/graph-based-image-classification?branch=master
+[code-climate-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/gpa.svg
+[code-climate-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification
+[code-climate-issues-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/issue_count.svg
+[code-climate-issues-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification
 
 This is a TensorFlow implementation based on my "[Graph-based Image Classification](https://github.com/rusty1s/deep-learning/tree/master/thesis)" master thesis.
 
