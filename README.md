@@ -6,17 +6,6 @@
 [![Code Climate][code-climate-image]][code-climate-url]
 [![Code Climate Issues][code-climate-issues-image]][code-climate-issues-url]
 
-[build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
-[build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
-[coverage-image]: https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg
-[coverage-url]: https://codecov.io/github/rusty1s/graph-based-image-classification?branch=master
-[requirements-image]: https://requires.io/github/rusty1s/graph-based-image-classification/requirements.svg?branch=master
-[requirements-url]: https://requires.io/github/rusty1s/graph-based-image-classification/requirements/?branch=master
-[code-climate-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/gpa.svg
-[code-climate-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification
-[code-climate-issues-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/issue_count.svg
-[code-climate-issues-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/issues
-
 This is a TensorFlow implementation based on my "[Graph-based Image
 Classification](https://github.com/rusty1s/deep-learning/tree/master/thesis)"
 master thesis.
@@ -39,11 +28,9 @@ pip install -r requirements.txt
 If you have [Miniconda
 installed](http://conda.pydata.org/docs/install/quick.html#miniconda-quick-install-requirements),
 you can simply run
-
 ```bash
 ./bin/install.sh -n graph --python 3.5
 ```
-
 to install all dependencies (including TensorFlow and nauty/pynauty) in a new
 conda environment with name `"graph"`.
 
@@ -67,3 +54,14 @@ Run the test suite:
 ```bash
 ./bin/test.sh
 ```
+
+[build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
+[build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
+[coverage-image]: https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg
+[coverage-url]: https://codecov.io/github/rusty1s/graph-based-image-classification?branch=master
+[requirements-image]: https://requires.io/github/rusty1s/graph-based-image-classification/requirements.svg?branch=master
+[requirements-url]: https://requires.io/github/rusty1s/graph-based-image-classification/requirements/?branch=master
+[code-climate-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/gpa.svg
+[code-climate-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification
+[code-climate-issues-image]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/badges/issue_count.svg
+[code-climate-issues-url]: https://codeclimate.com/github/rusty1s/graph-based-image-classification/issues
