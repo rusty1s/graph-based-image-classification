@@ -1,5 +1,4 @@
-"""Segment class that holds all important attributes of a segment defined by
-superpixels
+"""A segment defined by a superpixel calculation of an image
 """
 
 import cv2
@@ -17,8 +16,8 @@ class Segment(object):
         self.__right = None
 
         self.__count = 0
-        self.__image = None
-        self.__mask = None
+        self.__image = []
+        self.__mask = []
 
     @property
     def index(self):
@@ -89,9 +88,9 @@ class Segment(object):
         for index in segments:
             s = segments[index]
 
-            s.__image = image[s.top:s.top+s.height, s.left:s.left+s.width]
+            s.__image = image[s.top:s.bottom+1, s.left:s.right+1]
 
-            sliced = superpixels[s.top:s.top+s.height, s.left:s.left+s.width]
+            sliced = superpixels[s.top:s.bottom+1, s.left:s.right+1]
             s.__mask = np.zeros(sliced.shape, dtype=np.uint8)
             s.__mask[sliced == s.index] = 255
 
