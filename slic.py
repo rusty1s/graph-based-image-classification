@@ -72,39 +72,39 @@ def main():
 
     segments = Segment.generate(superpixels)
 
-    # # iterate over all segment values
-    # segment_values = np.unique(segments)
-    # for segment_value in segment_values:
-    #     # build a mask for each segment
-    #     mask = np.zeros(image.shape[:2], dtype=np.uint8)
-    #     mask[segments == segment_value] = 255
+    # iterate over all segment values
+    segment_values = np.unique(segments)
+    for segment_value in segment_values:
+        # build a mask for each segment
+        mask = np.zeros(image.shape[:2], dtype=np.uint8)
+        mask[segments == segment_value] = 255
 
-    #     mean_c = cv2.mean(image, mask)
+        mean_c = cv2.mean(image, mask)
 
-    #     # find the contour of the mask
-    #     contours = cv2.findContours(mask, cv2.RETR_EXTERNAL,
-    #                                 cv2.CHAIN_APPROX_SIMPLE)
+        # find the contour of the mask
+        contours = cv2.findContours(mask, cv2.RETR_EXTERNAL,
+                                    cv2.CHAIN_APPROX_SIMPLE)
 
-    #     # grab the tuples based on whether we are using OpenCV 2.4 or OpenCV 3
-    #     contours = contours[0] if imutils.is_cv2() else contours[1]
+        # grab the tuples based on whether we are using OpenCV 2.4 or OpenCV 3
+        contours = contours[0] if imutils.is_cv2() else contours[1]
 
-    #     cv2.drawContours(image, contours, -1, mean_c, -1)
-    #     cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
+        cv2.drawContours(image, contours, -1, mean_c, -1)
+        cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
 
-    #     for contour in contours:
-    #         # compute the center of the contour
-    #         M = cv2.moments(contour)
-    #         if M['m00'] > 0.0:
-    #             c_x = int(M['m10'] / M['m00'])
-    #             c_y = int(M['m01'] / M['m00'])
+        for contour in contours:
+            # compute the center of the contour
+            M = cv2.moments(contour)
+            if M['m00'] > 0.0:
+                c_x = int(M['m10'] / M['m00'])
+                c_y = int(M['m01'] / M['m00'])
 
-    #             # cv2.circle(image, (c_x, c_y), 4, (0, 0, 255), -1)
+                # cv2.circle(image, (c_x, c_y), 4, (0, 0, 255), -1)
 
-    # # write the image to the specified output path
-    # cv2.imwrite(args.output, image)
+    # write the image to the specified output path
+    cv2.imwrite(args.output, image)
 
-    # print('Number of segments generated: {}'.format(len(segment_values)))
-    # print('Output: {}'.format(args.output))
+    print('Number of segments generated: {}'.format(len(segment_values)))
+    print('Output: {}'.format(args.output))
 
 
 # only run if the script is executed directly
