@@ -47,7 +47,7 @@ def test_segment_1():
         ])
 
     assert_equal(segment.center, (1.625, 0.75))
-    assert_equal(segment.mean[0], (0+10+30+40+50+60+70+110)/segment.count)
+    assert_equal(segment.mean[0], 46.25)
 
 
 def test_segment_2():
@@ -70,7 +70,7 @@ def test_segment_2():
         ])
 
     assert_equal(segment.center, (2, 0))
-    assert_equal(segment.mean[0], 20/segment.count)
+    assert_equal(segment.mean[0], 20)
 
 
 def test_segment_3():
@@ -95,7 +95,7 @@ def test_segment_3():
         ])
 
     assert_equal(segment.center, (0.75, 2.25))
-    assert_equal(segment.mean[0], (80+90+100+120)/segment.count)
+    assert_equal(segment.mean[0], 97.5)
 
 
 def test_segment_4():
@@ -118,4 +118,4 @@ def test_segment_4():
         ])
 
     assert_equal(segment.center, (2, 3))
-    assert_equal(segment.mean[0], (130+140+150)/segment.count)
+    assert_equal(segment.mean[0], 140)
