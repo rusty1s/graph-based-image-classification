@@ -44,6 +44,8 @@ fi
 
 # create conda environement
 conda create -q -n "$NAME" python="$PYTHON"
+
+# shellcheck disable=SC1091
 source activate "$NAME"
 
 # install conda requirements
