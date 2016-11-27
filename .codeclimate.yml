@@ -12,7 +12,10 @@ engines:
     enabled: true
   markdownlint:
     enabled: true
+  shellcheck:
+    enabled: true
 ratings:
   paths:
     - "**.py"
+    - "**.sh"
     - "**.md"
