@@ -28,9 +28,11 @@ pip install -r requirements.txt
 If you have [Miniconda
 installed](http://conda.pydata.org/docs/install/quick.html#miniconda-quick-install-requirements),
 you can simply run
+
 ```bash
 ./bin/install.sh -n graph --python 3.5
 ```
+
 to install all dependencies (including TensorFlow and nauty/pynauty) in a new
 conda environment with name `"graph"`.
 
