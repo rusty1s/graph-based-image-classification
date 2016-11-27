@@ -9,7 +9,7 @@ import imutils
 import cv2
 import numpy as np
 
-from superpixel import image_to_slic
+from superpixel import image_to_slic, Segment
 
 
 # possible arguments (look up each help parameter for additional information)
@@ -64,45 +64,47 @@ def main():
 
     # apply SLIC and extract the supplied segments
     start_time = time.time()
-    segments = image_to_slic(image, segments=args.segments,
-                             compactness=args.compactness,
-                             max_iterations=args.max_iterations,
-                             sigma=args.sigma)
+    superpixels = image_to_slic(image, segments=args.segments,
+                                compactness=args.compactness,
+                                max_iterations=args.max_iterations,
+                                sigma=args.sigma)
     print('Runtime: {0:.4f}s'.format(time.time() - start_time))
 
-    # iterate over all segment values
-    segment_values = np.unique(segments)
-    for segment_value in segment_values:
-        # build a mask for each segment
-        mask = np.zeros(image.shape[:2], dtype=np.uint8)
-        mask[segments == segment_value] = 255
+    segments = Segment.generate(superpixels)
 
-        mean_c = cv2.mean(image, mask)
+    # # iterate over all segment values
+    # segment_values = np.unique(segments)
+    # for segment_value in segment_values:
+    #     # build a mask for each segment
+    #     mask = np.zeros(image.shape[:2], dtype=np.uint8)
+    #     mask[segments == segment_value] = 255
 
-        # find the contour of the mask
-        contours = cv2.findContours(mask, cv2.RETR_EXTERNAL,
-                                    cv2.CHAIN_APPROX_SIMPLE)
+    #     mean_c = cv2.mean(image, mask)
 
-        # grab the tuples based on whether we are using OpenCV 2.4 or OpenCV 3
-        contours = contours[0] if imutils.is_cv2() else contours[1]
+    #     # find the contour of the mask
+    #     contours = cv2.findContours(mask, cv2.RETR_EXTERNAL,
+    #                                 cv2.CHAIN_APPROX_SIMPLE)
 
-        cv2.drawContours(image, contours, -1, mean_c, -1)
-        cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
+    #     # grab the tuples based on whether we are using OpenCV 2.4 or OpenCV 3
+    #     contours = contours[0] if imutils.is_cv2() else contours[1]
 
-        for contour in contours:
-            # compute the center of the contour
-            M = cv2.moments(contour)
-            if M['m00'] > 0.0:
-                c_x = int(M['m10'] / M['m00'])
-                c_y = int(M['m01'] / M['m00'])
+    #     cv2.drawContours(image, contours, -1, mean_c, -1)
+    #     cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
 
-                # cv2.circle(image, (c_x, c_y), 4, (0, 0, 255), -1)
+    #     for contour in contours:
+    #         # compute the center of the contour
+    #         M = cv2.moments(contour)
+    #         if M['m00'] > 0.0:
+    #             c_x = int(M['m10'] / M['m00'])
+    #             c_y = int(M['m01'] / M['m00'])
 
-    # write the image to the specified output path
-    cv2.imwrite(args.output, image)
+    #             # cv2.circle(image, (c_x, c_y), 4, (0, 0, 255), -1)
 
-    print('Number of segments generated: {}'.format(len(segment_values)))
-    print('Output: {}'.format(args.output))
+    # # write the image to the specified output path
+    # cv2.imwrite(args.output, image)
+
+    # print('Number of segments generated: {}'.format(len(segment_values)))
+    # print('Output: {}'.format(args.output))
 
 
 # only run if the script is executed directly
