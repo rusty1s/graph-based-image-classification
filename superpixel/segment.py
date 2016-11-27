@@ -10,10 +10,10 @@ class Segment(object):
     def __init__(self, index):
         self.__index = index
 
-        self.__left = None
-        self.__top = None
-        self.__bottom = None
-        self.__right = None
+        self.__left = float('inf')
+        self.__top = float('inf')
+        self.__bottom = float('-inf')
+        self.__right = float('-inf')
 
         self.__count = 0
         self.__image = []
@@ -79,10 +79,10 @@ class Segment(object):
             for x, value in enumerate(row):
                 s = segments[value]
 
-                s.__left = x if s.left is None else min(s.left, x)
-                s.__top = y if s.top is None else min(s.top, y)
-                s.__right = x if s.right is None else max(s.right, x)
-                s.__bottom = y if s.bottom is None else max(s.bottom, y)
+                s.__left = min(s.left, x)
+                s.__top = min(s.top, y)
+                s.__right = max(s.right, x)
+                s.__bottom = max(s.bottom, y)
                 s.__count += 1
 
         for index in segments:
