@@ -88,10 +88,13 @@ class Segment(object):
         for index in segments:
             s = segments[index]
 
-            s.__image = image[s.top:s.bottom+1, s.left:s.right+1]
+            slice_x = slice(s.left, s.right + 1)
+            slice_y = slice(s.top, s.bottom + 1)
 
-            sliced = superpixels[s.top:s.bottom+1, s.left:s.right+1]
-            s.__mask = np.zeros(sliced.shape, dtype=np.uint8)
-            s.__mask[sliced == s.index] = 255
+            s.__image = image[slice_y, slice_x]
+
+            sliced_superpixels = superpixels[slice_y, slice_x]
+            s.__mask = np.zeros(sliced_superpixels.shape, dtype=np.uint8)
+            s.__mask[sliced_superpixels == s.index] = 255
 
         return segments
