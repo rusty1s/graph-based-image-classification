@@ -107,22 +107,31 @@ class Segment(object):
         """A dictionary of all the segments found in the superpixel
         presentation with its identifier as key."""
 
+        # convert arguments to 2D numpy arrays
         superpixels = np.array(superpixels)
         image = np.array(image)
+
+        # create the dictionary of empty segments (except identifier)
         segment_values = np.unique(superpixels)
         segments = {i: Segment(i) for i in segment_values}
 
+        # image respectively superpixels dimensions
         width = len(superpixels[0])
         height = len(superpixels)
 
+        # iterate over each pixel once and collect as much information about
+        # the segments
         for y, row in enumerate(superpixels):
             for x, value in enumerate(row):
                 s = segments[value]
 
+                # compute bounding box
                 s.__left = min(s.left, x)
                 s.__top = min(s.top, y)
                 s.__right = max(s.right, x)
                 s.__bottom = max(s.bottom, y)
+
+                # increment pixel count of segment
                 s.__count += 1
 
                 # calculate and update neighbors
@@ -130,17 +139,20 @@ class Segment(object):
                 slice_y = Segment.__get_1x1_slice(y, height)
                 s.neighbors.update(superpixels[slice_y, slice_x].flatten())
 
+        # iterate over each segment once and extend the collection information
         for id in segments:
             s = segments[id]
 
             # remove itself from neighborhood
             s.neighbors.discard(id)
 
+            # slice the image to the segments bounding box
             slice_x = slice(s.left, s.right + 1)
             slice_y = slice(s.top, s.bottom + 1)
 
             s.__image = image[slice_y, slice_x]
 
+            # compute of the mask
             sliced_superpixels = superpixels[slice_y, slice_x]
             s.__mask = np.zeros(sliced_superpixels.shape, dtype=np.uint8)
             s.__mask[sliced_superpixels == s.id] = 255
@@ -151,17 +163,19 @@ class Segment(object):
     def write(segments, image_name, suffix=None):
         """Writes the generated dictionary of segments to disk."""
 
+        # compute the correct file name
         suffix = '' if suffix is None else '-{}'.format(suffix)
-        name = '{}_segments{}.pkl'.format(image_name, suffix)
+        file_name = '{}_segments{}.pkl'.format(image_name, suffix)
 
-        with open(name, 'wb') as output:
+        with open(file_name, 'wb') as output:
             pickle.dump(segments, output, -1)
 
     @staticmethod
-    def read(name):
-        """Reads the written dictionary of segments from disk."""
+    def read(file_name):
+        """Reads the written dictionary of segments from disk. The file name
+        shouldn't have a file extension."""
 
-        with open('{}.pkl'.format(name), 'rb') as input:
+        with open('{}.pkl'.format(file_name), 'rb') as input:
             return pickle.load(input)
 
     @staticmethod
