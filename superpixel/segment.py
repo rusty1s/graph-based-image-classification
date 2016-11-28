@@ -77,17 +77,6 @@ class Segment(object):
         return cv2.mean(self.image, self.mask)
 
     @staticmethod
-    def __get_neighbor_indices(x, y, width, height):
-        return [(x2, y2) for x2 in range(x-1, x+2)
-                for y2 in range(y-1, y+2)
-                if (0 <= x < width and
-                    0 <= y < height and
-                    (x != x2 or y != y2) and
-                    0 <= x2 < width and
-                    0 <= y2 < height
-                    )]
-
-    @staticmethod
     def generate(image, superpixels):
         superpixels = np.array(superpixels)
         image = np.array(image)
@@ -107,9 +96,10 @@ class Segment(object):
                 s.__bottom = max(s.bottom, y)
                 s.__count += 1
 
-                # calculate neighbors
-                for neighbor in Segment.__get_neighbor_indices(x, y, w, h):
-                    s.neighbors.add(superpixels[neighbor[1]][neighbor[0]])
+                # calculate and update neighbors
+                slice_x = slice(max(0, x - 1), min(w, x + 2))
+                slice_y = slice(max(0, y - 1), min(h, y + 2))
+                s.neighbors.update(superpixels[slice_y, slice_x].flatten())
 
         for index in segments:
             s = segments[index]
