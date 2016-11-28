@@ -6,4 +6,4 @@ rm -f miniconda.sh
 export PATH="$HOME/.miniconda/bin:$PATH"
 conda config --set always_yes yes
 
-source bin/install.sh -n test --python $TRAVIS_PYTHON_VERSION --tensorflow $TENSORFLOW --nauty $NAUTY --pynauty $PYNAUTY
+. bin/install.sh -n test --python "$TRAVIS_PYTHON_VERSION" --tensorflow "$TENSORFLOW" --nauty "$NAUTY" --pynauty "$PYNAUTY"
