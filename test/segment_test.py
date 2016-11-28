@@ -157,9 +157,9 @@ def test_reading():
 
     assert_equal(len(segments), 4)
 
-    assert_equal(segments[1].index, 1)
-    assert_equal(segments[2].index, 2)
-    assert_equal(segments[3].index, 3)
-    assert_equal(segments[4].index, 4)
+    assert_equal(segments[1].id, 1)
+    assert_equal(segments[2].id, 2)
+    assert_equal(segments[3].id, 3)
+    assert_equal(segments[4].id, 4)
 
     os.remove('tree_segments.pkl')
