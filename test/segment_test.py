@@ -147,3 +147,19 @@ def test_writing():
     assert_equal(name, 'tree_segments-slic100.pkl')
     assert_true(os.path.isfile(name))
     os.remove(name)
+
+
+def test_reading():
+    segments = Segment.generate(image, superpixels)
+
+    Segment.write(segments, 'tree')
+    segments = Segment.read('tree_segments')
+
+    assert_equal(len(segments), 4)
+
+    assert_equal(segments[1].index, 1)
+    assert_equal(segments[2].index, 2)
+    assert_equal(segments[3].index, 3)
+    assert_equal(segments[4].index, 4)
+
+    os.remove('tree_segments.pkl')

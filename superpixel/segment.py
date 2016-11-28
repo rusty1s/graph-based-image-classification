@@ -4,7 +4,6 @@
 import cv2
 import numpy as np
 from scipy import ndimage
-# import cPickle as pickle
 import pickle
 
 
@@ -128,5 +127,9 @@ class Segment(object):
         name = '{}_segments{}.pkl'.format(image_name, suffix)
 
         with open(name, 'wb') as output:
-            for s in segments:
-                pickle.dump(s, output, -1)
+            pickle.dump(segments, output, -1)
+
+    @staticmethod
+    def read(name):
+        with open('{}.pkl'.format(name), 'rb') as input:
+            return pickle.load(input)
