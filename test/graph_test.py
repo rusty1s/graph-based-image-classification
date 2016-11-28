@@ -1,5 +1,4 @@
 from nose.tools import *
-import numpy as np
 from superpixel import Segment
 from graph import graph_from_segments
 
