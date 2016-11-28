@@ -49,6 +49,8 @@ def test_segment_1():
     assert_equal(segment.center, (1.625, 0.75))
     assert_equal(segment.mean[0], 46.25)
 
+    assert_equals(segment.neighbors, set([2, 3, 4]))
+
 
 def test_segment_2():
     segment = Segment.generate(image, superpixel)[2]
@@ -71,6 +73,8 @@ def test_segment_2():
 
     assert_equal(segment.center, (2, 0))
     assert_equal(segment.mean[0], 20)
+
+    assert_equals(segment.neighbors, set([1]))
 
 
 def test_segment_3():
@@ -97,6 +101,8 @@ def test_segment_3():
     assert_equal(segment.center, (0.75, 2.25))
     assert_equal(segment.mean[0], 97.5)
 
+    assert_equals(segment.neighbors, set([1, 4]))
+
 
 def test_segment_4():
     segment = Segment.generate(image, superpixel)[4]
@@ -119,3 +125,5 @@ def test_segment_4():
 
     assert_equal(segment.center, (2, 3))
     assert_equal(segment.mean[0], 140)
+
+    assert_equals(segment.neighbors, set([1, 3]))

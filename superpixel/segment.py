@@ -19,6 +19,8 @@ class Segment(object):
         self.__image = []
         self.__mask = []
 
+        self.__neighbors = set()
+
     @property
     def index(self):
         return self.__index
@@ -50,6 +52,10 @@ class Segment(object):
     @property
     def mask(self):
         return self.__mask
+
+    @property
+    def neighbors(self):
+        return self.__neighbors
 
     @property
     def width(self):
@@ -85,8 +91,21 @@ class Segment(object):
                 s.__bottom = max(s.bottom, y)
                 s.__count += 1
 
+                # calculate neighbors
+                # s.__neighbors.add(superpixels[y-1][x-1])
+                # s.__neighbors.add(superpixels[y-1][x])
+                # s.__neighbors.add(superpixels[y-1][x+1])
+                # s.__neighbors.add(superpixels[y][x-1])
+                # s.__neighbors.add(superpixels[y][x+1])
+                # s.__neighbors.add(superpixels[y+1][x-1])
+                # s.__neighbors.add(superpixels[y+1][x])
+                # s.__neighbors.add(superpixels[y+1][x+1])
+
         for index in segments:
             s = segments[index]
+
+            # remove itself from neighborhood
+            # s.__neighbors.remove(index)
 
             slice_x = slice(s.left, s.right + 1)
             slice_y = slice(s.top, s.bottom + 1)
