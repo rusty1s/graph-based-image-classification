@@ -1,39 +1,58 @@
 from nose.tools import *
-from pynauty import Graph
+import numpy as np
+from superpixel import Segment
+from graph import graph_from_segments
+
+image = [
+        [0,   10,  20,  30],
+        [40,  50,  60,  70],
+        [80,  90,  100, 110],
+        [120, 130, 140, 150],
+        ]
+
+superpixels = [
+        [1, 1, 2, 1],
+        [1, 1, 1, 1],
+        [3, 3, 3, 1],
+        [3, 4, 4, 4],
+        ]
+
+
+def node_mapping(segment):
+    return {'color': segment.mean}
+
+
+def edge_mapping(from_segment, to_segment):
+    c1 = from_segment.center
+    c2 = to_segment.center
+
+    return {'weight': (c1[0] - c2[0])**2 + (c1[1] - c2[1])**2}
 
 
 def test_graph():
-    # build the graph
-    g = Graph(10)
+    segments = Segment.generate(image, superpixels)
 
-    g.connect_vertex(0, [1, 2, 3, 4, 5])
-    g.connect_vertex(1, [0, 4, 5])
-    g.connect_vertex(2, [0, 3])
-    g.connect_vertex(3, [0, 2, 4, 6, 7])
-    g.connect_vertex(4, [0, 1, 3, 5, 6, 8, 9])
-    g.connect_vertex(5, [0, 1, 4])
-    g.connect_vertex(6, [3, 4, 7, 8])
-    g.connect_vertex(7, [3, 6, 8])
-    g.connect_vertex(8, [4, 6, 7, 9])
-    g.connect_vertex(9, [4, 8])
+    G = graph_from_segments(segments, node_mapping, edge_mapping)
 
-    g.set_vertex_coloring([set([0]), set([1, 2, 3, 4, 5]), set([6, 7, 8, 9])])
+    assert_false(G.is_directed())
 
-    # test the graph
-    assert_equal(g.number_of_vertices, 10)
-    assert_equal(g.directed, False)
+    assert_equal(G.number_of_nodes(), 4)
+    assert_equal(G.number_of_edges(), 4)
 
-    assert_equal(g.adjacency_dict[0], [1, 2, 3, 4, 5])
-    assert_equal(g.adjacency_dict[1], [0, 4, 5])
-    assert_equal(g.adjacency_dict[2], [0, 3])
-    assert_equal(g.adjacency_dict[3], [0, 2, 4, 6, 7])
-    assert_equal(g.adjacency_dict[4], [0, 1, 3, 5, 6, 8, 9])
-    assert_equal(g.adjacency_dict[5], [0, 1, 4])
-    assert_equal(g.adjacency_dict[6], [3, 4, 7, 8])
-    assert_equal(g.adjacency_dict[7], [3, 6, 8])
-    assert_equal(g.adjacency_dict[8], [4, 6, 7, 9])
-    assert_equal(g.adjacency_dict[9], [4, 8])
+    assert_equal(len(G.node[1]), 1)
+    assert_equal(G.node[1]['color'][0], 46.25)
+    assert_equal(len(G.node[2]), 1)
+    assert_equal(G.node[2]['color'][0], 20)
+    assert_equal(len(G.node[3]), 1)
+    assert_equal(G.node[3]['color'][0], 97.5)
+    assert_equal(len(G.node[4]), 1)
+    assert_equal(G.node[4]['color'][0], 140)
 
-    assert_equal(g.vertex_coloring[0], set([0]))
-    assert_equal(g.vertex_coloring[1], set([1, 2, 3, 4, 5]))
-    assert_equal(g.vertex_coloring[2], set([6, 7, 8, 9]))
+    assert_equal(len(G[1][2]), 1)
+    assert_equal(G[1][2]['weight'], 0.375**2 + 0.75**2)
+    assert_equal(len(G[1][3]), 1)
+    assert_equal(G[1][3]['weight'], 0.875**2 + 1.5**2)
+    assert_equal(len(G[1][4]), 1)
+    assert_equal(G[1][4]['weight'], 0.375**2 + 2.25**2)
+    assert_equal(len(G[3][4]), 1)
+    assert_equal(G[3][4]['weight'], 1.25**2 + 0.75**2)

@@ -1,7 +1,7 @@
-import os
 from nose.tools import *
 from numpy import testing
 from superpixel import Segment
+import os
 
 image = [
         [0,   10,  20,  30],
