@@ -30,7 +30,7 @@ installed](http://conda.pydata.org/docs/install/quick.html#miniconda-quick-insta
 you can simply run
 
 ```bash
-./bin/install.sh -n graph --python 3.5
+./bin/install.sh -n graph --python 3.5  # or 2.7, 3.4
 ```
 
 to install all dependencies (including TensorFlow and nauty/pynauty) in a new
