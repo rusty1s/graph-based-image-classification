@@ -77,14 +77,18 @@ class Segment(object):
         return cv2.mean(self.image, self.mask)
 
     @staticmethod
+    def __get_1x1_slice(index, maximum):
+        return slice(max(0, index - 1), min(maximum, index + 2))
+
+    @staticmethod
     def generate(image, superpixels):
         superpixels = np.array(superpixels)
         image = np.array(image)
         segment_values = np.unique(superpixels)
         segments = {i: Segment(i) for i in segment_values}
 
-        w = len(superpixels[0])
-        h = len(superpixels)
+        width = len(superpixels[0])
+        height = len(superpixels)
 
         for y, row in enumerate(superpixels):
             for x, value in enumerate(row):
@@ -97,8 +101,8 @@ class Segment(object):
                 s.__count += 1
 
                 # calculate and update neighbors
-                slice_x = slice(max(0, x - 1), min(w, x + 2))
-                slice_y = slice(max(0, y - 1), min(h, y + 2))
+                slice_x = Segment.__get_1x1_slice(x, width)
+                slice_y = Segment.__get_1x1_slice(y, height)
                 s.neighbors.update(superpixels[slice_y, slice_x].flatten())
 
         for index in segments:
