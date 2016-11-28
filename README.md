@@ -38,10 +38,10 @@ conda environment with name `"graph"`.
 
 ### Tested Versions
 
-* TensorFlow: 0.11.0
-* nauty: 26r7
-* pynauty: 0.6.0
-* OpenCV: 3.1.0
+* **TensorFlow**: 0.11.0
+* **nauty**: 26r7
+* **pynauty**: 0.6.0
+* **OpenCV**: 3.1.0
 
 ## Running tests
 
