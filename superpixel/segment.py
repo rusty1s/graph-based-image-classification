@@ -123,7 +123,10 @@ class Segment(object):
         return segments
 
     @staticmethod
-    def write(segments, image_name):
-        with open('{}_segments.pkl'.format(image_name), 'wb') as output:
+    def write(segments, image_name, suffix=None):
+        suffix = '' if suffix is None else '-{}'.format(suffix)
+        name = '{}_segments{}.pkl'.format(image_name, suffix)
+
+        with open(name, 'wb') as output:
             for s in segments:
                 pickle.dump(s, output, -1)

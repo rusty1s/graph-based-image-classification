@@ -134,9 +134,16 @@ def test_writing():
     segments = Segment.generate(image, superpixels)
 
     image_name = 'tree'
-    Segment.write(segments, image_name)
+    suffix = 'slic100'
 
+    Segment.write(segments, image_name)
     name = '{}_segments.pkl'.format(image_name)
     assert_equal(name, 'tree_segments.pkl')
+    assert_true(os.path.isfile(name))
+    os.remove(name)
+
+    Segment.write(segments, image_name, suffix)
+    name = '{}_segments-{}.pkl'.format(image_name, suffix)
+    assert_equal(name, 'tree_segments-slic100.pkl')
     assert_true(os.path.isfile(name))
     os.remove(name)
