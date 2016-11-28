@@ -30,11 +30,17 @@ installed](http://conda.pydata.org/docs/install/quick.html#miniconda-quick-insta
 you can simply run
 
 ```bash
-./bin/install.sh -n graph --python 3.5  # or 2.7, 3.4
+./bin/install.sh graph
 ```
 
 to install all dependencies (including TensorFlow and nauty/pynauty) in a new
 conda environment with name `"graph"`.
+
+For configuration and usage of the install script, see
+
+```bash
+./bin/install.sh --help
+```
 
 ### Tested Versions
 
@@ -56,13 +62,6 @@ Run the test suite:
 ```bash
 ./bin/test.sh
 ```
-
-## ToDos
-
-This repository is currently active in development.
-Don't use it yet.
-
-* Better install script with `--help`
 
 [build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
 [build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification

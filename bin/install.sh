@@ -1,14 +1,30 @@
 #!/bin/bash
 
-while [[ $# -gt 1 ]]; do
+usage="Graph-based Image Classification Install Script
+-----------------------------------------------
+Usage: $(basename "$0") [options...] <name>
+Installs all requirements in a new conda environment with name <name>. Miniconda needs to be installed.
+
+Options:
+ -h, --help        This help text
+ -p, --python      The python version to use. (Default: 3.5)
+     --tensorflow  The TensorFlow version to install. (Default: 0.11.0)
+     --nauty       The nauty version to install. (Default: 26r7)
+     --pynauty     The pynauty version to install. (Default: 0.6.0)"
+
+while [[ $# -gt 0 ]]; do
   key="$1"
 
   case $key in
+    -h|--help)
+      echo "$usage"
+      exit
+      ;;
     -n|--name)
       NAME="$2"
       shift
       ;;
-    --python)
+    -p|--python)
       PYTHON="$2"
       shift
       ;;
@@ -25,6 +41,7 @@ while [[ $# -gt 1 ]]; do
       shift
       ;;
     *)
+      NAME="$1"
       ;;
   esac
 
@@ -38,7 +55,12 @@ NAUTY="${NAUTY:-26r7}"
 PYNAUTY="${PYNAUTY:-0.6.0}"
 
 if [[ -z "$NAME" ]]; then
-  echo "Must provide a --name argument."
+  echo "Abort: No <name> found. See --help for usage information."
+  exit 1
+fi
+
+if ! hash conda 2>/dev/null; then
+  echo "Abort: Miniconda is not installed on your system."
   exit 1
 fi
 
