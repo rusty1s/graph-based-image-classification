@@ -1,3 +1,4 @@
+import os
 from nose.tools import *
 from numpy import testing
 from superpixel import Segment
@@ -9,7 +10,7 @@ image = [
         [120, 130, 140, 150],
         ]
 
-superpixel = [
+superpixels = [
         [1, 1, 2, 1],
         [1, 1, 1, 1],
         [3, 3, 3, 1],
@@ -18,13 +19,13 @@ superpixel = [
 
 
 def test_generate():
-    segments = Segment.generate(image, superpixel)
+    segments = Segment.generate(image, superpixels)
 
     assert_equal(len(segments), 4)
 
 
 def test_segment_1():
-    segment = Segment.generate(image, superpixel)[1]
+    segment = Segment.generate(image, superpixels)[1]
 
     assert_equal(segment.left, 0)
     assert_equal(segment.top, 0)
@@ -53,7 +54,7 @@ def test_segment_1():
 
 
 def test_segment_2():
-    segment = Segment.generate(image, superpixel)[2]
+    segment = Segment.generate(image, superpixels)[2]
 
     assert_equal(segment.left, 2)
     assert_equal(segment.top, 0)
@@ -78,7 +79,7 @@ def test_segment_2():
 
 
 def test_segment_3():
-    segment = Segment.generate(image, superpixel)[3]
+    segment = Segment.generate(image, superpixels)[3]
 
     assert_equal(segment.left, 0)
     assert_equal(segment.top, 2)
@@ -105,7 +106,7 @@ def test_segment_3():
 
 
 def test_segment_4():
-    segment = Segment.generate(image, superpixel)[4]
+    segment = Segment.generate(image, superpixels)[4]
 
     assert_equal(segment.left, 1)
     assert_equal(segment.top, 3)
@@ -127,3 +128,15 @@ def test_segment_4():
     assert_equal(segment.mean[0], 140)
 
     assert_equals(segment.neighbors, set([1, 3]))
+
+
+def test_writing():
+    segments = Segment.generate(image, superpixels)
+
+    image_name = 'tree'
+    Segment.write(segments, image_name)
+
+    name = '{}_segments.pkl'.format(image_name)
+    assert_equal(name, 'tree_segments.pkl')
+    assert_true(os.path.isfile(name))
+    os.remove(name)

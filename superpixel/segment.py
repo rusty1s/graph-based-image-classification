@@ -4,6 +4,8 @@
 import cv2
 import numpy as np
 from scipy import ndimage
+# import cPickle as pickle
+import pickle
 
 
 class Segment(object):
@@ -125,3 +127,9 @@ class Segment(object):
             s.__mask[sliced_superpixels == s.index] = 255
 
         return segments
+
+    @staticmethod
+    def write(segments, image_name):
+        with open('{}_segments.pkl'.format(image_name), 'wb') as output:
+            for s in segments:
+                pickle.dump(s, output, -1)
