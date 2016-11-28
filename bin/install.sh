@@ -6,7 +6,7 @@ Usage: $(basename "$0") [options...] <name>
 Installs all requirements in a new conda environment with name <name>. Miniconda needs to be installed.
 
 Options:
- -h, --help        This help text
+ -h, --help        This help text.
  -p, --python      The python version to use. (Default: 3.5)
      --tensorflow  The TensorFlow version to install. (Default: 0.11.0)
      --nauty       The nauty version to install. (Default: 26r7)
