@@ -36,7 +36,7 @@ you can simply run
 to install all dependencies (including TensorFlow and nauty/pynauty) in a new
 conda environment with name `"graph"`.
 
-For configuration and usage of the install script, see
+For configuration and usage of the install script, run:
 
 ```bash
 ./bin/install.sh --help
