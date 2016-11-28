@@ -57,6 +57,13 @@ Run the test suite:
 ./bin/test.sh
 ```
 
+## ToDos
+
+This repository is currently active in development.
+Don't use it yet.
+
+* Better install script with `--help`
+
 [build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
 [build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
 [coverage-image]: https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg
