@@ -25,6 +25,7 @@ class Segment(object):
     @property
     def id(self):
         """The identifier of the segment."""
+
         return self.__id
 
     @property
