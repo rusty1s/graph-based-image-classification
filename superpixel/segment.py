@@ -75,11 +75,25 @@ class Segment(object):
         return cv2.mean(self.image, self.mask)
 
     @staticmethod
+    def __get_neighbor_indices(x, y, width, height):
+        return [(x2, y2) for x2 in range(x-1, x+2)
+                for y2 in range(y-1, y+2)
+                if (0 <= x < width and
+                    0 <= y < height and
+                    (x != x2 or y != y2) and
+                    0 <= x2 < width and
+                    0 <= y2 < height
+                    )]
+
+    @staticmethod
     def generate(image, superpixels):
         superpixels = np.array(superpixels)
         image = np.array(image)
         segment_values = np.unique(superpixels)
         segments = {i: Segment(i) for i in segment_values}
+
+        w = len(superpixels[0])
+        h = len(superpixels)
 
         for y, row in enumerate(superpixels):
             for x, value in enumerate(row):
@@ -92,20 +106,14 @@ class Segment(object):
                 s.__count += 1
 
                 # calculate neighbors
-                # s.__neighbors.add(superpixels[y-1][x-1])
-                # s.__neighbors.add(superpixels[y-1][x])
-                # s.__neighbors.add(superpixels[y-1][x+1])
-                # s.__neighbors.add(superpixels[y][x-1])
-                # s.__neighbors.add(superpixels[y][x+1])
-                # s.__neighbors.add(superpixels[y+1][x-1])
-                # s.__neighbors.add(superpixels[y+1][x])
-                # s.__neighbors.add(superpixels[y+1][x+1])
+                for neighbor in Segment.__get_neighbor_indices(x, y, w, h):
+                    s.neighbors.add(superpixels[neighbor[1]][neighbor[0]])
 
         for index in segments:
             s = segments[index]
 
             # remove itself from neighborhood
-            # s.__neighbors.remove(index)
+            s.neighbors.discard(index)
 
             slice_x = slice(s.left, s.right + 1)
             slice_y = slice(s.top, s.bottom + 1)
