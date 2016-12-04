@@ -27,6 +27,9 @@ def test_generate():
 def test_segment_1():
     segment = Segment.generate(image, superpixels)[1]
 
+    assert_equal(segment.id, 1)
+    assert_equal(segment.order, 0)
+
     assert_equal(segment.left, 0)
     assert_equal(segment.top, 0)
     assert_equal(segment.right, 3)
@@ -56,6 +59,9 @@ def test_segment_1():
 def test_segment_2():
     segment = Segment.generate(image, superpixels)[2]
 
+    assert_equal(segment.id, 2)
+    assert_equal(segment.order, 1)
+
     assert_equal(segment.left, 2)
     assert_equal(segment.top, 0)
     assert_equal(segment.right, 2)
@@ -80,6 +86,9 @@ def test_segment_2():
 
 def test_segment_3():
     segment = Segment.generate(image, superpixels)[3]
+
+    assert_equal(segment.id, 3)
+    assert_equal(segment.order, 2)
 
     assert_equal(segment.left, 0)
     assert_equal(segment.top, 2)
@@ -107,6 +116,10 @@ def test_segment_3():
 
 def test_segment_4():
     segment = Segment.generate(image, superpixels)[4]
+
+
+    assert_equal(segment.id, 4)
+    assert_equal(segment.order, 3)
 
     assert_equal(segment.left, 1)
     assert_equal(segment.top, 3)

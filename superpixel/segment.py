@@ -10,6 +10,7 @@ import pickle
 class Segment(object):
     def __init__(self, id):
         self.__id = id
+        self.__order = None
 
         self.__left = float('inf')
         self.__top = float('inf')
@@ -24,9 +25,17 @@ class Segment(object):
 
     @property
     def id(self):
-        """The identifier of the segment."""
+        """The identifier of the segment. Corresponds to the the value in the
+        superpixel representation."""
 
         return self.__id
+
+    @property
+    def order(self):
+        """The order of the segment. Corresponds to the scan line order of the
+        segments."""
+
+        return self.__order
 
     @property
     def left(self):
@@ -105,7 +114,8 @@ class Segment(object):
     @staticmethod
     def generate(image, superpixels):
         """A dictionary of all the segments found in the superpixel
-        presentation with its identifier as key."""
+        presentation with its identifier in the superpixel representation as
+        the key."""
 
         # convert arguments to 2D numpy arrays
         superpixels = np.array(superpixels)
@@ -119,11 +129,18 @@ class Segment(object):
         width = len(superpixels[0])
         height = len(superpixels)
 
+        order = 0
+
         # iterate over each pixel once and collect as much information about
         # the segments
         for y, row in enumerate(superpixels):
             for x, value in enumerate(row):
                 s = segments[value]
+
+                # set the order and increment (if not already set)
+                if s.order is None:
+                    s.__order = order
+                    order += 1
 
                 # compute bounding box
                 s.__left = min(s.left, x)
@@ -140,11 +157,9 @@ class Segment(object):
                 s.neighbors.update(superpixels[slice_y, slice_x].flatten())
 
         # iterate over each segment once and extend the collection information
-        for id in segments:
-            s = segments[id]
-
+        for s in segments.values():
             # remove itself from neighborhood
-            s.neighbors.discard(id)
+            s.neighbors.discard(s.id)
 
             # slice the image to the segments bounding box
             slice_x = slice(s.left, s.right + 1)
