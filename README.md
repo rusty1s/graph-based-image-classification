@@ -42,6 +42,14 @@ For configuration and usage of the install script, run:
 ./bin/install.sh --help
 ```
 
+To install Miniconda, run
+
+```bash
+./bin/conda.sh
+```
+
+and add `~/.miniconda/bin` to your path.
+
 ### Tested Versions
 
 * **TensorFlow**: 0.11.0
