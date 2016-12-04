@@ -25,6 +25,14 @@ To install the additional required python packages, run:
 pip install -r requirements.txt
 ```
 
+### Tested Versions
+
+* **TensorFlow**: 0.11.0
+* **nauty**: 26r7
+* **pynauty**: 0.6.0
+* **OpenCV**: 3.1.0
+
+
 ##  Miniconda
 
 If you have [Miniconda
@@ -51,13 +59,6 @@ To install Miniconda, run
 ```
 
 and add `~/.miniconda/bin` to your path.
-
-### Tested Versions
-
-* **TensorFlow**: 0.11.0
-* **nauty**: 26r7
-* **pynauty**: 0.6.0
-* **OpenCV**: 3.1.0
 
 ## Running tests
 
