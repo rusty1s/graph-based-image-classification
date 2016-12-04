@@ -27,6 +27,7 @@ def test_generate():
 def test_immutability():
     segment = Segment.generate(image, superpixels)[1]
 
+    # try to change private variable
     segment.__id = 4
     assert_equal(segment.id, 1)
 
