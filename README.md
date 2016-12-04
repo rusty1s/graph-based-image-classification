@@ -32,8 +32,7 @@ pip install -r requirements.txt
 * **pynauty**: 0.6.0
 * **OpenCV**: 3.1.0
 
-
-##  Miniconda
+## Miniconda
 
 If you have [Miniconda
 installed](http://conda.pydata.org/docs/install/quick.html#miniconda-quick-install-requirements),
