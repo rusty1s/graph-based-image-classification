@@ -38,6 +38,7 @@ def test_segment_1():
     assert_equal(segment.height, 3)
 
     assert_equal(segment.count, 8)
+    assert_equal(segment.covered, 8.0/16.0)
 
     testing.assert_array_equal(segment.image, [
         [0,   10,  20,  30],
@@ -70,6 +71,7 @@ def test_segment_2():
     assert_equal(segment.height, 1)
 
     assert_equal(segment.count, 1)
+    assert_equal(segment.covered, 1.0/16.0)
 
     testing.assert_array_equal(segment.image, [
         [20]
@@ -98,6 +100,7 @@ def test_segment_3():
     assert_equal(segment.height, 2)
 
     assert_equal(segment.count, 4)
+    assert_equal(segment.covered, 4.0/16.0)
 
     testing.assert_array_equal(segment.image, [
         [80,  90,  100],
@@ -117,7 +120,6 @@ def test_segment_3():
 def test_segment_4():
     segment = Segment.generate(image, superpixels)[4]
 
-
     assert_equal(segment.id, 4)
     assert_equal(segment.order, 3)
 
@@ -129,6 +131,7 @@ def test_segment_4():
     assert_equal(segment.height, 1)
 
     assert_equal(segment.count, 3)
+    assert_equal(segment.covered, 3.0/16.0)
 
     testing.assert_array_equal(segment.image, [
         [130, 140, 150],

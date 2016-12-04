@@ -18,6 +18,8 @@ class Segment(object):
         self.__right = float('-inf')
 
         self.__count = 0
+        self.__covered = None
+
         self.__image = []
         self.__mask = []
 
@@ -66,6 +68,13 @@ class Segment(object):
         """The amount of pixels that are in the segment."""
 
         return self.__count
+
+    @property
+    def covered(self):
+        """The amount of pixels that are in the segment in relation to the
+        amount of pixels in the image."""
+
+        return self.__covered
 
     @property
     def image(self):
@@ -160,6 +169,9 @@ class Segment(object):
         for s in segments.values():
             # remove itself from neighborhood
             s.neighbors.discard(s.id)
+
+            # calculate covered area
+            s.__covered = float(s.count)/(width * height)
 
             # slice the image to the segments bounding box
             slice_x = slice(s.left, s.right + 1)
