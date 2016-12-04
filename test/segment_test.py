@@ -24,6 +24,13 @@ def test_generate():
     assert_equal(len(segments), 4)
 
 
+def test_immutability():
+    segment = Segment.generate(image, superpixels)[1]
+
+    segment.__id = 4
+    assert_equal(segment.id, 1)
+
+
 def test_segment_1():
     segment = Segment.generate(image, superpixels)[1]
 
