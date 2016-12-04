@@ -25,6 +25,8 @@ To install the additional required python packages, run:
 pip install -r requirements.txt
 ```
 
+##  Miniconda
+
 If you have [Miniconda
 installed](http://conda.pydata.org/docs/install/quick.html#miniconda-quick-install-requirements),
 you can simply run
