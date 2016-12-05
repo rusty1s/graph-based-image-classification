@@ -140,7 +140,7 @@ class Cifar10(object):
         """Converts the 1-dimensional data of an image received by CIFAR-10 to
         an actual 3d image."""
 
-        # CIFAR-10 image is encoed as [1024 * red, 1024 * green, 1024 * blue]
+        # A CIFAR-10 image is encoded as [1024*red, 1024*green, 1024*blue]
         # We need to destruct the 3 channels from the data, reshape them to the
         # fit the size of 32x32 pixels and combine them together.
         c_len = int(IMAGE_LENGTH/3)  # channel length = 1024
