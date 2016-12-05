@@ -185,11 +185,19 @@ class Segment(object):
             s.__image = image[slice_y, slice_x]
 
             # compute of the mask
-            sliced_superpixels = superpixels[slice_y, slice_x]
-            s.__mask = np.zeros(sliced_superpixels.shape, dtype=np.uint8)
-            s.__mask[sliced_superpixels == s.id] = 255
+            s.__mask = Segment.__compute_mask(superpixels[slice_y, slice_x],
+                                              s.id)
 
         return segments
+
+    @staticmethod
+    def __compute_mask(image, value):
+        """Returns the mask of an image, where everything not equals `value` is
+        0 and everything equals `value` is 255."""
+
+        mask = np.zeros(image.shape, dtype=np.uint8)
+        mask[image == value] = 255
+        return mask
 
     @staticmethod
     def write(segments, image_name, suffix=None):
