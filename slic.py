@@ -29,7 +29,7 @@ def get_arguments():
     parser.add_argument('-i', '--image', required=True, type=str,
                         help='Path to the image')
     parser.add_argument('--segments', type=int, default=SEGMENTS,
-            help='Number of segments. Default: 100')
+                        help='Number of segments. Default: 100')
     parser.add_argument('--compactness', type=float, default=COMPACTNESS,
                         help='Balances color proximity and space proximity. '
                         'A higher value gives more weight to space proximity '

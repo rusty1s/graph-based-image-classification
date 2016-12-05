@@ -17,16 +17,13 @@ except:
 # The CIFAR-10 dataset consists of 60.000 32x32 colour images in 10 classes,
 # with 6.000 images per class. There are 50.000 training images and 10.000 test
 # images.
-# The dataset is divided into five training batches and one test bach, each
+# The dataset is divided into five training batches and one test batch, each
 # with 10.000 images.
 
 IMAGE_WIDTH = 32
 IMAGE_HEIGHT = 32
-NUM_CLASSES = 10
-NUM_TRAIN_IMAGES = 50000
-NUM_TEST_IMAGES = 10000
-BATCH_COUNT = 5
 BATCH_SIZE = 10000
+NUM_TRAIN_BATCHES = 5
 
 # **Classes:**
 # airplane, automobile, bird, cat, deer, dog, frog, horse, ship and truck
@@ -51,7 +48,7 @@ URL = 'http://www.cs.toronto.edu/~kriz/' + TAR_NAME
 # 2. **labels** -- a list of 10.000 numbers in the range of 0-9. The number at
 #    index i indicates the label of the ith image in the array `data`.
 
-IMAGE_LENGTH = 3072
+IMAGE_LENGTH = IMAGE_WIDTH * IMAGE_HEIGHT * 3
 
 # The dataset contains another file, called `batches.meta`. It too contains a
 # Python dictionary object. It has the following entries:
@@ -110,13 +107,16 @@ class Cifar10(object):
         print('Moving CIFAR-10 dataset to {}.'.format(self.dir))
 
         os.makedirs(self.dir)
-        shutil.move(extracted_dir, self.dir)
+        os.rename(extracted_dir, self.dir)
 
         # remove tar file
         os.remove(TAR_NAME)
 
     def get_train_batch(self, batch_num):
-        if not 0 <= batch_num < BATCH_COUNT:
+        """Gets the nth training batch (0 <= n < 5) and returns a dictionary
+        containing 10.000th labels and 3d images."""
+
+        if not 0 <= batch_num < NUM_TRAIN_BATCHES:
             raise ValueError('Invalid batch number. Batch number must be '
                              'between 0 and 4.')
 
@@ -125,22 +125,35 @@ class Cifar10(object):
 
         with open(path, 'rb') as f:
             # encode to latin1 to avoid `UnicodeDecodeError`
-            batch = pickle.load(f, encoding='latin1')
-
-        return batch
+            return self.__convert_batch(pickle.load(f, encoding='latin1'))
 
     def get_test_batch(self):
+        """Gets the test batch and returns a dictionary containing 10.000th
+        labels and 3d images."""
+
         with open(os.path.join(self.dir, 'test_batch'), 'rb') as f:
             # encode to latin1 to avoid `UnicodeDecodeError`
-            batch = pickle.load(f, encoding='latin1')
+            return self.__convert_batch(pickle.load(f, encoding='latin1'))
 
-        return batch
+    def __convert_batch(self, batch):
+        """Converts a CIFAR-10 batch to a dictionary containing labels and 3d
+        images."""
 
-    def data_to_image(self, data):
+        # TODO: this sucks
+        images = []
+        for data in batch['data']:
+            images.append(self.__data_to_image(data))
+
+        return {
+            'labels': batch['labels'],
+            'images': np.array(images),
+        }
+
+    def __data_to_image(self, data):
         """Converts the 1-dimensional data of an image received by CIFAR-10 to
         an actual 3d image."""
 
-        # A CIFAR-10 image is encoded as [1024*red, 1024*green, 1024*blue]
+        # A CIFAR-10 image is encoded as [1024*red, 1024*green, 1024*blue].
         # We need to destruct the 3 channels from the data, reshape them to the
         # fit the size of 32x32 pixels and combine them together.
         c_len = int(IMAGE_LENGTH/3)  # channel length = 1024
@@ -157,14 +170,9 @@ class Cifar10(object):
         Images go to its corresponding label directory and are named
         incrementally."""
 
-        # remove already saved train images
+        # remove already saved images
         try:
             shutil.rmtree(os.path.join(self.dir, 'train'))
-        except OSError:
-            pass
-
-        # remove already saved test images
-        try:
             shutil.rmtree(os.path.join(self.dir, 'test'))
         except OSError:
             pass
@@ -176,37 +184,31 @@ class Cifar10(object):
 
         # create two dictionaries that save the current file index for each
         # label
-        train_numbers = {label: 0 for label in self.label_names}
-        test_numbers = {label: 0 for label in self.label_names}
+        train_indices = {label: 0 for label in self.label_names}
+        test_indices = {label: 0 for label in self.label_names}
 
+        # save the train images to `self.dir/train`
+        for batch_num in range(0, NUM_TRAIN_BATCHES):
+            self.__save_batch(self.get_train_batch(batch_num), train_indices,
+                              os.path.join(self.dir, 'train'))
+
+        # save the test images to `self.dir/test`
         test_batch = self.get_test_batch()
-        for i in range(0, NUM_TEST_IMAGES):
-            label = self.label_names[test_batch['labels'][i]]
-            image_data = test_batch['data'][i]
+        self.__save_batch(self.get_test_batch(), test_indices,
+                          os.path.join(self.dir, 'test'))
 
-            filename = '{}.png'.format(test_numbers[label])
-            file = os.path.join(self.dir, 'test', label, filename)
+    def __save_batch(self, batch, indices, dir):
+        """Saves all images of a batch to the `dir` directory. Images go to its
+        corresponding label directory and are named incrementally."""
 
-            image = self.data_to_image(image_data)
+        for i in range(0, BATCH_SIZE):
+            label = self.label_names[batch['labels'][i]]
+            image = batch['images'][i]
+
+            filename = '{}.png'.format(indices[label])
+            file = os.path.join(dir, label, filename)
 
             cv2.imwrite(file, image)
 
-            # increment the filename
-            test_numbers[label] += 1
-
-        for batch_num in range(0, BATCH_COUNT):
-            train_batch = self.get_train_batch(batch_num)
-
-            for i in range(0, BATCH_SIZE):
-                label = self.label_names[train_batch['labels'][i]]
-                image_data = train_batch['data'][i]
-
-                filename = '{}.png'.format(train_numbers[label])
-                file = os.path.join(self.dir, 'train', label, filename)
-
-                image = self.data_to_image(image_data)
-
-                cv2.imwrite(file, image)
-
-                # increment the filename
-                train_numbers[label] += 1
+            # increment the label index
+            indices[label] += 1
