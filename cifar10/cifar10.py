@@ -139,14 +139,12 @@ class Cifar10(object):
     def data_to_image(self, data):
         # convert the image_data to an actual 3d-array image
         c_len = int(IMAGE_SIZE/3)  # channel length
-        w = IMAGE_WIDTH
-        h = IMAGE_HEIGHT
 
-        red = data[0:c_len].reshape(h, w)
-        green = data[c_len:2 * c_len].reshape(h, w)
-        blue = data[2 * c_len:3 * c_len].reshape(h, w)
+        red = data[0:c_len]
+        green = data[c_len:2 * c_len]
+        blue = data[2 * c_len:3 * c_len]
 
-        return np.dstack((red, green, blue))
+        return np.dstack((red, green, blue)).reshape(IMAGE_WIDTH, IMAGE_HEIGHT)
 
     def save_images(self):
         """Saves all images to the `self.dir` directory.
