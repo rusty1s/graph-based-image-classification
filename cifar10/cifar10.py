@@ -137,7 +137,8 @@ class Cifar10(object):
         return batch
 
     def data_to_image(self, data):
-        # convert the image_data to an actual 3d-array image
+        """Converts the 1d data of an image to an actual 3d array."""
+
         c_len = int(IMAGE_SIZE/3)  # channel length
 
         red = data[0:c_len]
