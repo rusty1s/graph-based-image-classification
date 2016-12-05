@@ -4,7 +4,7 @@
 import cv2
 import numpy as np
 from scipy import ndimage
-import pickle
+import cPickle
 
 
 class Segment(object):
@@ -195,7 +195,7 @@ class Segment(object):
         file_name = '{}_segments{}.pkl'.format(image_name, suffix)
 
         with open(file_name, 'wb') as output:
-            pickle.dump(segments, output, -1)
+            cPickle.dump(segments, output, -1)
 
     @staticmethod
     def read(file_name):
@@ -203,7 +203,7 @@ class Segment(object):
         shouldn't have a file extension."""
 
         with open('{}.pkl'.format(file_name), 'rb') as input:
-            return pickle.load(input)
+            return cPickle.load(input)
 
     @staticmethod
     def __get_1x1_slice(index, maximum):
