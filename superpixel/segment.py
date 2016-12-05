@@ -152,9 +152,7 @@ class Segment(object):
                 s = segments[value]
 
                 # set the order and increment (if not already set)
-                if s.order is None:
-                    s.__order = order
-                    order += 1
+                order = s.__compute_order(order)
 
                 # compute bounding box
                 s.__left = min(s.left, x)
@@ -191,15 +189,6 @@ class Segment(object):
         return segments
 
     @staticmethod
-    def __compute_mask(image, value):
-        """Returns the mask of an image, where everything not equals `value` is
-        0 and everything equals `value` is 255."""
-
-        mask = np.zeros(image.shape, dtype=np.uint8)
-        mask[image == value] = 255
-        return mask
-
-    @staticmethod
     def write(segments, image_name, suffix=None):
         """Writes the generated dictionary of segments to disk."""
 
@@ -220,4 +209,26 @@ class Segment(object):
 
     @staticmethod
     def __get_1x1_slice(index, maximum):
+        """Returns the 1x1 neighborhood of `index` exlucding values lower than
+        0 and greater than or equal to maximum."""
+
         return slice(max(0, index - 1), min(maximum, index + 2))
+
+    @staticmethod
+    def __compute_mask(image, value):
+        """Returns the mask of an image, where everything not equals `value` is
+        0 and everything equals `value` is 255."""
+
+        mask = np.zeros(image.shape, dtype=np.uint8)
+        mask[image == value] = 255
+        return mask
+
+    def __compute_order(self, order):
+        """Sets the order of the segment if not already defined and increments
+        it."""
+
+        if self.order is None:
+            self.__order = order
+            return order + 1
+
+        return order
