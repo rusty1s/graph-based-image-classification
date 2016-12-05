@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import shutil
 import requests
 from clint.textui import colored, progress
 import tarfile
@@ -107,7 +108,7 @@ class Cifar10(object):
         print('Moving CIFAR-10 dataset to {}.'.format(self.dir))
 
         os.makedirs(self.dir)
-        os.rename(extracted_dir, self.dir)
+        shutil.move(extracted_dir, self.dir)
 
         # remove tar file
         os.remove(TAR_NAME)
@@ -122,16 +123,39 @@ class Cifar10(object):
 
         with open(path, 'rb') as f:
             # encode to latin1 to avoid `UnicodeDecodeError`
-            dict = pickle.load(f, encoding='latin1')
+            batch = pickle.load(f, encoding='latin1')
 
-        return dict
+        return batch
 
     def get_test_batch(self):
-        filename = 'data_batch_{}'.format(batch_num + 1)
-        path = os.path.join(self.dir, filename)
-
         with open(os.path.join(self.dir, 'test_batch'), 'rb') as f:
             # encode to latin1 to avoid `UnicodeDecodeError`
-            dict = pickle.load(f, encoding='latin1')
+            batch = pickle.load(f, encoding='latin1')
 
-        return dict
+        return batch
+
+    def save_images(self):
+        """Saves all images to the `self.dir` directory.
+        Train images go to `self.dir/train`. Test images go to `self.dir/test`.
+        Images go to its corresponding label directory and are named
+        incrementally."""
+
+        try:
+            shutil.rmtree(os.path.join(self.dir, 'test'))
+        except OSError:
+            pass
+
+        test_batch = self.get_test_batch()
+        test_numbers = {label: 0 for label in self.label_names}
+
+        for label in self.label_names:
+            os.makedirs(os.path.join(self.dir, 'test', label))
+
+        for i in range(0, 5):
+            label = self.label_names[test_batch['labels'][i]]
+            filename = '{}.png'.format(test_numbers[label])
+            file = os.path.join(self.dir, 'test', label, filename)
+            test_numbers[label] += 1
+            image = test_batch['data'][i]
+            print(file)
+            print(image)
