@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import os
 import requests
-from clint.textui import progress
+from clint.textui import colored, progress
 import tarfile
 
 # load the correct pickle implementation for different python versions
@@ -79,8 +79,10 @@ class Cifar10(object):
         `self.dir`."""
 
         if os.path.exists(self.dir):
-            print('{} already exists. Does it contain the CIFAR-10 dataset? '
-                  'Skip downloading.'.format(self.dir))
+            print(colored.red('Abort downloading: '
+                  '{} already exists.'.format(self.dir)))
+            print('Everything is fine if {} already contains the CIFAR-10 '
+                  'dataset.'.format(self.dir))
             return
 
         print('Downloading CIFAR-10 dataset. This can take a while...')
@@ -125,6 +127,9 @@ class Cifar10(object):
         return dict
 
     def get_test_batch(self):
+        filename = 'data_batch_{}'.format(batch_num + 1)
+        path = os.path.join(self.dir, filename)
+
         with open(os.path.join(self.dir, 'test_batch'), 'rb') as f:
             # encode to latin1 to avoid `UnicodeDecodeError`
             dict = pickle.load(f, encoding='latin1')
