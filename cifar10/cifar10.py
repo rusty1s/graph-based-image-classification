@@ -98,6 +98,10 @@ class Cifar10(object):
                     f.write(chunk)
                     f.flush()
 
+        # Extract tar.gz to `self.dir`.
+        self.__extract()
+
+    def __extract(self):
         print('Unpacking CIFAR-10 dataset.')
 
         with tarfile.open(TAR_NAME, 'r:gz') as tar:
@@ -109,7 +113,7 @@ class Cifar10(object):
         os.makedirs(self.dir)
         os.rename(extracted_dir, self.dir)
 
-        # remove tar file
+        # Remove tar file.
         os.remove(TAR_NAME)
 
     def get_train_batch(self, batch_num):
@@ -185,7 +189,7 @@ class Cifar10(object):
         # create two dictionaries that save the current file index for each
         # label
         train_indices = {label: 0 for label in self.label_names}
-        test_indices = {label: 0 for label in self.label_names}
+        test_indices = train_indices.copy()
 
         # save the train images to `self.dir/train`
         for batch_num in range(0, NUM_TRAIN_BATCHES):
