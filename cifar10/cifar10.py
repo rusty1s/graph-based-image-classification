@@ -70,7 +70,7 @@ class Cifar10(object):
     @property
     def label_names(self):
         """A 10-element list which gives meaningful names to the numeric
-        labels. For exmaple, `label_names[0] == 'airplane'`."""
+        labels, e.g. `label_names[0] == 'airplane'`."""
 
         return self.__label_names
 
@@ -110,7 +110,7 @@ class Cifar10(object):
         # remove tar file
         os.remove(TAR_NAME)
 
-    def get_batch(self, batch_num):
+    def get_training_batch(self, batch_num):
         if not 0 <= batch_num < BATCH_COUNT:
             raise ValueError('Invalid batch number. Batch number must be '
                              'between 0 and 4.')
@@ -119,6 +119,13 @@ class Cifar10(object):
         path = os.path.join(self.dir, filename)
 
         with open(path, 'rb') as f:
+            # encode to latin1 to avoid `UnicodeDecodeError`
+            dict = pickle.load(f, encoding='latin1')
+
+        return dict
+
+    def get_test_batch(self):
+        with open(os.path.join(self.dir, 'test_batch'), 'rb') as f:
             # encode to latin1 to avoid `UnicodeDecodeError`
             dict = pickle.load(f, encoding='latin1')
 
