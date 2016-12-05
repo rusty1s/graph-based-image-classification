@@ -22,6 +22,7 @@ IMAGE_HEIGHT = 32
 NUM_CLASSES = 10
 NUM_TRAIN_IMAGES = 50000
 NUM_TEST_IMAGES = 10000
+BATCH_COUNT = 5
 BATCH_SIZE = 10000
 
 # **Classes:**
@@ -60,15 +61,26 @@ class Cifar10(object):
     def __init__(self, dir):
         self.dir = dir
 
-        self.download(dir)
+        self.download()
 
-    def download(self, dir):
-        """Downloads the CIFAR-10 dataset, extracts it and moves it to `dir`.
-        """
+        # set the label_names by reading `batches.meta`
+        with open(os.path.join(self.dir, 'batches.meta'), 'rb') as f:
+            self.__label_names = pickle.load(f).label_names
 
-        if os.path.exists(dir):
-            print('Specified directory already exists. Does it contain the '
-                  'CIFAR-10 dataset? Skip downloading.')
+    @property
+    def label_names(self):
+        """A 10-element list which gives meaningful names to the numeric
+        labels. For exmaple, `label_names[0] == 'airplane'`."""
+
+        return self.__label_names
+
+    def download(self):
+        """Downloads the CIFAR-10 dataset, extracts it and moves it to
+        `self.dir`."""
+
+        if os.path.exists(self.dir):
+            print('{} already exists. Does it contain the CIFAR-10 dataset? '
+                  'Skip downloading.'.format(self.dir))
             return
 
         print('Downloading CIFAR-10 dataset. This can take a while...')
@@ -90,10 +102,24 @@ class Cifar10(object):
             extracted_dir = tar.getnames()[0]
             tar.extractall()
 
-        print('Moving CIFAR-10 dataset to {}.'.format(dir))
+        print('Moving CIFAR-10 dataset to {}.'.format(self.dir))
 
-        os.makedirs(dir)
-        os.rename(extracted_dir, dir)
+        os.makedirs(self.dir)
+        os.rename(extracted_dir, self.dir)
 
         # remove tar file
         os.remove(TAR_NAME)
+
+    def get_batch(self, batch_num):
+        if not 0 <= batch_num < BATCH_COUNT:
+            raise ValueError('Invalid batch number. Batch number must be '
+                             'between 0 and 4.')
+
+        filename = 'data_batch_{}'.format(batch_num + 1)
+        path = os.path.join(self.dir, filename)
+
+        with open(path, 'rb') as f:
+            # encode to latin1 to avoid `UnicodeDecodeError`
+            dict = pickle.load(f, encoding='latin1')
+
+        return dict
