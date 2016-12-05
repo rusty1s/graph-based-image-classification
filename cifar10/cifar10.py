@@ -65,7 +65,7 @@ class Cifar10(object):
 
         # set the label_names by reading `batches.meta`
         with open(os.path.join(self.dir, 'batches.meta'), 'rb') as f:
-            self.__label_names = pickle.load(f).label_names
+            self.__label_names = pickle.load(f)['label_names']
 
     @property
     def label_names(self):
