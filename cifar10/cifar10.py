@@ -51,7 +51,7 @@ URL = 'http://www.cs.toronto.edu/~kriz/' + TAR_NAME
 # 2. **labels** -- a list of 10.000 numbers in the range of 0-9. The number at
 #    index i indicates the label of the ith image in the array `data`.
 
-IMAGE_SIZE = 3072
+IMAGE_LENGTH = 3072
 
 # The dataset contains another file, called `batches.meta`. It too contains a
 # Python dictionary object. It has the following entries:
@@ -137,15 +137,19 @@ class Cifar10(object):
         return batch
 
     def data_to_image(self, data):
-        """Converts the 1d data of an image to an actual 3d array."""
+        """Converts the 1-dimensional data of an image received by CIFAR-10 to
+        an actual 3d image."""
 
-        c_len = int(IMAGE_SIZE/3)  # channel length
+        # CIFAR-10 image is encoed as [1024 * red, 1024 * green, 1024 * blue]
+        # We need to destruct the 3 channels from the data, reshape them to the
+        # fit the size of 32x32 pixels and combine them together.
+        c_len = int(IMAGE_LENGTH/3)  # channel length = 1024
 
-        red = data[0:c_len]
-        green = data[c_len:2 * c_len]
-        blue = data[2 * c_len:3 * c_len]
+        red = data[0:c_len].reshape(IMAGE_HEIGHT, IMAGE_WIDTH)
+        green = data[c_len:2 * c_len].reshape(IMAGE_HEIGHT, IMAGE_WIDTH)
+        blue = data[2 * c_len:3 * c_len].reshape(IMAGE_HEIGHT, IMAGE_WIDTH)
 
-        return np.dstack((red, green, blue)).reshape(IMAGE_WIDTH, IMAGE_HEIGHT)
+        return np.dstack((red, green, blue))
 
     def save_images(self):
         """Saves all images to the `self.dir` directory.
