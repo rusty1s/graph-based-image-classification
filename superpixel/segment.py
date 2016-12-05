@@ -4,7 +4,12 @@
 import cv2
 import numpy as np
 from scipy import ndimage
-import cPickle
+
+# load the correct pickle implementation for different python versions
+try:
+    import cPickle as pickle
+except:
+    import _pickle as pickle
 
 
 class Segment(object):
@@ -195,7 +200,7 @@ class Segment(object):
         file_name = '{}_segments{}.pkl'.format(image_name, suffix)
 
         with open(file_name, 'wb') as output:
-            cPickle.dump(segments, output, -1)
+            pickle.dump(segments, output, -1)
 
     @staticmethod
     def read(file_name):
@@ -203,7 +208,7 @@ class Segment(object):
         shouldn't have a file extension."""
 
         with open('{}.pkl'.format(file_name), 'rb') as input:
-            return cPickle.load(input)
+            return pickle.load(input)
 
     @staticmethod
     def __get_1x1_slice(index, maximum):
