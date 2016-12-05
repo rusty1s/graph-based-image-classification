@@ -29,8 +29,7 @@ def main():
 
     args = get_arguments()
 
-    cifar = Cifar10(args.output)
-    cifar.save_images()
+    Cifar10(args.output).save_images()
 
 
 # only run if the script is executed directly
