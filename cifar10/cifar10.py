@@ -31,7 +31,8 @@ BATCH_SIZE = 10000
 # automobiles and trucks. "Automobile" includes sedans, SUVs, things of that
 # sort. "Truck" includes only big trucks. Neither includes pickup trucks.
 
-URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz'
+TAR_NAME = 'cifar-10-python.tar.gz'
+URL = 'http://www.cs.toronto.edu/~kriz/' + TAR_NAME
 
 # The archive contains the files `data_batch_1`, `data_batch_2`, ...,
 # `data_batch_5`, as well as `test_batch`. Each of these files is a Python
@@ -61,15 +62,13 @@ class Cifar10(object):
 
         self.download(dir)
 
-    def __download(self, dir):
+    def download(self, dir):
         """Downloads the CIFAR-10 dataset, extracts it and moves it to `dir`.
         """
 
-        filename = 'cifar-10-python.tar.gz'
-
         if os.path.exists(dir):
-            print('Specified directory already exists. Does it already '
-                  'contain the CIFAR-10 dataset? Skip downloading.')
+            print('Specified directory already exists. Does it contain the '
+                  'CIFAR-10 dataset? Skip downloading.')
             return
 
         print('Downloading CIFAR-10 dataset. This can take a while...')
@@ -77,7 +76,7 @@ class Cifar10(object):
         r = requests.get(URL, stream=True)
 
         # print a pretty progress bar while downloading
-        with open(filename, 'wb') as f:
+        with open(TAR_NAME, 'wb') as f:
             total_length = r.headers.get('content-length')
             for chunk in progress.bar(r.iter_content(chunk_size=1024),
                                       expected_size=(int(total_length)/1024)):
@@ -87,12 +86,14 @@ class Cifar10(object):
 
         print('Unpacking CIFAR-10 dataset.')
 
-        with tarfile.open(filename, 'r:gz') as tar:
+        with tarfile.open(TAR_NAME, 'r:gz') as tar:
             extracted_dir = tar.getnames()[0]
             tar.extractall()
 
-        print('Moving CIFAR-10 dataset to {}.'.format(self.dir))
+        print('Moving CIFAR-10 dataset to {}.'.format(dir))
 
-        os.makedirs(self.dir)
-        os.rename(extracted_dir, self.dir)
-        os.remove(filename)
+        os.makedirs(dir)
+        os.rename(extracted_dir, dir)
+
+        # remove tar file
+        os.remove(TAR_NAME)
