@@ -29,18 +29,21 @@ def get_arguments():
     parser.add_argument('-i', '--image', required=True, type=str,
                         help='Path to the image')
     parser.add_argument('--segments', type=int, default=SEGMENTS,
-                        help='Number of segments')
+            help='Number of segments. Default: 100')
     parser.add_argument('--compactness', type=float, default=COMPACTNESS,
                         help='Balances color proximity and space proximity. '
                         'A higher value gives more weight to space proximity '
-                        'making superpixel shapes more square/cubic.')
+                        'making superpixel shapes more square/cubic. Default: '
+                        '1.0')
     parser.add_argument('--max-iterations', type=int, default=MAX_ITERATIONS,
-                        help='Maximum number of iterations of k-means')
+                        help='Maximum number of iterations of k-means. '
+                        'Default: 10')
     parser.add_argument('--sigma', type=float, default=SIGMA,
                         help='Width of gaussian smoothing kernel for pre-'
-                        'processing')
+                        'processing. Default: 0.0')
     parser.add_argument('-o', '--output', type=str,
-                        help='Path and name to the superpixel segmented image')
+                        help='Path and name to the superpixel segmented image.'
+                        ' Default: <image_path>/<image_name>-super.<ext>')
 
     args = parser.parse_args()
 
