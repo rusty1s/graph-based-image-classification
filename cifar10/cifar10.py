@@ -102,13 +102,11 @@ class Cifar10(object):
         self.__extract()
 
     def __extract(self):
-        print('Unpacking CIFAR-10 dataset.')
+        """Unpacks the tar.gz and moves it to `self.dir`."""
 
         with tarfile.open(TAR_NAME, 'r:gz') as tar:
             extracted_dir = tar.getnames()[0]
             tar.extractall()
-
-        print('Moving CIFAR-10 dataset to {}.'.format(self.dir))
 
         os.makedirs(self.dir)
         os.rename(extracted_dir, self.dir)
