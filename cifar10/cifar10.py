@@ -5,6 +5,8 @@ import shutil
 import requests
 from clint.textui import colored, progress
 import tarfile
+import cv2
+import numpy as np
 
 # load the correct pickle implementation for different python versions
 try:
@@ -113,7 +115,7 @@ class Cifar10(object):
         # remove tar file
         os.remove(TAR_NAME)
 
-    def get_training_batch(self, batch_num):
+    def get_train_batch(self, batch_num):
         if not 0 <= batch_num < BATCH_COUNT:
             raise ValueError('Invalid batch number. Batch number must be '
                              'between 0 and 4.')
@@ -134,28 +136,73 @@ class Cifar10(object):
 
         return batch
 
+    def data_to_image(self, data):
+        # convert the image_data to an actual 3d-array image
+        c_len = int(IMAGE_SIZE/3)  # channel length
+        w = IMAGE_WIDTH
+        h = IMAGE_HEIGHT
+
+        red = data[0:c_len].reshape(h, w)
+        green = data[c_len:2 * c_len].reshape(h, w)
+        blue = data[2 * c_len:3 * c_len].reshape(h, w)
+
+        return np.dstack((red, green, blue))
+
     def save_images(self):
         """Saves all images to the `self.dir` directory.
         Train images go to `self.dir/train`. Test images go to `self.dir/test`.
         Images go to its corresponding label directory and are named
         incrementally."""
 
+        # remove already saved train images
+        try:
+            shutil.rmtree(os.path.join(self.dir, 'train'))
+        except OSError:
+            pass
+
+        # remove already saved test images
         try:
             shutil.rmtree(os.path.join(self.dir, 'test'))
         except OSError:
             pass
 
-        test_batch = self.get_test_batch()
-        test_numbers = {label: 0 for label in self.label_names}
-
+        # create the necessary directories
         for label in self.label_names:
+            os.makedirs(os.path.join(self.dir, 'train', label))
             os.makedirs(os.path.join(self.dir, 'test', label))
 
-        for i in range(0, 5):
+        # create to dictionaries that save the current filename for each label
+        train_numbers = {label: 0 for label in self.label_names}
+        test_numbers = {label: 0 for label in self.label_names}
+
+        test_batch = self.get_test_batch()
+        for i in range(0, NUM_TEST_IMAGES):
             label = self.label_names[test_batch['labels'][i]]
+            image_data = test_batch['data'][i]
+
             filename = '{}.png'.format(test_numbers[label])
             file = os.path.join(self.dir, 'test', label, filename)
+
+            image = self.data_to_image(image_data)
+
+            cv2.imwrite(file, image)
+
+            # increment the filename
             test_numbers[label] += 1
-            image = test_batch['data'][i]
-            print(file)
-            print(image)
+
+        for batch_num in range(0, BATCH_COUNT):
+            train_batch = self.get_train_batch(batch_num)
+
+            for i in range(0, BATCH_SIZE):
+                label = self.label_names[train_batch['labels'][i]]
+                image_data = train_batch['data'][i]
+
+                filename = '{}.png'.format(train_numbers[label])
+                file = os.path.join(self.dir, 'train', label, filename)
+
+                image = self.data_to_image(image_data)
+
+                cv2.imwrite(file, image)
+
+                # increment the filename
+                train_numbers[label] += 1
