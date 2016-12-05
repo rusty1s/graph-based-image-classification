@@ -59,17 +59,17 @@ class Cifar10(object):
     def __init__(self, dir):
         self.dir = dir
 
-        self.download()
+        self.download(dir)
 
-    def download(self):
-        """Downloads the CIFAR-10 dataset, extracts it and moves it to
-        `self.dir`."""
+    def __download(self, dir):
+        """Downloads the CIFAR-10 dataset, extracts it and moves it to `dir`.
+        """
 
         filename = 'cifar-10-python.tar.gz'
 
-        if os.path.exists(self.dir):
-            print('CIFAR-10 dataset found at specified path. '
-                  'Skip downloading.')
+        if os.path.exists(dir):
+            print('Specified directory already exists. Does it already '
+                  'contain the CIFAR-10 dataset? Skip downloading.')
             return
 
         print('Downloading CIFAR-10 dataset. This can take a while...')
