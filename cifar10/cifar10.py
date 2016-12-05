@@ -174,7 +174,8 @@ class Cifar10(object):
             os.makedirs(os.path.join(self.dir, 'train', label))
             os.makedirs(os.path.join(self.dir, 'test', label))
 
-        # create to dictionaries that save the current filename for each label
+        # create two dictionaries that save the current file index for each
+        # label
         train_numbers = {label: 0 for label in self.label_names}
         test_numbers = {label: 0 for label in self.label_names}
 
