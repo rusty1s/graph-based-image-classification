@@ -59,6 +59,7 @@ IMAGE_LENGTH = IMAGE_WIDTH * IMAGE_HEIGHT * 3
 
 class Cifar10(object):
     def __init__(self, dir):
+        # TODO: validate dir (can exist!)
         self.dir = dir
 
         self.download()
@@ -173,6 +174,7 @@ class Cifar10(object):
         incrementally."""
 
         # remove already saved images
+        # TODO: better abort if dirs exists
         try:
             shutil.rmtree(os.path.join(self.dir, 'train'))
             shutil.rmtree(os.path.join(self.dir, 'test'))
