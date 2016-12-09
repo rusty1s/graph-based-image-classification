@@ -4,7 +4,9 @@ from scipy import ndimage
 
 
 class Superpixel(object):
-    def __init__(self, id=None, order=None, left=0, top=0, neighbors=set(),
+    """Data class that holds all the information of a single superpixel."""
+
+    def __init__(self, id=None, order=None, left=0, top=0, neighbors=None,
                  image=np.empty((0, 0, 3), dtype=np.float),
                  mask=np.empty((0, 0, 1), dtype=np.uint8)):
 
@@ -22,7 +24,7 @@ class Superpixel(object):
         self.top = top
 
         # The set of spatial neighbors of the superpixel saved by their id.
-        self.neighbors = neighbors
+        self.neighbors = set() if neighbors is None else neighbors
 
         # The sliced image of the superpixel in the shape of its bounding box.
         self.image = image
@@ -42,18 +44,6 @@ class Superpixel(object):
         """The height of the bounding box of the superpixel."""
 
         return self.mask.shape[0]
-
-    @property
-    def right(self):
-        """The right coordinate of the bounding box of the superpixel."""
-
-        return self.left + self.width
-
-    @property
-    def bottom(self):
-        """The bottom coordinate of the bounding box of the superpixel."""
-
-        return self.top + self.height
 
     @property
     def count(self):

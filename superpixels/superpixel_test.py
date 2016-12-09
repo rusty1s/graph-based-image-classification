@@ -1,6 +1,7 @@
 from nose.tools import *
-import numpy as np
 from numpy import testing as np_test
+
+import numpy as np
 
 from .superpixel import Superpixel
 
@@ -20,8 +21,6 @@ def test_non_initialised_superpixel():
 
     assert_equal(superpixel.width, 0)
     assert_equal(superpixel.height, 0)
-    assert_equal(superpixel.right, 0)
-    assert_equal(superpixel.bottom, 0)
     assert_equal(superpixel.count, 0)
 
     assert_true(superpixel.relative_center, (0, 0))
@@ -33,12 +32,12 @@ def test_initialised_superpixel():
     image = np.array([
             [[15.0, 30.0, 45.0], [30.0, 45.0, 60.0], [45.0, 60.0, 75.0]],
             [[60.0, 75.0, 90.0], [75.0, 90.0, 105.0], [90.0, 105.0, 120.0]],
-            ])
+        ])
 
     mask = np.array([
-           [255, 255, 255],
-           [255,  0, 0],
-           ], dtype=np.uint8)
+            [255, 255, 255],
+            [255,  0, 0],
+        ], dtype=np.uint8)
 
     superpixel = Superpixel(id=0, order=1, left=10, top=20,
                             neighbors=set([2, 3]), image=image, mask=mask)
@@ -55,8 +54,6 @@ def test_initialised_superpixel():
 
     assert_equal(superpixel.width, 3)
     assert_equal(superpixel.height, 2)
-    assert_equal(superpixel.right, 13)
-    assert_equal(superpixel.bottom, 22)
     assert_equal(superpixel.count, 4)
 
     assert_equal(superpixel.relative_center, (3.0/4, 1.0/4))
