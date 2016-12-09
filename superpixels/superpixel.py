@@ -56,9 +56,7 @@ class Superpixel(object):
         """The relative center of the superpixel in the superpixels bounding
         box."""
 
-        if self.width == 0:
-            return (0, 0)
-        if self.height == 0:
+        if self.width == 0 or self.height == 0:
             return (0, 0)
 
         # Calculate the center and reverse the order of the resulting tuple.
