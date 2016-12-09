@@ -21,17 +21,16 @@ def save_superpixel_image(image, superpixel_representation, path, name,
     superpixels = extract_superpixels(image, superpixel_representation)
 
     for s in superpixels.values():
-        if show_mean or show_contour:
-            # For the drawing of the mean color and the contour, we need to
-            # calculate the contour of the mask.
-            #
-            # **ATTENTION:** `findContours` modifies the source image, so we
-            # need to copy the mask before passing it to OpenCV.
-            contours = cv2.findContours(np.copy(s.mask), cv2.RETR_LIST,
-                                        cv2.CHAIN_APPROX_NONE)
+        # For the drawing of the mean color and the contour, we need to
+        # calculate the contour of the mask.
+        #
+        # **ATTENTION:** `findContours` modifies the source image, so we
+        # need to copy the mask before passing it to OpenCV.
+        contours = cv2.findContours(np.copy(s.mask), cv2.RETR_LIST,
+                                    cv2.CHAIN_APPROX_NONE)
 
-            # Grab the tuples based on whether we are using OpenCV 2.4 or 3.
-            contours = contours[0] if imutils.is_cv2() else contours[1]
+        # Grab the tuples based on whether we are using OpenCV 2.4 or 3.
+        contours = contours[0] if imutils.is_cv2() else contours[1]
 
         if show_mean:
             # Draw the filled contour with the superpixels mean color.
