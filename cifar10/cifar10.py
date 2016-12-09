@@ -99,10 +99,10 @@ class Cifar10(object):
                     f.flush()
 
         # Extract tar.gz to `self.dir`.
-        self.__extract_and_move()
+        self.__extract_to(self.dir)
 
-    def __extract_and_move(self):
-        """Extracts the tar.gz and moves it to `self.dir`."""
+    def __extract_to(self, dir):
+        """Extracts the tar.gz and moves it to `dir`."""
 
         # Extract
         with tarfile.open(TAR_NAME, 'r:gz') as tar:
@@ -110,8 +110,8 @@ class Cifar10(object):
             tar.extractall()
 
         # Move the extracted dir to the specified location
-        os.makedirs(self.dir)
-        os.rename(extracted_dir, self.dir)
+        os.makedirs(dir)
+        os.rename(extracted_dir, dir)
 
         # Remove tar file.
         os.remove(TAR_NAME)
