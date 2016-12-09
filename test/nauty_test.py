@@ -17,7 +17,7 @@
 #     g.connect_vertex(8, [4, 6, 7, 9])
 #     g.connect_vertex(9, [4, 8])
 
-#     g.set_vertex_coloring([set([0]), set([1, 2, 3, 4, 5]), set([6, 7, 8, 9])])
+#   g.set_vertex_coloring([set([0]), set([1, 2, 3, 4, 5]), set([6, 7, 8, 9])])
 
 #     # test the graph
 #     assert_equal(g.number_of_vertices, 10)

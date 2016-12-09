@@ -12,7 +12,6 @@
 #     import _pickle as pickle
 
 
-
 #     @staticmethod
 #     def generate(image, superpixels):
 #         """A dictionary of all the segments found in the superpixel
@@ -92,14 +91,16 @@
 
 #     @staticmethod
 #     def __get_1x1_slice(index, maximum):
-#         """Returns the 1x1 neighborhood of `index` exlucding values lower than
+#         """Returns the 1x1 neighborhood of `index` exlucding values lower
+#         than
 #         0 and greater than or equal to maximum."""
 
 #         return slice(max(0, index - 1), min(maximum, index + 2))
 
 #     @staticmethod
 #     def __compute_mask(image, value):
-#         """Returns the mask of an image, where everything not equals `value` is
+#         """Returns the mask of an image, where everything not equals `value`
+#         is
 #         0 and everything equals `value` is 255."""
 
 #         mask = np.zeros(image.shape, dtype=np.uint8)
@@ -107,7 +108,8 @@
 #         return mask
 
 #     def __compute_order(self, order):
-#         """Sets the order of the segment if not already defined and increments
+#         """Sets the order of the segment if not already defined and
+#         increments
 #         it."""
 
 #         if self.order is None:
