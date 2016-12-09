@@ -1,8 +1,6 @@
 from nose.tools import *
-from numpy import testing as np_test
 
 import cv2
-import numpy as np
 
 from .slic import (image_to_slic, image_to_slic_zero)
 from .extract import extract_superpixels

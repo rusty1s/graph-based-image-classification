@@ -1,5 +1,4 @@
-""" SLIC superpixel segmentation
-"""
+""" SLIC superpixel segmentation"""
 
 from skimage.segmentation import slic
 
