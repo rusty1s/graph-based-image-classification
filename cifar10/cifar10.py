@@ -59,7 +59,6 @@ IMAGE_LENGTH = IMAGE_WIDTH * IMAGE_HEIGHT * 3
 
 class Cifar10(object):
     def __init__(self, dir):
-        # TODO: validate dir (can exist!)
         self.dir = dir
 
         self.download()
@@ -100,15 +99,17 @@ class Cifar10(object):
                     f.flush()
 
         # Extract tar.gz to `self.dir`.
-        self.__extract()
+        self.__extract_and_move()
 
-    def __extract(self):
-        """Unpacks the tar.gz and moves it to `self.dir`."""
+    def __extract_and_move(self):
+        """Extracts the tar.gz and moves it to `self.dir`."""
 
+        # Extract
         with tarfile.open(TAR_NAME, 'r:gz') as tar:
             extracted_dir = tar.getnames()[0]
             tar.extractall()
 
+        # Move the extracted dir to the specified location
         os.makedirs(self.dir)
         os.rename(extracted_dir, self.dir)
 
@@ -173,18 +174,23 @@ class Cifar10(object):
         Images go to its corresponding label directory and are named
         incrementally."""
 
-        # remove already saved images
-        # TODO: better abort if dirs exists
-        try:
-            shutil.rmtree(os.path.join(self.dir, 'train'))
-            shutil.rmtree(os.path.join(self.dir, 'test'))
-        except OSError:
-            pass
+        train_dir = os.path.join(self.dir, 'train')
+        test_dir = os.path.join(self.dir, 'test')
+
+        if os.path.exists(train_dir):
+            print(colored.red('Abort saving images: '
+                  '{} already exists.'.format(train_dir)))
+            return
+
+        if os.path.exists(test_dir):
+            print(colored.red('Abort saving images: '
+                  '{} already exists.'.format(test_dir)))
+            return
 
         # create the necessary directories
         for label in self.label_names:
-            os.makedirs(os.path.join(self.dir, 'train', label))
-            os.makedirs(os.path.join(self.dir, 'test', label))
+            os.makedirs(os.path.join(train_dir, label))
+            os.makedirs(os.path.join(test_dir, label))
 
         # create two dictionaries that save the current file index for each
         # label
@@ -194,12 +200,12 @@ class Cifar10(object):
         # save the train images to `self.dir/train`
         for batch_num in range(0, NUM_TRAIN_BATCHES):
             self.__save_batch(self.get_train_batch(batch_num), train_indices,
-                              os.path.join(self.dir, 'train'))
+                              train_dir)
 
         # save the test images to `self.dir/test`
         test_batch = self.get_test_batch()
         self.__save_batch(self.get_test_batch(), test_indices,
-                          os.path.join(self.dir, 'test'))
+                          test_dir)
 
     def __save_batch(self, batch, indices, dir):
         """Saves all images of a batch to the `dir` directory. Images go to its
