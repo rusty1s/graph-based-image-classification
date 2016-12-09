@@ -74,13 +74,22 @@ class Cifar10(object):
 
         return self.__label_names
 
+    def __path_exists(self, path, error_message):
+        """Checks if the given path exists and prints an error message if it
+        doesn't."""
+
+        if os.path.exists(path):
+            print(colored.red('Abort {}: {} already exists'
+                              .format(error_message, path)))
+            return True
+        else:
+            return False
+
     def download(self):
         """Downloads the CIFAR-10 dataset, extracts it and moves it to
         `self.dir`."""
 
-        if os.path.exists(self.dir):
-            print(colored.red('Abort downloading: '
-                  '{} already exists.'.format(self.dir)))
+        if self.__path_exists(self.dir, 'downloading'):
             print('Everything is fine if {} already contains the CIFAR-10 '
                   'dataset.'.format(self.dir))
             return
@@ -181,14 +190,10 @@ class Cifar10(object):
         test_dir = os.path.join(dir, 'test')
 
         # Abort if any of the needed directories already exists
-        if os.path.exists(train_dir):
-            print(colored.red('Abort saving images: '
-                  '{} already exists.'.format(train_dir)))
+        if self.__path_exists(train_dir, 'saving images'):
             return
 
-        if os.path.exists(test_dir):
-            print(colored.red('Abort saving images: '
-                  '{} already exists.'.format(test_dir)))
+        if self.__path_exists(test_dir, 'saving images'):
             return
 
         # Create the folder structure.
