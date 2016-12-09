@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 from scipy import ndimage
 
-# load the correct pickle implementation for different python versions
+# Load the correct pickle implementation for different python versions.
 try:
     import cPickle as pickle
 except:
@@ -131,58 +131,58 @@ class Segment(object):
         presentation with its identifier in the superpixel representation as
         the key."""
 
-        # convert arguments to 2D numpy arrays
+        # Convert arguments to 2D numpy arrays.
         superpixels = np.array(superpixels)
         image = np.array(image)
 
-        # create the dictionary of empty segments (except identifier)
+        # Create the dictionary of empty segments (except identifier).
         segment_values = np.unique(superpixels)
         segments = {i: Segment(i) for i in segment_values}
 
-        # image respectively superpixels dimensions
+        # Image respectively superpixels dimensions.
         width = len(superpixels[0])
         height = len(superpixels)
 
         order = 0
 
-        # iterate over each pixel once and collect as much information about
-        # the segments
+        # Iterate over each pixel once and collect as much information about
+        # the segments.
         for y, row in enumerate(superpixels):
             for x, value in enumerate(row):
                 s = segments[value]
 
-                # set the order and increment (if not already set)
+                # Set the order and increment (if not already set).
                 order = s.__compute_order(order)
 
-                # compute bounding box
+                # Compute the bounding box.
                 s.__left = min(s.left, x)
                 s.__top = min(s.top, y)
                 s.__right = max(s.right, x)
                 s.__bottom = max(s.bottom, y)
 
-                # increment pixel count of segment
+                # Increment pixel count of segment.
                 s.__count += 1
 
-                # calculate and update neighbors
+                # Calculate and update neighbors.
                 slice_x = Segment.__get_1x1_slice(x, width)
                 slice_y = Segment.__get_1x1_slice(y, height)
                 s.neighbors.update(superpixels[slice_y, slice_x].flatten())
 
-        # iterate over each segment once and extend the collection information
+        # Iterate over each segment once and extend the collection information.
         for s in segments.values():
-            # remove itself from neighborhood
+            # Remove itself from neighborhood.
             s.neighbors.discard(s.id)
 
-            # calculate covered area
+            # Calculate covered area.
             s.__covered = float(s.count)/(width * height)
 
-            # slice the image to the segments bounding box
+            # Slice the image to the segments bounding box.
             slice_x = slice(s.left, s.right + 1)
             slice_y = slice(s.top, s.bottom + 1)
 
             s.__image = image[slice_y, slice_x]
 
-            # compute of the mask
+            # Compute the mask.
             s.__mask = Segment.__compute_mask(superpixels[slice_y, slice_x],
                                               s.id)
 
@@ -192,7 +192,7 @@ class Segment(object):
     def write(segments, image_name, suffix=None):
         """Writes the generated dictionary of segments to disk."""
 
-        # compute the correct file name
+        # Compute the correct file name.
         suffix = '' if suffix is None else '-{}'.format(suffix)
         file_name = '{}_segments{}.pkl'.format(image_name, suffix)
 

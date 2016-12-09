@@ -8,7 +8,7 @@ import tarfile
 import cv2
 import numpy as np
 
-# load the correct pickle implementation for different python versions
+# Load the correct pickle implementation for different python versions.
 try:
     import cPickle as pickle
 except:
@@ -168,13 +168,17 @@ class Cifar10(object):
 
         return np.dstack((red, green, blue))
 
-    def save_images(self):
-        """Saves all images to the `self.dir` directory. Train images go to
-        `self.dir/train`. Test images go to `self.dir/test`. Images go to its
+    def save_images_to(self, dir=None):
+        """Saves all images to the `dir` directory. Train images go to
+        `dir/train`. Test images go to `dir/test`. Images go to its
         corresponding label directory and are named incrementally."""
 
-        train_dir = os.path.join(self.dir, 'train')
-        test_dir = os.path.join(self.dir, 'test')
+        # Set fallback directory.
+        if dir is None:
+            dir = self.dir
+
+        train_dir = os.path.join(dir, 'train')
+        test_dir = os.path.join(dir, 'test')
 
         # Abort if any of the needed directories already exists
         if os.path.exists(train_dir):
@@ -187,7 +191,7 @@ class Cifar10(object):
                   '{} already exists.'.format(test_dir)))
             return
 
-        # create the necessary directories
+        # Create the folder structure.
         for label in self.label_names:
             os.makedirs(os.path.join(train_dir, label))
             os.makedirs(os.path.join(test_dir, label))
@@ -197,12 +201,12 @@ class Cifar10(object):
         train_indices = {label: 0 for label in self.label_names}
         test_indices = train_indices.copy()
 
-        # Save the train images to `self.dir/train`.
+        # Save the train images to train directory.
         for batch_num in range(0, NUM_TRAIN_BATCHES):
             batch = self.get_train_batch(batch_num)
             self.__save_images_from_batch(batch, train_indices, train_dir)
 
-        # Save the test images to `self.dir/test`.
+        # Save the test images to the test directory.
         test_batch = self.get_test_batch()
         self.__save_images_from_batch(test_batch, test_indices, test_dir)
 
@@ -219,5 +223,5 @@ class Cifar10(object):
 
             cv2.imwrite(file, image)
 
-            # increment the label index
+            # Increment the label index.
             indices[label] += 1
