@@ -39,11 +39,7 @@ def test_superpixel_1():
 
     assert_equal(superpixel.count, 8)
 
-    np_test.assert_array_equal(superpixel.image, [
-        [0,   10,  20,  30],
-        [40,  50,  60,  70],
-        [80,  90,  100, 110],
-    ])
+    np_test.assert_array_equal(superpixel.image, image[0:3, 0:4])
     np_test.assert_array_equal(superpixel.mask, [
         [255, 255,   0, 255],
         [255, 255, 255, 255],
@@ -70,9 +66,7 @@ def test_superpixel_2():
 
     assert_equal(superpixel.count, 1)
 
-    np_test.assert_array_equal(superpixel.image, [
-        [20]
-    ])
+    np_test.assert_array_equal(superpixel.image, image[0:1, 2:3])
     np_test.assert_array_equal(superpixel.mask, [
         [255]
     ])
@@ -97,10 +91,7 @@ def test_superpixel_3():
 
     assert_equal(superpixel.count, 4)
 
-    np_test.assert_array_equal(superpixel.image, [
-        [80,  90,  100],
-        [120, 130, 140],
-    ])
+    np_test.assert_array_equal(superpixel.image, image[2:4, 0:3])
     np_test.assert_array_equal(superpixel.mask, [
         [255, 255, 255],
         [255, 0,   0],
@@ -126,9 +117,7 @@ def test_superpixel_4():
 
     assert_equal(superpixel.count, 3)
 
-    np_test.assert_array_equal(superpixel.image, [
-        [130, 140, 150],
-    ])
+    np_test.assert_array_equal(superpixel.image, image[3:4, 1:4])
     np_test.assert_array_equal(superpixel.mask, [
         [255, 255, 255]
         ])
