@@ -43,8 +43,10 @@ def extract_superpixels(image, superpixel_representation):
             # Compute the upperleft coordinates of the bounding box.
             s.left = min(s.left, x)
             s.top = min(s.top, y)
-            bounding[value]['right'] = max(bounding[value]['right'], x)
-            bounding[value]['bottom'] = max(bounding[value]['bottom'], y)
+
+            current_bounding = bounding[value]
+            current_bounding['right'] = max(current_bounding['right'], x)
+            current_bounding['bottom'] = max(current_bounding['bottom'], y)
 
             # Calculate and update neighbors.
             slice_x = __get_1x1_slice(x, width)
@@ -58,8 +60,9 @@ def extract_superpixels(image, superpixel_representation):
         s.neighbors.discard(s.id)
 
         # Slice the image to the bounding box.
-        slice_x = slice(s.left, bounding[s.id]['right'] + 1)
-        slice_y = slice(s.top, bounding[s.id]['bottom'] + 1)
+        current_bounding = bounding[s.id]
+        slice_x = slice(s.left, current_bounding['right'] + 1)
+        slice_y = slice(s.top, current_bounding['bottom'] + 1)
 
         s.image = image[slice_y, slice_x]
 
