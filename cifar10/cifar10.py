@@ -204,8 +204,7 @@ class Cifar10(object):
 
         # save the test images to `self.dir/test`
         test_batch = self.get_test_batch()
-        self.__save_batch(self.get_test_batch(), test_indices,
-                          test_dir)
+        self.__save_batch(self.get_test_batch(), test_indices, test_dir)
 
     def __save_batch(self, batch, indices, dir):
         """Saves all images of a batch to the `dir` directory. Images go to its
