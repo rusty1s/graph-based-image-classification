@@ -89,7 +89,7 @@ class Cifar10(object):
 
         r = requests.get(URL, stream=True)
 
-        # print a pretty progress bar while downloading
+        # Print a pretty progress bar while downloading.
         with open(TAR_NAME, 'wb') as f:
             total_length = r.headers.get('content-length')
             for chunk in progress.bar(r.iter_content(chunk_size=1024),
@@ -109,7 +109,7 @@ class Cifar10(object):
             extracted_dir = tar.getnames()[0]
             tar.extractall()
 
-        # Move the extracted dir to the specified location
+        # Move the extracted dir to the specified location.
         os.makedirs(dir)
         os.rename(extracted_dir, dir)
 
@@ -128,7 +128,7 @@ class Cifar10(object):
         path = os.path.join(self.dir, filename)
 
         with open(path, 'rb') as f:
-            # encode to latin1 to avoid `UnicodeDecodeError`
+            # Encode to latin1 to avoid `UnicodeDecodeError`.
             return self.__convert_batch(pickle.load(f, encoding='latin1'))
 
     def get_test_batch(self):
@@ -136,14 +136,14 @@ class Cifar10(object):
         labels and 3d images."""
 
         with open(os.path.join(self.dir, 'test_batch'), 'rb') as f:
-            # encode to latin1 to avoid `UnicodeDecodeError`
+            # Encode to latin1 to avoid `UnicodeDecodeError`.
             return self.__convert_batch(pickle.load(f, encoding='latin1'))
 
     def __convert_batch(self, batch):
         """Converts a CIFAR-10 batch to a dictionary containing labels and 3d
         images."""
 
-        # TODO: this sucks
+        # TODO: better numpy implementation
         images = []
         for data in batch['data']:
             images.append(self.__data_to_image(data))
@@ -169,14 +169,14 @@ class Cifar10(object):
         return np.dstack((red, green, blue))
 
     def save_images(self):
-        """Saves all images to the `self.dir` directory.
-        Train images go to `self.dir/train`. Test images go to `self.dir/test`.
-        Images go to its corresponding label directory and are named
-        incrementally."""
+        """Saves all images to the `self.dir` directory. Train images go to
+        `self.dir/train`. Test images go to `self.dir/test`. Images go to its
+        corresponding label directory and are named incrementally."""
 
         train_dir = os.path.join(self.dir, 'train')
         test_dir = os.path.join(self.dir, 'test')
 
+        # Abort if any of the needed directories already exists
         if os.path.exists(train_dir):
             print(colored.red('Abort saving images: '
                   '{} already exists.'.format(train_dir)))
@@ -192,21 +192,21 @@ class Cifar10(object):
             os.makedirs(os.path.join(train_dir, label))
             os.makedirs(os.path.join(test_dir, label))
 
-        # create two dictionaries that save the current file index for each
-        # label
+        # Create two dictionaries that save the current file index for each
+        # label.
         train_indices = {label: 0 for label in self.label_names}
         test_indices = train_indices.copy()
 
-        # save the train images to `self.dir/train`
+        # Save the train images to `self.dir/train`.
         for batch_num in range(0, NUM_TRAIN_BATCHES):
-            self.__save_batch(self.get_train_batch(batch_num), train_indices,
-                              train_dir)
+            batch = self.get_train_batch(batch_num)
+            self.__save_images_from_batch(batch, train_indices, train_dir)
 
-        # save the test images to `self.dir/test`
+        # Save the test images to `self.dir/test`.
         test_batch = self.get_test_batch()
-        self.__save_batch(self.get_test_batch(), test_indices, test_dir)
+        self.__save_images_from_batch(test_batch, test_indices, test_dir)
 
-    def __save_batch(self, batch, indices, dir):
+    def __save_images_from_batch(self, batch, indices, dir):
         """Saves all images of a batch to the `dir` directory. Images go to its
         corresponding label directory and are named incrementally."""
 
