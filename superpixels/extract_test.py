@@ -27,7 +27,7 @@ def test_extract():
 
 
 def test_superpixel_1():
-    superpixel = extract_superpixels(image, superpixel_representation)[1]
+    superpixel = extract_superpixels(image, superpixel_representation)[0]
 
     assert_equal(superpixel.id, 1)
     assert_equal(superpixel.order, 0)
@@ -56,7 +56,7 @@ def test_superpixel_1():
 
 
 def test_superpixel_2():
-    superpixel = extract_superpixels(image, superpixel_representation)[2]
+    superpixel = extract_superpixels(image, superpixel_representation)[1]
 
     assert_equal(superpixel.id, 2)
     assert_equal(superpixel.order, 1)
@@ -83,7 +83,7 @@ def test_superpixel_2():
 
 
 def test_superpixel_3():
-    superpixel = extract_superpixels(image, superpixel_representation)[3]
+    superpixel = extract_superpixels(image, superpixel_representation)[2]
 
     assert_equal(superpixel.id, 3)
     assert_equal(superpixel.order, 2)
@@ -111,7 +111,7 @@ def test_superpixel_3():
 
 
 def test_superpixel_4():
-    superpixel = extract_superpixels(image, superpixel_representation)[4]
+    superpixel = extract_superpixels(image, superpixel_representation)[3]
 
     assert_equal(superpixel.id, 4)
     assert_equal(superpixel.order, 3)

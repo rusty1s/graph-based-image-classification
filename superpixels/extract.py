@@ -4,8 +4,8 @@ from .superpixel import Superpixel
 
 
 def extract_superpixels(image, superpixel_representation):
-    """Returns a dictionary of all the superpixels found in the superpixel
-    representation with the superpixel values as identifiers."""
+    """Returns an array of all the superpixels found in scan-line order of the
+    superpixel representation with the superpixel values as identifiers."""
 
     height, width = superpixel_representation.shape
 
@@ -70,7 +70,8 @@ def extract_superpixels(image, superpixel_representation):
         s.mask = __compute_mask(superpixel_representation[slice_y, slice_x],
                                 s.id)
 
-    return superpixels
+    # Return the list, sort it by the `order` attribute.
+    return sorted(list(superpixels.values()), key=lambda s: s.order)
 
 
 def __get_1x1_slice(index, maximum):

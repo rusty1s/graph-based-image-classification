@@ -21,7 +21,7 @@ def save_superpixel_image(image, superpixels, path, name,
 
     output_image = np.array(image)
 
-    for s in superpixels.values():
+    for s in superpixels:
         # For the drawing of the mean color and the contour, we need to
         # calculate the contour of the mask.
         #
