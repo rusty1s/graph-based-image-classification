@@ -35,11 +35,15 @@ def test_save_superpixel_tree_image():
 
     assert_true(os.path.exists('./superpixels/tree-SLIC.jpg'))
 
-    slic_image = cv2.imread('superpixels')
+    slic_image = cv2.imread('superpixels/tree-SLIC.jpg')
 
     for s in superpixels.values():
-        pass
+        x, y = s.rounded_absolute_center
+        center_color = slic_image[y][x]
 
-    # Check generated image for specific attributes
+        # Center should have a NEARLY red color.
+        assert_in(center_color[0], range(0, 15))
+        assert_in(center_color[1], range(0, 15))
+        assert_in(center_color[2], range(240, 256))
 
     os.remove('./superpixels/tree-SLIC.jpg')
