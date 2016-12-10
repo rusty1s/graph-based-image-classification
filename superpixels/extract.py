@@ -70,7 +70,8 @@ def extract_superpixels(image, superpixel_representation):
         s.mask = __compute_mask(superpixel_representation[slice_y, slice_x],
                                 s.id)
 
-    # Return the list, sort it by the `order` attribute.
+    # Return the dictionary values as a list. Sort them ascending by the
+    # `order` attribute.
     return sorted(list(superpixels.values()), key=lambda s: s.order)
 
 
