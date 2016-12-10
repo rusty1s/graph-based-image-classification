@@ -2,7 +2,7 @@ from nose.tools import *
 
 import networkx as nx
 
-from .labelings import betweenness_centrality
+from .labeling import betweenness_centrality
 
 # Create test graph (https://www.youtube.com/watch?v=UNDWoKE9s1w).
 graph = nx.Graph()
