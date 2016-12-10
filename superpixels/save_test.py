@@ -62,7 +62,7 @@ def test_save_superpixels():
     os.remove('./test.pkl')
 
 
-def test_save_superpixels():
+def test_load_superpixels():
     image = cv2.imread('./superpixels/test.png')
     assert_is_not_none(image)
 
