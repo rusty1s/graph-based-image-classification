@@ -9,16 +9,17 @@ try:
 except:
     import _pickle as pickle
 
-from .extract import extract_superpixels
 
-
-def save_superpixel_image(image, superpixel_representation, path, name,
+def save_superpixel_image(image, superpixels, path, name,
                           show_contour=True, contour_color=(0, 0, 0),
-                          contour_thickness=1, show_center=True,
-                          center_radius=2, show_mean=True):
+                          contour_thickness=1, show_center=False,
+                          center_radius=2, center_color=(0, 0, 0),
+                          show_mean=False):
+    """Saves the superpixel representation of an image to a file. Visualizes
+    the superpixels by drawing contours, the superpixels with its mean color
+    and/or their center of mass."""
 
     output_image = np.array(image)
-    superpixels = extract_superpixels(image, superpixel_representation)
 
     for s in superpixels.values():
         # For the drawing of the mean color and the contour, we need to
@@ -47,7 +48,7 @@ def save_superpixel_image(image, superpixel_representation, path, name,
             center = (int(s.absolute_center[0]), int(s.absolute_center[1]))
 
             # Draw a filled circle with the contour color.
-            cv2.circle(output_image, center, center_radius, contour_color, -1)
+            cv2.circle(output_image, center, center_radius, center_color, -1)
 
     # Write the image to the specified output path.
     try:

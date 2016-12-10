@@ -47,7 +47,9 @@ def test_superpixel_1():
     ])
 
     assert_equal(superpixel.relative_center, (1.625, 0.75))
+    assert_equal(superpixel.rounded_relative_center, (2, 1))
     assert_equal(superpixel.absolute_center, (1.625, 0.75))
+    assert_equal(superpixel.rounded_absolute_center, (2, 1))
     assert_equal(superpixel.mean, (46.25, 0.0, 0.0))
 
     assert_equals(superpixel.neighbors, set([2, 3, 4]))
@@ -72,7 +74,9 @@ def test_superpixel_2():
     ])
 
     assert_equal(superpixel.relative_center, (0, 0))
+    assert_equal(superpixel.rounded_relative_center, (0, 0))
     assert_equal(superpixel.absolute_center, (2, 0))
+    assert_equal(superpixel.rounded_absolute_center, (2, 0))
     assert_equal(superpixel.mean, (20.0, 0.0, 0.0))
 
     assert_equals(superpixel.neighbors, set([1]))
@@ -98,7 +102,9 @@ def test_superpixel_3():
     ])
 
     assert_equal(superpixel.relative_center, (0.75, 0.25))
+    assert_equal(superpixel.rounded_relative_center, (1, 0))
     assert_equal(superpixel.absolute_center, (0.75, 2.25))
+    assert_equal(superpixel.rounded_absolute_center, (1, 2))
     assert_equal(superpixel.mean, (97.5, 0.0, 0.0))
 
     assert_equals(superpixel.neighbors, set([1, 4]))
@@ -123,7 +129,9 @@ def test_superpixel_4():
         ])
 
     assert_equal(superpixel.relative_center, (1, 0))
+    assert_equal(superpixel.rounded_relative_center, (1, 0))
     assert_equal(superpixel.absolute_center, (2, 3))
+    assert_equal(superpixel.rounded_absolute_center, (2, 3))
     assert_equal(superpixel.mean, (140.0, 0.0, 0.0))
 
     assert_equals(superpixel.neighbors, set([1, 3]))

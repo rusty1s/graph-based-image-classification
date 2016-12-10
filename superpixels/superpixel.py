@@ -63,10 +63,25 @@ class Superpixel(object):
         return ndimage.measurements.center_of_mass(self.mask)[::-1]
 
     @property
+    def rounded_relative_center(self):
+        """The rounded relative center of the superpixel in the superpixels
+        bounding box."""
+
+        relative_center = self.relative_center
+        return (int(round(relative_center[0])), int(round(relative_center[1])))
+
+    @property
     def absolute_center(self):
         """The absolute center of the superpixel."""
 
         relative_center = self.relative_center
+        return (self.left + relative_center[0], self.top + relative_center[1])
+
+    @property
+    def rounded_absolute_center(self):
+        """The rounded absolute center of the superpixel."""
+
+        relative_center = self.rounded_relative_center
         return (self.left + relative_center[0], self.top + relative_center[1])
 
     @property
