@@ -1,5 +1,6 @@
 import networkx as nx
 
+
 # Node sequence selection is the process of identifying, for each input graph,
 # a sequence of nodes for which receptive fields are created.
 #
@@ -12,4 +13,18 @@ import networkx as nx
 #    which a receptive field is created. If the number of nodes is smaller than
 #    `width`, the algorithm creates all-zero receptive fields for padding
 #    purposes.
-def select_node_sequence(labeling, graph, stride, width, receptive_field_size):
+def node_sequence(labeling, graph, stride, width):
+    """Identifies and returns for a graph and a graph labeling the sequence of
+    nodes for which a receptive fields are created."""
+
+    if stride <= 0:
+        raise Exception('Stride must be greater than zero.')
+
+    sort = labeling(graph)
+    filtered = [v for i, v in enumerate(sort) if i % stride == 0]
+
+    if len(filtered) >= width:
+        return filtered[0:width]
+    else:
+        filtered.extend([None for _ in range(0, width - len(filtered))])
+        return filtered
