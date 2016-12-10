@@ -47,3 +47,33 @@ def test_save_superpixel_tree_image():
         assert_in(center_color[2], range(240, 256))
 
     os.remove('./superpixels/tree-SLIC.jpg')
+
+
+def test_save_superpixels():
+    image = cv2.imread('./superpixels/test.png')
+    assert_is_not_none(image)
+
+    superpixels = extract_superpixels(image, image_to_slic_zero(image, 4))
+
+    save_superpixels(superpixels, '.', 'test.pkl')
+
+    assert_true(os.path.exists('./test.pkl'))
+
+    os.remove('./test.pkl')
+
+
+def test_save_superpixels():
+    image = cv2.imread('./superpixels/test.png')
+    assert_is_not_none(image)
+
+    superpixels = extract_superpixels(image, image_to_slic_zero(image, 4))
+    assert_equals(len(superpixels), 4)
+
+    save_superpixels(superpixels, '.', 'test.pkl')
+
+    assert_true(os.path.exists('./test.pkl'))
+
+    loaded_superpixels = read_superpixels('./test.pkl')
+    assert_equals(len(loaded_superpixels), 4)
+
+    os.remove('./test.pkl')
