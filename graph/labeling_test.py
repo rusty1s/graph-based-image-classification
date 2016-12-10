@@ -31,7 +31,7 @@ def test_betweenness_centrality():
     #
     # **Problem:**
     #
-    # betweenness centrality labeling is not unique, if there are two nodes
+    # Betweenness centrality labeling is not unique, if there are two nodes
     # with the same betweenness centrality value, that is Evan == Dana == 1.5
     # and Ben == Frank == 0.0.
 
@@ -47,6 +47,7 @@ def test_betweenness_centrality():
 
 
 def test_order():
+    # Create test graph with custom ordering.
     graph = nx.Graph()
 
     graph.add_node('Ben', {'order': 4})
