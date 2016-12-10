@@ -15,9 +15,23 @@ def test_save_superpixel_test_image():
 
     superpixels = extract_superpixels(image, image_to_slic_zero(image, 4))
 
-    save_superpixel_image(image, superpixels, path='.', name='test-SLIC.png')
+    save_superpixel_image(image, superpixels, path='.', name='test-SLIC.png',
+                          show_center=True)
 
     assert_true(os.path.exists('./test-SLIC.png'))
+
+    slic_image = cv2.imread('./test-SLIC.png')
+    assert_is_not_none(slic_image)
+
+    for s in superpixels:
+        x, y = s.rounded_absolute_center
+        center_color = slic_image[y][x]
+
+        # Center should have a default black color.
+        assert_equals(center_color[0], 0)
+        assert_equals(center_color[1], 0)
+        assert_equals(center_color[2], 0)
+
     os.remove('./test-SLIC.png')
 
 
@@ -36,12 +50,13 @@ def test_save_superpixel_tree_image():
     assert_true(os.path.exists('./superpixels/tree-SLIC.jpg'))
 
     slic_image = cv2.imread('superpixels/tree-SLIC.jpg')
+    assert_is_not_none(slic_image)
 
     for s in superpixels:
         x, y = s.rounded_absolute_center
         center_color = slic_image[y][x]
 
-        # Center should have a NEARLY red color.
+        # Center should have a NEARLY red color, because of jpeg compression.
         assert_in(center_color[0], range(0, 15))
         assert_in(center_color[1], range(0, 15))
         assert_in(center_color[2], range(240, 256))
