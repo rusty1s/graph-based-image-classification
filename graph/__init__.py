@@ -1,2 +1,3 @@
 # from .graph import (graph_from_segments)
-from .labeling import betweenness_centrality
+from .labeling import (betweenness_centrality, order)
+from .node_sequence import node_sequence
