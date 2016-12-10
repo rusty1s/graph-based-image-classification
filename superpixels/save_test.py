@@ -4,7 +4,7 @@ import os
 import cv2
 
 from .extract import extract_superpixels
-from .save import (save_superpixel_image, save_superpixels, read_superpixels)
+from .save import (save_superpixel_image, save_superpixels, load_superpixels)
 
 from .slic import image_to_slic_zero
 
@@ -88,7 +88,7 @@ def test_load_superpixels():
 
     assert_true(os.path.exists('./test.pkl'))
 
-    loaded_superpixels = read_superpixels('./test.pkl')
+    loaded_superpixels = load_superpixels('./test.pkl')
     assert_equals(len(loaded_superpixels), 4)
 
     os.remove('./test.pkl')

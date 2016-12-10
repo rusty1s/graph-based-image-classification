@@ -58,7 +58,7 @@ def save_superpixel_image(image, superpixels, path, name,
 
 
 def save_superpixels(superpixels, path, name):
-    """Writes the generated dictionary of superpixels to disk."""
+    """Writes the generated array of superpixels to disk."""
 
     try:
         os.makedirs(path)
@@ -69,8 +69,8 @@ def save_superpixels(superpixels, path, name):
         pickle.dump(superpixels, output, -1)
 
 
-def read_superpixels(path):
-    """Reads the written dictionary of superpixels from disk."""
+def load_superpixels(path):
+    """Loads the written array of superpixels from disk."""
 
     with open(path, 'rb') as input:
         return pickle.load(input)

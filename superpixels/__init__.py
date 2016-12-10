@@ -1,6 +1,6 @@
 from .superpixel import Superpixel
 from .extract import extract_superpixels
-from .save import (save_superpixel_image, save_superpixels, read_superpixels)
+from .save import (save_superpixel_image, save_superpixels, load_superpixels)
 
 from .graph import SuperpixelGraph
 
