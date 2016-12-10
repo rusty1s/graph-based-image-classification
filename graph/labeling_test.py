@@ -5,9 +5,6 @@ import networkx as nx
 
 from .labeling import (betweenness_centrality, order)
 
-from superpixels import (SuperpixelGraph, extract_superpixels,
-                         image_to_slic_zero)
-
 
 def test_betweenness_centrality():
     # Create test graph (https://www.youtube.com/watch?v=UNDWoKE9s1w).
@@ -50,17 +47,21 @@ def test_betweenness_centrality():
 
 
 def test_order():
-    def node_mapping(superpixel):
-        return {'order': superpixel.order}
+    graph = nx.Graph()
 
-    def edge_mapping(from_superpixel, to_superpixel):
-        return {}
-
-    image = cv2.imread('./superpixels/test.png')
-    assert_is_not_none(image)
-
-    superpixels = extract_superpixels(image, image_to_slic_zero(image, 4))
-
-    graph = SuperpixelGraph(superpixels, node_mapping, edge_mapping)
+    graph.add_node('Ben', {'order': 4})
+    graph.add_node('Anna', {'order': 1})
+    graph.add_node('Cara', {'order': 0})
+    graph.add_node('Dana', {'order': 3})
+    graph.add_node('Evan', {'order': 2})
+    graph.add_node('Frank', {'order': 5})
 
     labeling = order(graph)
+
+    assert_equals(len(labeling), 6)
+    assert_equals(labeling[0], 'Cara')
+    assert_equals(labeling[1], 'Anna')
+    assert_equals(labeling[2], 'Evan')
+    assert_equals(labeling[3], 'Dana')
+    assert_equals(labeling[4], 'Ben')
+    assert_equals(labeling[5], 'Frank')

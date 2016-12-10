@@ -19,5 +19,8 @@ def order(graph):
     """If the graph nodes have an actual attribute `order`, it is used to
     calculate the order of the graph."""
 
-    print(graph.nodes)
-    return []
+    result = nx.get_node_attributes(graph, 'order')
+    result = list(result.items())
+    result = sorted(result, key=lambda v: v[1])
+
+    return [v[0] for v in result]
