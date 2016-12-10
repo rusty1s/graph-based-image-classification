@@ -58,8 +58,8 @@ def test_initialised_superpixel():
     assert_equal(superpixel.height, 2)
     assert_equal(superpixel.count, 4)
 
-    assert_equal(superpixel.relative_center, (3.0/4, 1.0/4))
+    assert_equal(superpixel.relative_center, (0.75, 0.25))
     assert_equal(superpixel.rounded_relative_center, (1, 0))
-    assert_equal(superpixel.absolute_center, (10 + 3.0/4, 20 + 1.0/4))
+    assert_equal(superpixel.absolute_center, (10.75, 20.25))
     assert_equal(superpixel.rounded_absolute_center, (11, 20))
     assert_equal(superpixel.mean, (37.5, 52.5, 67.5))

@@ -44,11 +44,9 @@ def save_superpixel_image(image, superpixels, path, name,
                              contour_thickness, offset=(s.left, s.top))
 
         if show_center:
-            # We need to pass a center of integers.
-            center = (int(s.absolute_center[0]), int(s.absolute_center[1]))
-
             # Draw a filled circle with the contour color.
-            cv2.circle(output_image, center, center_radius, center_color, -1)
+            cv2.circle(output_image, s.rounded_absolute_center, center_radius,
+                       center_color, -1)
 
     # Write the image to the specified output path.
     try:
