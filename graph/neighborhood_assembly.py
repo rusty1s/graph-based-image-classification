@@ -5,7 +5,7 @@ def neighborhood_assembly(graph, node, size):
 
     neighborhood = set([node])
 
-    # We need to keep track of nodes, that freshly were added to the
+    # We need to keep track of nodes, that were freshly added to the
     # neighborhood thus their neighborhood was not assembled yet.
     unnoted = set([node])
 
