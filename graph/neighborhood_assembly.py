@@ -1,4 +1,4 @@
-def neighborhood_assembly(graph, node, size):
+def assemble_neighborhood(graph, node, size):
     """Assembles and returns a local neighborhood for the input node until
     there were at least `size` nodes found or until there are no more neighbors
     to add."""

@@ -2,7 +2,7 @@ from nose.tools import *
 
 import networkx as nx
 
-from .neighborhood_assembly import neighborhood_assembly
+from .neighborhood_assembly import assemble_neighborhood
 
 
 def test_neighborhood_assembly():
@@ -24,17 +24,17 @@ def test_neighborhood_assembly():
     graph.add_edge('Dana', 'Frank')
     graph.add_edge('Evan', 'Frank')
 
-    neighborhood = neighborhood_assembly(graph, 'Cara', 0)
+    neighborhood = assemble_neighborhood(graph, 'Cara', 0)
 
     assert_equals(len(neighborhood), 1)
     assert_in('Cara', neighborhood)
 
-    neighborhood = neighborhood_assembly(graph, 'Cara', 1)
+    neighborhood = assemble_neighborhood(graph, 'Cara', 1)
 
     assert_equals(len(neighborhood), 1)
     assert_in('Cara', neighborhood)
 
-    neighborhood = neighborhood_assembly(graph, 'Cara', 2)
+    neighborhood = assemble_neighborhood(graph, 'Cara', 2)
 
     assert_equals(len(neighborhood), 4)
     assert_in('Cara', neighborhood)
@@ -42,20 +42,20 @@ def test_neighborhood_assembly():
     assert_in('Dana', neighborhood)
     assert_in('Evan', neighborhood)
 
-    neighborhood = neighborhood_assembly(graph, 'Ben', 2)
+    neighborhood = assemble_neighborhood(graph, 'Ben', 2)
 
     assert_equals(len(neighborhood), 2)
     assert_in('Ben', neighborhood)
     assert_in('Anna', neighborhood)
 
-    neighborhood = neighborhood_assembly(graph, 'Ben', 3)
+    neighborhood = assemble_neighborhood(graph, 'Ben', 3)
 
     assert_equals(len(neighborhood), 3)
     assert_in('Ben', neighborhood)
     assert_in('Anna', neighborhood)
     assert_in('Cara', neighborhood)
 
-    neighborhood = neighborhood_assembly(graph, 'Ben', 4)
+    neighborhood = assemble_neighborhood(graph, 'Ben', 4)
 
     assert_equals(len(neighborhood), 5)
     assert_in('Ben', neighborhood)

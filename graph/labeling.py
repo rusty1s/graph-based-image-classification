@@ -7,7 +7,7 @@ def betweenness_centrality(graph):
     paths that pass through `v`. Returns a list of all nodes in `graph` in
     descendant order corresponding to their betweenness centrality values."""
 
-    # Returns a dictionary of nodes with betweeness centrality as the value
+    # Returns a dictionary of nodes with betweeness centrality as the value.
     result = nx.betweenness_centrality(graph, normalized=False)
     result = list(result.items())
     result = sorted(result, key=lambda v: v[1], reverse=True)

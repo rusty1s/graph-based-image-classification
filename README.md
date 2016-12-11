@@ -73,6 +73,10 @@ Run the test suite:
 ./bin/test.sh
 ```
 
+## ToDos
+
+* Normalization no use of weights?
+
 [build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
 [build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
 [coverage-image]: https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg
