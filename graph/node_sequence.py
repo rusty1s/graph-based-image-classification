@@ -13,12 +13,11 @@ import networkx as nx
 #    which a receptive field is created. If the number of nodes is smaller than
 #    `width`, the algorithm creates all-zero receptive fields for padding
 #    purposes.
-def node_sequence(labeling, graph, stride, width):
+def node_sequence(labeling, stride, width):
     """Identifies and returns for a graph and a graph labeling the sequence of
     nodes for which a receptive fields are created."""
 
-    sort = labeling(graph)
-    filtered = [v for i, v in enumerate(sort) if i % stride == 0]
+    filtered = [v for i, v in enumerate(labeling) if i % stride == 0]
 
     if len(filtered) >= width:
         return filtered[0:width]
