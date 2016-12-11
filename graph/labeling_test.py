@@ -1,6 +1,5 @@
 from nose.tools import *
 
-import cv2
 import networkx as nx
 
 from .labeling import (betweenness_centrality, order)
