@@ -17,13 +17,13 @@ def test_node_sequence():
     graph.add_node('Evan', {'order': 2})
     graph.add_node('Frank', {'order': 5})
 
-    sequence = node_sequence(order(graph), 2, 2)
+    sequence = node_sequence(order, graph, 2, 2)
 
     assert_equals(len(sequence), 2)
     assert_equals(sequence[0], 'Cara')
     assert_equals(sequence[1], 'Evan')
 
-    sequence = node_sequence(order(graph), 1, 4)
+    sequence = node_sequence(order, graph, 1, 4)
 
     assert_equals(len(sequence), 4)
     assert_equals(sequence[0], 'Cara')
@@ -31,7 +31,7 @@ def test_node_sequence():
     assert_equals(sequence[2], 'Evan')
     assert_equals(sequence[3], 'Dana')
 
-    sequence = node_sequence(order(graph), 3, 5)
+    sequence = node_sequence(order, graph, 3, 5)
 
     assert_equals(len(sequence), 5)
     assert_equals(sequence[0], 'Cara')
