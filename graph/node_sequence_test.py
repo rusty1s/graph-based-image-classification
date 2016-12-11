@@ -5,18 +5,18 @@ import networkx as nx
 from .node_sequence import node_sequence
 from .labeling import order
 
-# Create test graph (https://www.youtube.com/watch?v=UNDWoKE9s1w).
-graph = nx.Graph()
-
-graph.add_node('Ben', {'order': 4})
-graph.add_node('Anna', {'order': 1})
-graph.add_node('Cara', {'order': 0})
-graph.add_node('Dana', {'order': 3})
-graph.add_node('Evan', {'order': 2})
-graph.add_node('Frank', {'order': 5})
-
 
 def test_node_sequence():
+# Create test graph with custom ordering.
+    graph = nx.Graph()
+
+    graph.add_node('Ben', {'order': 4})
+    graph.add_node('Anna', {'order': 1})
+    graph.add_node('Cara', {'order': 0})
+    graph.add_node('Dana', {'order': 3})
+    graph.add_node('Evan', {'order': 2})
+    graph.add_node('Frank', {'order': 5})
+
     sequence = node_sequence(order, graph, 2, 2)
 
     assert_equals(len(sequence), 2)
