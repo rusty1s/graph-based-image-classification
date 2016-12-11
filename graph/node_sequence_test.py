@@ -7,7 +7,7 @@ from .labeling import order
 
 
 def test_node_sequence():
-# Create test graph with custom ordering.
+    # Create test graph with custom ordering.
     graph = nx.Graph()
 
     graph.add_node('Ben', {'order': 4})
