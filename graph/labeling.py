@@ -16,7 +16,7 @@ def betweenness_centrality(graph):
 
 
 def order(graph):
-    """If the graph nodes have an actual attribute `order`, it is used to
+    """If the graph nodes have an attribute called `order`, it is used to
     calculate the order of the graph."""
 
     result = nx.get_node_attributes(graph, 'order')
