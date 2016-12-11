@@ -28,4 +28,29 @@ def test_neighborhood_assembly():
 
     neighborhood = assemble_neighborhood(graph, 'Cara', 6)
 
-    normalize(graph, neighborhood, 'Cara', order, 2)
+    normalization = normalize(graph, neighborhood, 'Cara', order, 2)
+
+    assert_equals(len(normalization), 2)
+    assert_equals(normalization[0], 'Cara')
+    assert_equals(normalization[1], 'Anna')
+
+    normalization = normalize(graph, neighborhood, 'Cara', order, 7)
+
+    assert_equals(len(normalization), 7)
+    assert_equals(normalization[0], 'Cara')
+    assert_equals(normalization[1], 'Anna')
+    assert_equals(normalization[2], 'Evan')
+    assert_equals(normalization[3], 'Dana')
+    assert_equals(normalization[4], 'Ben')
+    assert_equals(normalization[5], 'Frank')
+    assert_is_none(normalization[6])
+
+    neighborhood = assemble_neighborhood(graph, 'Ben', 4)
+
+    normalization = normalize(graph, neighborhood, 'Ben', order, 4)
+
+    assert_equals(len(normalization), 4)
+    assert_equals(normalization[0], 'Ben')
+    assert_equals(normalization[1], 'Anna')
+    assert_equals(normalization[2], 'Cara')
+    assert_equals(normalization[3], 'Evan')
