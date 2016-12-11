@@ -10,9 +10,4 @@ class SuperpixelGraph(Graph):
 
             for id in s.neighbors:
                 neighbor = [x for x in superpixels if x.id == id]
-
-                if len(neighbor) != 1:
-                    raise Exception('Neighbor set doesn\'t correlate with the '
-                                    'given superpixels.')
-
                 self. add_edge(s.id, id, edge_mapping(s, neighbor[0]))

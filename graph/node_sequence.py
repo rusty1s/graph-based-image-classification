@@ -17,9 +17,6 @@ def node_sequence(labeling, graph, stride, width):
     """Identifies and returns for a graph and a graph labeling the sequence of
     nodes for which a receptive fields are created."""
 
-    if stride <= 0:
-        raise Exception('Stride must be greater than zero.')
-
     sort = labeling(graph)
     filtered = [v for i, v in enumerate(sort) if i % stride == 0]
 
