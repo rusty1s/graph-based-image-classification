@@ -38,19 +38,46 @@ def test_receptive_fields():
 
     fields = receptive_fields(graph, order, 1, 6, 4, node_features, 3)
 
-    assert_equals(fields.shape, (3, 6, 4))
+    assert_equals(fields.shape, (1, 6 * 4, 3))
 
-    # The first neighborhood nodes on the second axis are centered around
-    # `Cara`. The neighborhood of `Cara` is ['Cara', 'Anna', 'Evan', 'Dana'].
-    # The feature vectors for `red` should be: [7.0, 4.0, 13.0, 10.0].
-    np_test.assert_array_equal(fields[0][0], [7.0, 4.0, 13.0, 10.0])
+    # The first neighborhood nodes are centered around `Cara`. The neighborhood
+    # of `Cara` is ['Cara', 'Anna', 'Evan', 'Dana'].
+    np_test.assert_array_equal(fields[0][0], [7.0, 8.0, 9.0])
+    np_test.assert_array_equal(fields[0][1], [4.0, 5.0, 6.0])
+    np_test.assert_array_equal(fields[0][2], [13.0, 14.0, 15.0])
+    np_test.assert_array_equal(fields[0][3], [10.0, 11.0, 12.0])
 
-    # The third neighborhood nodes on the second axis are centered around
-    # `Evan`. The neighborhood of `Evan` is ['Evan', 'Cara', 'Dana', 'Frank'].
-    # The feature vectors for `green` should be [14.0, 8.0, 11.0, 17.0].
-    np_test.assert_array_equal(fields[1][2], [14.0, 8.0, 11.0, 17.0])
+    # The second neighborhood nodes are centered around `Anna`. The
+    # neighborhood of `Anna` is ['Anna', 'Cara', 'Ben', 'Evan'].
+    np_test.assert_array_equal(fields[0][4], [4.0, 5.0, 6.0])
+    np_test.assert_array_equal(fields[0][5], [7.0, 8.0, 9.0])
+    np_test.assert_array_equal(fields[0][6], [1.0, 2.0, 3.0])
+    np_test.assert_array_equal(fields[0][7], [13.0, 14.0, 15.0])
 
-    # The second neighborhood nodes on the second axis are centered around
-    # `Anna`. The neighborhood of `Anna` is ['Anna', 'Cara', 'Ben', 'Evan'].
-    # The feature vectors for `blue` should be [6.0, 9.0, 3.0, 15.0].
-    np_test.assert_array_equal(fields[2][1], [6.0, 9.0, 3.0, 15.0])
+    # The third neighborhood nodes are centered around `Evan`. The neighborhood
+    # of `Evan` is ['Evan', 'Cara', 'Dana', 'Frank'].
+    np_test.assert_array_equal(fields[0][8], [13.0, 14.0, 15.0])
+    np_test.assert_array_equal(fields[0][9], [7.0, 8.0, 9.0])
+    np_test.assert_array_equal(fields[0][10], [10.0, 11.0, 12.0])
+    np_test.assert_array_equal(fields[0][11], [16.0, 17.0, 18.0])
+
+    # The fourth neighborhood nodes are centered around `Dana`. The
+    # neighborhood of `Dana` is ['Dana', 'Cara', 'Evan', 'Frank'].
+    np_test.assert_array_equal(fields[0][12], [10.0, 11.0, 12.0])
+    np_test.assert_array_equal(fields[0][13], [7.0, 8.0, 9.0])
+    np_test.assert_array_equal(fields[0][14], [13.0, 14.0, 15.0])
+    np_test.assert_array_equal(fields[0][15], [16.0, 17.0, 18.0])
+
+    # The fifth neighborhood nodes are centered around `Ben`. The neighborhood
+    # of `Ben` is ['Ben', 'Anna', 'Cara', 'Evan'].
+    np_test.assert_array_equal(fields[0][16], [1.0, 2.0, 3.0])
+    np_test.assert_array_equal(fields[0][17], [4.0, 5.0, 6.0])
+    np_test.assert_array_equal(fields[0][18], [7.0, 8.0, 9.0])
+    np_test.assert_array_equal(fields[0][19], [13.0, 14.0, 15.0])
+
+    # The sixth neighborhood nodes are centered around `Frank`. The
+    # neighborhood of `Frank` is ['Frank', 'Evan', 'Dana', 'Cara'].
+    np_test.assert_array_equal(fields[0][20], [16.0, 17.0, 18.0])
+    np_test.assert_array_equal(fields[0][21], [13.0, 14.0, 15.0])
+    np_test.assert_array_equal(fields[0][22], [10.0, 11.0, 12.0])
+    np_test.assert_array_equal(fields[0][23], [7.0, 8.0, 9.0])
