@@ -19,7 +19,7 @@ def get_arguments():
 
     parser.add_argument('-o', '--output', type=str, default=OUTPUT,
                         help='Output directory in which to save the CIFAR-10 '
-                        'images. Must not exist! Default: ./datasets/cifar10')
+                        'images. Default: ./datasets/cifar10')
 
     return parser.parse_args()
 
