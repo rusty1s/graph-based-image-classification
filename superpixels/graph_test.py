@@ -2,7 +2,7 @@ from nose.tools import *
 
 import cv2
 
-from .graph import SuperpixelGraph
+from .graph import create_superpixel_graph
 from .extract import extract_superpixels
 from .slic import image_to_slic_zero
 
@@ -27,7 +27,7 @@ def test_graph():
 
     superpixels = extract_superpixels(image, image_to_slic_zero(image, 4))
 
-    graph = SuperpixelGraph(superpixels, node_mapping, edge_mapping)
+    graph = create_superpixel_graph(superpixels, node_mapping, edge_mapping)
 
     assert_false(graph.is_directed())
 

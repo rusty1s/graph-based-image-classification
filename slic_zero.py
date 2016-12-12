@@ -52,11 +52,11 @@ def get_arguments():
                         'processing. Default: {}'.format(SIGMA))
 
     group = parser.add_mutually_exclusive_group(required=False)
-    group.add_argument('--show-contour', dest='show_contour',
+    group.add_argument('--contour', dest='show_contour',
                        action='store_true', help='Shows a contour of the '
                        'superpixels in the output image. Default: {}'
                        .format(SHOW_CONTOUR))
-    group.add_argument('--show-no-contour', dest='show_contour',
+    group.add_argument('--no-contour', dest='show_contour',
                        action='store_false', help='Doesn\'t show a contour of '
                        'the superpixels in the output image. Default: {}'
                        .format(not SHOW_CONTOUR))
@@ -65,11 +65,11 @@ def get_arguments():
                         default=CONTOUR_THICKNESS, help='The thickness of the '
                         'drawn contour. Default: {}'.format(CONTOUR_THICKNESS))
     group = parser.add_mutually_exclusive_group(required=False)
-    group.add_argument('--show-center', dest='show_center',
+    group.add_argument('--center', dest='show_center',
                        action='store_true', help='Shows the center of mass '
                        'for all superpixels in the output image. Default: {}'
                        .format(SHOW_CENTER))
-    group.add_argument('--show-no-center', dest='show_center',
+    group.add_argument('--no-center', dest='show_center',
                        action='store_false', help='Doesn\'t show the center '
                        'of mass for all superpixels in the output image. '
                        'Default: {}'.format(not SHOW_CENTER))
@@ -78,10 +78,10 @@ def get_arguments():
                         help='The radius of the drawn center. Default: {}'
                         .format(CENTER_RADIUS))
     group = parser.add_mutually_exclusive_group(required=False)
-    group.add_argument('--show-mean', dest='show_mean', action='store_true',
+    group.add_argument('--mean', dest='show_mean', action='store_true',
                        help='Fills the superpixel with its mean color. '
                        'Default: {}'.format(SHOW_MEAN))
-    group.add_argument('--show-no-mean', dest='show_mean',
+    group.add_argument('--no-mean', dest='show_mean',
                        action='store_false', help='Does\'t fill the '
                        'superpixel with its mean color. Default: {}'
                        .format(not SHOW_MEAN))
@@ -103,7 +103,6 @@ def main():
     """Runs the SLIC-zero superpixel segmentation."""
 
     args = get_arguments()
-    print(args)
 
     # Calcuate the output directory and output filename from the ouput passed
     # as an argument.
