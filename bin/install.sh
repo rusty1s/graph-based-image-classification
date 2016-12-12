@@ -78,11 +78,11 @@ conda install -c https://conda.binstar.org/menpo opencv3
 pip install codecov
 
 # install TensorFlow
-if [[ $VERSION == "2.7" ]]; then
+if [[ $PYTHON == "2.7" ]]; then
   pip install "https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-$TENSORFLOW-cp27-none-linux_x86_64.whl"
-elif [[ $VERSION == "3.4" ]]; then
+elif [[ $PYTHON == "3.4" ]]; then
   pip install "https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-$TENSORFLOW-cp34-cp34m-linux_x86_64.whl"
-elif [[ $VERSION == "3.5" ]]; then
+elif [[ $PYTHON == "3.5" ]]; then
   pip install "https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-$TENSORFLOW-cp35-cp35m-linux_x86_64.whl"
 fi
 
