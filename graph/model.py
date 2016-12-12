@@ -164,7 +164,7 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 init = tf.initialize_all_variables()
 
 # Load the test data
-PATH_DATA = './datasets/cifar10/slic_zero/2016-12-12T12-44-12/data_batch_1'
+PATH_DATA = './datasets/cifar10/slic_zero/2016-12-12T20-22-40/data_batch_1'
 PATH_LABELS = './datasets/cifar10/data_batch_1'
 
 with open(PATH_DATA, 'rb') as input:
@@ -177,7 +177,9 @@ with tf.Session() as sess:
     sess.run(init)
 
     for i in range(0, 10000):
-        data = convert_input(datas[i])
+        data = np.zeros((1, 1, 900, 6))
+        data[0] = datas[i]
+        print(data)
         label = np.zeros((1, 10))
         label[0][int(labels[i])] = 1
 
