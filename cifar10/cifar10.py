@@ -79,8 +79,8 @@ class Cifar10(object):
         doesn't."""
 
         if os.path.exists(path):
-            print(colored.red('Abort {}: {} already exists'
-                              .format(error_message, path)))
+            print(colored.red('Abort {}:'.format(error_message)) +
+                  ' {} already exists.'.format(path))
             return True
         else:
             return False
@@ -177,7 +177,7 @@ class Cifar10(object):
 
         return np.dstack((red, green, blue))
 
-    def save_images_to(self, dir=None):
+    def save_images(self, dir=None):
         """Saves all images to the `dir` directory. Train images go to
         `dir/train`. Test images go to `dir/test`. Images go to its
         corresponding label directory and are named incrementally."""

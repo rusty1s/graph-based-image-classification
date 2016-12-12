@@ -4,12 +4,9 @@
 from __future__ import print_function
 
 import argparse
-import time
-import imutils
-import cv2
-import numpy as np
 
-from superpixel import image_to_slic, Segment
+from .extract import extract_superpixels
+from .save import save_superpixel_image
 
 
 # possible arguments (look up each help parameter for additional information)
@@ -43,7 +40,7 @@ def get_arguments():
                         'processing. Default: 0.0')
     parser.add_argument('-o', '--output', type=str,
                         help='Path and name to the superpixel segmented image.'
-                        ' Default: <image_path>/<image_name>-super.<ext>')
+                        ' Default: <image_path>/<image_name>-SLIC_zero.<ext>')
 
     args = parser.parse_args()
 
@@ -51,7 +48,7 @@ def get_arguments():
     if not args.output:
         path = args.image.split('/')
         name = path[-1].split('.')
-        name = '{}-super.{}'.format('.'.join(name[:-1]), name[-1])
+        name = '{}-SLIC_zero.{}'.format('.'.join(name[:-1]), name[-1])
         args.output = '{}/{}'.format('/'.join(path[:-1]), name)
 
     return args
