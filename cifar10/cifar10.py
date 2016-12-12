@@ -41,7 +41,7 @@ URL = 'http://www.cs.toronto.edu/~kriz/' + TAR_NAME
 #
 # Each of the batch files contains a dictionary with the following elements:
 # 1. **data** -- a 10.000x3072 `numpy` array of `uint8`s. Each row of the array
-#    i stores a 32x32 colour image. The first 1024 entries contain the red
+#    stores a 32x32 colour image. The first 1024 entries contain the red
 #    channel values, the next 1024 the green, and the final 1024 the blue. The
 #    image is stored in row-major order, so that the first 32 entries of the
 #    array are the red channel values of the first row of the image.
