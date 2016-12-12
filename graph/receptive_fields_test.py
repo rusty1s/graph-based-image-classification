@@ -6,6 +6,7 @@ import networkx as nx
 from .receptive_fields import receptive_fields
 from .labeling import order
 
+
 def test_receptive_fields():
     # Create test graph with custom ordering.
     graph = nx.Graph()
@@ -13,9 +14,12 @@ def test_receptive_fields():
     graph.add_node('Ben', {'order': 4, 'red': 1.0, 'green': 2.0, 'blue': 3.0})
     graph.add_node('Anna', {'order': 1, 'red': 4.0, 'green': 5.0, 'blue': 6.0})
     graph.add_node('Cara', {'order': 0, 'red': 7.0, 'green': 8.0, 'blue': 9.0})
-    graph.add_node('Dana', {'order': 3, 'red': 10.0, 'green': 11.0, 'blue': 12.0})
-    graph.add_node('Evan', {'order': 2, 'red': 13.0, 'green': 14.0, 'blue': 15.0})
-    graph.add_node('Frank', {'order': 5, 'red': 16.0, 'green': 17.0, 'blue': 18.0})
+    graph.add_node('Dana', {'order': 3, 'red': 10.0, 'green': 11.0,
+                            'blue': 12.0})
+    graph.add_node('Evan', {'order': 2, 'red': 13.0, 'green': 14.0,
+                            'blue': 15.0})
+    graph.add_node('Frank', {'order': 5, 'red': 16.0, 'green': 17.0,
+                             'blue': 18.0})
 
     graph.add_edge('Ben', 'Anna')
     graph.add_edge('Anna', 'Cara')
