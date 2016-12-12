@@ -11,7 +11,7 @@ def receptive_fields(graph, labeling, stride, width, receptive_field_size,
 
     # Create the initial receptive fields
     receptive_fields = np.zeros((node_features_size, width,
-                                 receptive_field_size), dtype=float)
+                                 receptive_field_size))
 
     # Select a fixed-length sequence of nodes from the graph. A node in `nodes`
     # can have the value `None` for padding purposes.
