@@ -84,8 +84,8 @@ def main():
     for i in range(0, 5):
         batch = cifar10.get_train_batch(i)
 
-        np_array = np.zeros(shape=(len(batch['images']), NODE_FEATURE_SIZE,
-                                   WIDTH, SIZE))
+        np_array = np.zeros(shape=(len(batch['images']), 1, WIDTH * SIZE,
+                                   NODE_FEATURE_SIZE))
 
         print('Batch {}:'.format(i+1))
         print('========')
@@ -119,8 +119,8 @@ def main():
 
     batch = cifar10.get_test_batch()
 
-    np_array = np.zeros(shape=(len(batch['images']), NODE_FEATURE_SIZE,
-                               WIDTH, SIZE))
+    np_array = np.zeros(shape=(len(batch['images']), 1, WIDTH * SIZE,
+                               NODE_FEATURE_SIZE))
 
     print('Test Batch:')
     print('==========')

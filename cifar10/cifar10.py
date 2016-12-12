@@ -230,3 +230,5 @@ class Cifar10(object):
 
             # Increment the label index.
             indices[label] += 1
+
+# TODO: next batch implementation
