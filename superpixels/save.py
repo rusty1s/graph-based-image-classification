@@ -11,9 +11,9 @@ except:
 
 
 def save_superpixel_image(image, superpixels, path, name,
-                          show_contour=True, contour_color=(0, 0, 0),
+                          show_contour=True, contour_color=(0, 0, 255),
                           contour_thickness=1, show_center=False,
-                          center_radius=2, center_color=(0, 0, 0),
+                          center_radius=2, center_color=(0, 0, 255),
                           show_mean=False):
     """Saves the superpixel representation of an image to a file. Visualizes
     the superpixels by drawing contours, the superpixels with its mean color

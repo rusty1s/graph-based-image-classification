@@ -4,16 +4,23 @@
 from __future__ import print_function
 
 import argparse
+import cv2
 
-from .extract import extract_superpixels
-from .save import save_superpixel_image
+from superpixels import (image_to_slic_zero, extract_superpixels,
+                         save_superpixel_image)
 
 
-# possible arguments (look up each help parameter for additional information)
-SEGMENTS = 100
+# Possible arguments for the script. Look up each help parameter for additional
+# information.
+NUM_SEGMENTS = 100
 COMPACTNESS = 1.0
 MAX_ITERATIONS = 10
 SIGMA = 0.0
+SHOW_CONTOUR = True
+CONTOUR_THICKNESS = 1
+SHOW_CENTER = False
+CENTER_RADIUS = 2
+SHOW_MEAN = False
 
 
 def get_arguments():
@@ -25,7 +32,11 @@ def get_arguments():
 
     parser.add_argument('-i', '--image', required=True, type=str,
                         help='Path to the image')
-    parser.add_argument('--segments', type=int, default=SEGMENTS,
+    parser.add_argument('-o', '--output', type=str,
+                        help='Path and name to the superpixel segmented image.'
+                        ' Default: <image_path>/<image_name>-SLIC_zero.<ext>')
+
+    parser.add_argument('--num-segments', type=int, default=NUM_SEGMENTS,
                         help='Number of segments. Default: 100')
     parser.add_argument('--compactness', type=float, default=COMPACTNESS,
                         help='Balances color proximity and space proximity. '
@@ -38,9 +49,38 @@ def get_arguments():
     parser.add_argument('--sigma', type=float, default=SIGMA,
                         help='Width of gaussian smoothing kernel for pre-'
                         'processing. Default: 0.0')
-    parser.add_argument('-o', '--output', type=str,
-                        help='Path and name to the superpixel segmented image.'
-                        ' Default: <image_path>/<image_name>-SLIC_zero.<ext>')
+
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument('--show-contour', dest='show_contour',
+                       action='store_true', help='Shows a contour of the '
+                       'superpixels in the output image. Default: True')
+    group.add_argument('--show-no-contour', dest='show_contour',
+                       action='store_false', help='Doesn\'t show a contour of '
+                       'the superpixels in the output image. Default: False')
+    parser.set_defaults(show_contour=SHOW_CONTOUR)
+    parser.add_argument('--contour-thickness', type=int,
+                        default=CONTOUR_THICKNESS, help='The thickness of the '
+                        'drawn contour. Default: 1')
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument('--show-center', dest='show_center',
+                       action='store_true', help='Shows the center of mass '
+                       'for all superpixels in the output image. Default: '
+                       'False')
+    group.add_argument('--show-no-center', dest='show_center',
+                       action='store_false', help='Doesn\'t show the center '
+                       'of mass for all superpixels in the output image. '
+                       'Default: True')
+    parser.set_defaults(show_center=SHOW_CENTER)
+    parser.add_argument('--center-radius', type=int, default=CENTER_RADIUS,
+                        help='The radius of the drawn center. Default: 2')
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument('--show-mean', dest='show_mean', action='store_true',
+                       help='Fills the superpixel with its mean color. '
+                       'Default: False')
+    group.add_argument('--show-no-mean', dest='show_mean',
+                       action='store_false', help='Does\'t fill the '
+                       'superpixel with its mean color. Default: True')
+    parser.set_defaults(show_center=SHOW_MEAN)
 
     args = parser.parse_args()
 
@@ -58,55 +98,36 @@ def main():
     """Runs the SLIC superpixel segmentation."""
 
     args = get_arguments()
+    print(args)
+    return
 
-    # load the image from file
+    # Calcuate the output directory and output filename from the ouput passed
+    # as an argument.
+    output = args.output.split('/')
+    output_dir = '/'.join(output[0:-1]) if len(output) > 1 else '.'
+    output_name = output[-1]
+
+    # Load the image from file.
     image = cv2.imread(args.image)
 
-    # apply SLIC and extract the supplied segments
-    start_time = time.time()
-    superpixels = image_to_slic(image, segments=args.segments,
-                                compactness=args.compactness,
-                                max_iterations=args.max_iterations,
-                                sigma=args.sigma)
-    print('Runtime: {0:.4f}s'.format(time.time() - start_time))
+    # Apply SLIC zero.
+    rep = image_to_slic_zero(image, num_segments=args.num_segments,
+                             compactness=args.compactness,
+                             max_iterations=args.max_iterations,
+                             sigma=args.sigma)
 
-    segments = Segment.generate(superpixels)
+    # Extract the superpixels from the superpixel representation.
+    superpixels = extract_superpixels(image, rep)
 
-    # iterate over all segment values
-    segment_values = np.unique(segments)
-    for segment_value in segment_values:
-        # build a mask for each segment
-        mask = np.zeros(image.shape[:2], dtype=np.uint8)
-        mask[segments == segment_value] = 255
-
-        mean_c = cv2.mean(image, mask)
-
-        # find the contour of the mask
-        contours = cv2.findContours(mask, cv2.RETR_EXTERNAL,
-                                    cv2.CHAIN_APPROX_SIMPLE)
-
-        # grab the tuples based on whether we are using OpenCV 2.4 or OpenCV 3
-        contours = contours[0] if imutils.is_cv2() else contours[1]
-
-        cv2.drawContours(image, contours, -1, mean_c, -1)
-        cv2.drawContours(image, contours, -1, (0, 0, 255), 1)
-
-        for contour in contours:
-            # compute the center of the contour
-            M = cv2.moments(contour)
-            if M['m00'] > 0.0:
-                c_x = int(M['m10'] / M['m00'])
-                c_y = int(M['m01'] / M['m00'])
-
-                # cv2.circle(image, (c_x, c_y), 4, (0, 0, 255), -1)
-
-    # write the image to the specified output path
-    cv2.imwrite(args.output, image)
-
-    print('Number of segments generated: {}'.format(len(segment_values)))
-    print('Output: {}'.format(args.output))
+    # Save the superpixels to the output image.
+    save_superpixel_image(image, superpixels, output_dir, output_name,
+                          show_contour=args.show_contour,
+                          contour_thickness=args.contour_thickness,
+                          show_center=args.show_center,
+                          center_radius=args.center_radius,
+                          show_mean=args.show_mean)
 
 
-# only run if the script is executed directly
+# Only run if the script is executed directly.
 if __name__ == '__main__':
     main()

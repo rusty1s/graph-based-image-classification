@@ -6,7 +6,8 @@ import argparse
 
 from cifar10 import Cifar10
 
-# possible arguments (look up each help parameter for additional information)
+# Possible arguments for the script. Look up each help parameter for additional
+# information.
 OUTPUT = os.path.join('.', 'datasets', 'cifar10')
 
 
@@ -19,7 +20,7 @@ def get_arguments():
 
     parser.add_argument('-o', '--output', type=str, default=OUTPUT,
                         help='Output directory in which to save the CIFAR-10 '
-                        'images. Default: ./datasets/cifar10')
+                        'images. Default: {}'.format(OUTPUT))
 
     return parser.parse_args()
 
@@ -32,6 +33,6 @@ def main():
     cifar10 = Cifar10(args.output).save_images(args.output)
 
 
-# only run if the script is executed directly
+# Only run if the script is executed directly.
 if __name__ == '__main__':
     main()

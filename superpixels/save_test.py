@@ -30,7 +30,7 @@ def test_save_superpixel_test_image():
         # Center should have a default black color.
         assert_equals(center_color[0], 0)
         assert_equals(center_color[1], 0)
-        assert_equals(center_color[2], 0)
+        assert_equals(center_color[2], 255)
 
     os.remove('./test-SLIC.png')
 
@@ -43,9 +43,9 @@ def test_save_superpixel_tree_image():
 
     save_superpixel_image(image, superpixels, path='./superpixels',
                           name='tree-SLIC.jpg', show_contour=True,
-                          contour_color=(0, 0, 255), contour_thickness=2,
+                          contour_color=(0, 0, 0), contour_thickness=2,
                           show_center=True, center_radius=2,
-                          center_color=(0, 0, 255), show_mean=True)
+                          center_color=(0, 0, 0), show_mean=True)
 
     assert_true(os.path.exists('./superpixels/tree-SLIC.jpg'))
 
@@ -57,9 +57,9 @@ def test_save_superpixel_tree_image():
         center_color = slic_image[y][x]
 
         # Center should have a NEARLY red color, because of jpeg compression.
-        assert_in(center_color[0], range(0, 15))
-        assert_in(center_color[1], range(0, 15))
-        assert_in(center_color[2], range(240, 256))
+        assert_in(center_color[0], range(0, 25))
+        assert_in(center_color[1], range(0, 25))
+        assert_in(center_color[2], range(0, 25))
 
     os.remove('./superpixels/tree-SLIC.jpg')
 
