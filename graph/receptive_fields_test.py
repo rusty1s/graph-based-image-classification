@@ -29,8 +29,12 @@ def test_receptive_fields():
     graph.add_edge('Dana', 'Frank')
     graph.add_edge('Evan', 'Frank')
 
-    def node_features(attributes):
-        return [attributes['red'], attributes['green'], attributes['blue']]
+    def node_features(node_attributes):
+        return [
+            node_attributes['red'],
+            node_attributes['green'],
+            node_attributes['blue'],
+        ]
 
     fields = receptive_fields(graph, order, 1, 6, 4, node_features, 3)
 

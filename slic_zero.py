@@ -113,7 +113,7 @@ def main():
     # Load the image from file.
     image = cv2.imread(args.image)
 
-    # Apply SLIC zero.
+    # Apply SLIC-zero.
     rep = image_to_slic_zero(image, args.num_segments,
                              compactness=args.compactness,
                              max_iterations=args.max_iterations,

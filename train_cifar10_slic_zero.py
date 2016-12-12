@@ -30,44 +30,50 @@ def main():
     cifar10 = Cifar10(CIFAR10_DIR)
     cifar10.save_images()
 
-    batch_1 = cifar10.get_train_batch(0)
-
-    first_image = batch_1['images'][0]
-    first_label = batch_1['labels'][0]
-
-    rep = image_to_slic_zero(first_image, 100)
-    superpixels = extract_superpixels(first_image, rep)
-
-    def node_mapping(node):
-        color = node.mean
-        center = node.absolute_center
+    def node_mapping(superpixel):
+        color = superpixel.mean
+        center = superpixel.absolute_center
 
         return {
-            'order': node.order,
+            'order': superpixel.order,
             'blue': color[0],
             'green': color[1],
             'red': color[2],
-            'count': node.count,
+            'count': superpixel.count,
             'x': center[0],
             'y': center[1],
         }
 
-    def edge_mapping(from_node, to_node):
+    def edge_mapping(from_superpixel, to_superpixel):
         return {}
 
-    graph = create_superpixel_graph(superpixels, node_mapping, edge_mapping)
-
-    def node_features(attributes):
+    def node_features(node_attributes):
         return [
-            attributes['red'],
-            attributes['green'],
-            attributes['blue'],
-            attributes['count'],
-            attributes['x'],
-            attributes['y'],
+            node_attributes['red'],
+            node_attributes['green'],
+            node_attributes['blue'],
+            node_attributes['count'],
+            node_attributes['x'],
+            node_attributes['y'],
         ]
 
-    fields = receptive_fields(graph, order, 1, 100, 9, node_features, 6)
+    batch = cifar10.get_train_batch(0)
+
+    for i in range(0, len(batch['images'])):
+        image = batch['images'][i]
+        label = batch['labels'][i]
+
+        rep = image_to_slic_zero(image, 100, compactness=1.0,
+                                 max_iterations=10, sigma=0.0)
+
+        superpixels = extract_superpixels(image, rep)
+
+        graph = create_superpixel_graph(superpixels, node_mapping,
+                                        edge_mapping)
+
+        fields = receptive_fields(graph, order, 1, 100, 9, node_features, 6)
+
+        print('{}/{}'.format(i+1, len(batch['images'])))
 
     pass
 
