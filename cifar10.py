@@ -26,7 +26,7 @@ def get_arguments():
 
 
 def main():
-    """Runs the downloader."""
+    """Runs the CIFAR-10 downloader."""
 
     args = get_arguments()
 

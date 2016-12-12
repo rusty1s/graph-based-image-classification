@@ -1,4 +1,4 @@
-"""SLIC Superpixel segmentation script
+"""SLIC-zero Superpixel segmentation script
 """
 
 from __future__ import print_function
@@ -27,7 +27,7 @@ def get_arguments():
     """Parses the arguments from the terminal and overrides their corresponding
     default values. Returns all arguments in a dictionary."""
 
-    parser = argparse.ArgumentParser(description='SLIC Superpixel '
+    parser = argparse.ArgumentParser(description='SLIC-zero Superpixel '
                                      'segmentation script')
 
     parser.add_argument('-i', '--image', required=True, type=str,
@@ -37,50 +37,55 @@ def get_arguments():
                         ' Default: <image_path>/<image_name>-SLIC_zero.<ext>')
 
     parser.add_argument('--num-segments', type=int, default=NUM_SEGMENTS,
-                        help='Number of segments. Default: 100')
+                        help='Number of segments. Default: {}'
+                        .format(NUM_SEGMENTS))
     parser.add_argument('--compactness', type=float, default=COMPACTNESS,
                         help='Balances color proximity and space proximity. '
                         'A higher value gives more weight to space proximity '
                         'making superpixel shapes more square/cubic. Default: '
-                        '1.0')
+                        '{}'.format(COMPACTNESS))
     parser.add_argument('--max-iterations', type=int, default=MAX_ITERATIONS,
                         help='Maximum number of iterations of k-means. '
-                        'Default: 10')
+                        'Default: {}'.format(MAX_ITERATIONS))
     parser.add_argument('--sigma', type=float, default=SIGMA,
                         help='Width of gaussian smoothing kernel for pre-'
-                        'processing. Default: 0.0')
+                        'processing. Default: {}'.format(SIGMA))
 
     group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument('--show-contour', dest='show_contour',
                        action='store_true', help='Shows a contour of the '
-                       'superpixels in the output image. Default: True')
+                       'superpixels in the output image. Default: {}'
+                       .format(SHOW_CONTOUR))
     group.add_argument('--show-no-contour', dest='show_contour',
                        action='store_false', help='Doesn\'t show a contour of '
-                       'the superpixels in the output image. Default: False')
+                       'the superpixels in the output image. Default: {}'
+                       .format(not SHOW_CONTOUR))
     parser.set_defaults(show_contour=SHOW_CONTOUR)
     parser.add_argument('--contour-thickness', type=int,
                         default=CONTOUR_THICKNESS, help='The thickness of the '
-                        'drawn contour. Default: 1')
+                        'drawn contour. Default: {}'.format(CONTOUR_THICKNESS))
     group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument('--show-center', dest='show_center',
                        action='store_true', help='Shows the center of mass '
-                       'for all superpixels in the output image. Default: '
-                       'False')
+                       'for all superpixels in the output image. Default: {}'
+                       .format(SHOW_CENTER))
     group.add_argument('--show-no-center', dest='show_center',
                        action='store_false', help='Doesn\'t show the center '
                        'of mass for all superpixels in the output image. '
-                       'Default: True')
+                       'Default: {}'.format(not SHOW_CENTER))
     parser.set_defaults(show_center=SHOW_CENTER)
     parser.add_argument('--center-radius', type=int, default=CENTER_RADIUS,
-                        help='The radius of the drawn center. Default: 2')
+                        help='The radius of the drawn center. Default: {}'
+                        .format(CENTER_RADIUS))
     group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument('--show-mean', dest='show_mean', action='store_true',
                        help='Fills the superpixel with its mean color. '
-                       'Default: False')
+                       'Default: {}'.format(SHOW_MEAN))
     group.add_argument('--show-no-mean', dest='show_mean',
                        action='store_false', help='Does\'t fill the '
-                       'superpixel with its mean color. Default: True')
-    parser.set_defaults(show_center=SHOW_MEAN)
+                       'superpixel with its mean color. Default: {}'
+                       .format(not SHOW_MEAN))
+    parser.set_defaults(show_mean=SHOW_MEAN)
 
     args = parser.parse_args()
 
@@ -95,11 +100,10 @@ def get_arguments():
 
 
 def main():
-    """Runs the SLIC superpixel segmentation."""
+    """Runs the SLIC-zero superpixel segmentation."""
 
     args = get_arguments()
     print(args)
-    return
 
     # Calcuate the output directory and output filename from the ouput passed
     # as an argument.
@@ -111,7 +115,7 @@ def main():
     image = cv2.imread(args.image)
 
     # Apply SLIC zero.
-    rep = image_to_slic_zero(image, num_segments=args.num_segments,
+    rep = image_to_slic_zero(image, args.num_segments,
                              compactness=args.compactness,
                              max_iterations=args.max_iterations,
                              sigma=args.sigma)
