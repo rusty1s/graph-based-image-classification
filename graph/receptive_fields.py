@@ -39,5 +39,4 @@ def receptive_fields(graph, labeling, stride, width, receptive_field_size,
             for i, feature in enumerate(features):
                 receptive_fields[i][y][x] = feature
 
-
     return receptive_fields
