@@ -8,14 +8,8 @@ except:
     import _pickle as pickle
 
 
-
-
 # **Convolution and Pooling**
 #
-
-
-
-
 # A input of a 1D convolution has the shape [in_width, in_channels]. So the
 # input we get from the graph should be reshaped to a 1D vector for each
 # feature. The stride size is the size of the neighborhood.
