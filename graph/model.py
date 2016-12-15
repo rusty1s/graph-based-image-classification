@@ -8,49 +8,12 @@ except:
     import _pickle as pickle
 
 
-# **Weight Initialization**
-#
-# To create the model, we're going to need to create a lot of weights and
-# biases. One should generally initialize weights with a small amount of noise
-# for symmetry breaking, and to prevent 0 gradients. Since we're using ReLU
-# neurons, it is also good practice to initialize them with a slightly positive
-# initial bias to avoid "dead neurons". Instead of doing this repeatedly while
-# we build the model, let's create two handy functions to do it for us.
-def weight_variable(shape):
-    return tf.Variable(tf.truncated_normal(shape, stddev=0.1))
-
-
-def bias_variable(shape):
-    return tf.Variable(tf.constant(0.1, shape=shape))
 
 
 # **Convolution and Pooling**
 #
-# Given an input tensor of shape [batch, in_width, in_channels] and a
-# filter/kernel tensor of shape [filter_width, in_channels, out_channels], this
-# operation reshapes the arguments to pass them to conv2d to perform the
-# equivalent convolution operation.
-#
-# * input: A 4D Tensor. Must be of type float32 or float64.
-# * filters: A 4D Tensor. Must have the same type as input.
-# * stide: An integer. The number of entries by which the filter is moved right
-#   at each step.
-def conv1d(input, filters, stride):
-    return tf.nn.conv2d(input, filters, strides=[1, 1, stride, 1],
-                        padding='SAME')
 
 
-# Our pooling is plain old max pooling over 1x2 blocks for a 1D convolution.
-#
-# * input: A 4D Tensor with shape [batch, height, width, channels] and type
-#   tf.float32.
-# * ksize: A list of ints that has length >= 4. The size of the window for each
-#   dimension of the input tensor.
-# * strides: A list of ints that has length >= 4. The stride of the sliding
-#   window for each dimension of the input tensor.
-def max_pool(input):
-    return tf.nn.max_pool(input, ksize=[1, 1, 2, 1], strides=[1, 1, 2, 1],
-                          padding='SAME')
 
 
 # A input of a 1D convolution has the shape [in_width, in_channels]. So the
