@@ -36,9 +36,9 @@ def input_width(old_input_width, patch, stride, max_pool):
     return old_input_width
 
 
-# Build a 1d convolutional neural net. The `structure` object models the
-# structure of the 1d convolutional neural net. It is build upon four keys:
-# 'conv', 'full', 'out'.
+# Builds a 1d convolutional neural net. The `structure` object models the
+# structure of the 1d convolutional neural net. It is build upon five keys:
+# 'in_width', 'in_channels', conv', 'full', 'out'.
 #
 # Example:
 #
@@ -49,9 +49,9 @@ def input_width(old_input_width, patch, stride, max_pool):
 #     {patch, stride, out_channels, max_pool},
 #     {patch, stride, out_channels, max_pool},
 #   ],
-#   'fully': [
-#     out_channels,
-#     out_channels,
+#   'full': [
+#     out_width,
+#     out_width,
 #   ],
 #   'out',
 # }
@@ -93,23 +93,33 @@ def convolutional_1d(structure):
         # We then convolve the input with the weight tensor, add the bias,
         # apply the ReLU function, and finally max pool.
         h_conv = tf.nn.relu(conv1d(input, W, stride))
-        h_pool = max_pool(h_conv, max_pool)
+        input = max_pool(h_conv, max_pool)
 
         # We save attributes for the next layer.
         in_channels = out_channels
-        input = h_pool
 
-        # Compute the new input width.
+        # Compute the input width for the next layer.
         in_width = input_width(in_width, patch, stride, max_pool)
 
-    # TODO: fully connected
+    # We add fully-connected layers to allow processing on the entire graph.
+    in_width = in_width * in_channels
+    input = tf.reshape(input, [-1, in_width])
+
+    for out_width in structure['full']:
+        W = weight_variable([in_width, out_width])
+        b = bias_variable([out_width])
+
+        input = tf.nn.relu(tf.matmul(input, W) + b)
+
+        # We save attributes for the next layer.
+        in_width = out_width
 
     # To reduce overfitting, we will apply dropout before the readout layer.
     h_drop = tf.nn.dropout(input, keep_prob)
 
     # Finally, we add our readout layer.
-    out_channels = structure['out']
-    W = weight_variable([in_channels, out_channels])
-    b = bias_variable([out_channels])
+    out_width = structure['out']
+    W = weight_variable([in_width, out_width])
+    b = bias_variable([out_width])
 
     return tf.matmul(h_drop, W) + b
