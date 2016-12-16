@@ -75,6 +75,8 @@ Run the test suite:
 
 ## ToDos
 
+* cifar labels should hold an array of 10
+* nextbatch method for cifar?
 * Normalization no use of weights?
 
 [build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
