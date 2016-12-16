@@ -1,4 +1,4 @@
 #!/bin/sh
 
 pep8 ./**/*.py --exclude=.sources && \
-nosetests --with-coverage
+nosetests --with-coverage --nologcapture

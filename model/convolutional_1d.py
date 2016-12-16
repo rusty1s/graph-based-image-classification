@@ -1,3 +1,5 @@
+from __future__ import division
+
 import tensorflow as tf
 
 from .helper import (weight_variable, bias_variable)
@@ -6,6 +8,7 @@ from .helper import (weight_variable, bias_variable)
 # Given an input tensor of shape [batch, 1, in_width, in_channels] and a
 # filter/kernel tensor of shape [1, filter_width, in_channels, out_channels],
 # this operation performs a 2D convolution with the shape of a 1D convolution.
+# The convolution is rounded down to prevent zero-padded outputs.
 #
 # * input: A 4D Tensor. Must be of type float32 or float64.
 # * filters: A 4D Tensor. Must have the same type as input.
@@ -17,7 +20,7 @@ def conv1d(input, filters, stride):
 
 
 # Our pooling is plain old max pooling over a defined width with the same
-# stride width.
+# stride width. The max pooling is rounded down to prevent zero-padded outputs.
 def max_pool(input, size):
     return tf.nn.max_pool(input, ksize=[1, 1, size, 1],
                           strides=[1, 1, size, 1], padding='SAME')
@@ -27,8 +30,8 @@ def max_pool(input, size):
 # pooling. It gets the input width, the patch width and the stride width of the
 # convolution and the width of the pooling operation.
 def output_width(input_width, patch, stride, pool):
-    after_conv = int((input_width - patch + stride)/stride)
-    return int(after_conv/pool)
+    after_conv = (input_width - patch + stride)//stride
+    return after_conv//pool
 
 
 # Builds a 1d convolutional neural net. The `structure` object models the
