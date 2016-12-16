@@ -109,3 +109,33 @@ def test_convolutional_1d_b():
 
         train_step.run(feed_dict={x: data, y: labels, keep_prob: 0.5})
         accuracy.eval(feed_dict={x: data, y: labels, keep_prob: 1.0})
+
+
+def test_convolutional_1d_c():
+    structure = {
+        'in_width': 10,
+        'in_channels': 1,
+        'out': 2,
+    }
+
+    y_conv, x, y, keep_prob = convolutional_1d(structure)
+
+    softmax = tf.nn.softmax_cross_entropy_with_logits(y_conv, y)
+    cross_entropy = tf.reduce_mean(softmax)
+
+    train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
+
+    correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(y, 1))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+    init = tf.initialize_all_variables()
+
+    with tf.Session() as sess:
+        sess.run(init)
+
+        data = np.empty((1, 1, 10, 1))
+        labels = np.zeros((1, 2))
+        labels[0][1] = 1.0
+
+        train_step.run(feed_dict={x: data, y: labels, keep_prob: 0.5})
+        accuracy.eval(feed_dict={x: data, y: labels, keep_prob: 1.0})
