@@ -17,14 +17,14 @@ def test_output_width():
     width = output_width(7, 2, 1)
     assert_equals(width, 4)
 
-    # We have an input width of 10 and a stride size of 1. That means after 
+    # We have an input width of 10 and a stride size of 1. That means after
     # convolution our input width is reduced to 10. A pooling of stride 2
     # should reduce this to 5.
     width = output_width(10, 1, 2)
     assert_equals(width, 5)
 
-    # We have an input width of 10 and a stride size of 4. That means after 
-    # convolution our input width is reduced to 3. A pooling of stride 2 should 
+    # We have an input width of 10 and a stride size of 4. That means after
+    # convolution our input width is reduced to 3. A pooling of stride 2 should
     # reduce this to 2.
     width = output_width(10, 4, 2)
     assert_equals(width, 2)
