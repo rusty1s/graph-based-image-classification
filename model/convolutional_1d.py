@@ -5,9 +5,7 @@ from .helper import (weight_variable, bias_variable)
 
 # Given an input tensor of shape [batch, 1, in_width, in_channels] and a
 # filter/kernel tensor of shape [1, filter_width, in_channels, out_channels],
-# this
-# operation reshapes the arguments to pass them to conv2d to perform the
-# equivalent convolution operation.
+# this operation performs a 2D convolution with the shape of a 1D convolution.
 #
 # * input: A 4D Tensor. Must be of type float32 or float64.
 # * filters: A 4D Tensor. Must have the same type as input.
@@ -18,22 +16,19 @@ def conv1d(input, filters, stride):
                         padding='SAME')
 
 
-# Our pooling is plain old max pooling over a defined width.
-#
-# * input: A 4D Tensor with shape [batch, height, width, channels] and type
-#   tf.float32.
-# * ksize: A list of ints that has length >= 4. The size of the window for each
-#   dimension of the input tensor.
-# * strides: A list of ints that has length >= 4. The stride of the sliding
-#   window for each dimension of the input tensor.
+# Our pooling is plain old max pooling over a defined width with the same
+# stride width.
 def max_pool(input, size):
     return tf.nn.max_pool(input, ksize=[1, 1, size, 1],
                           strides=[1, 1, size, 1], padding='SAME')
 
 
-def input_width(old_input_width, patch, stride, max_pool):
-    # TODO
-    return old_input_width
+# Helper method that computes the output_width of a 1D convolution after max
+# pooling. It gets the input width, the patch width and the stride width of the
+# convolution and the width of the pooling operation.
+def output_width(input_width, patch, stride, pool):
+    after_conv = int((input_width - patch + stride)/stride)
+    return int(after_conv/pool)
 
 
 # Builds a 1d convolutional neural net. The `structure` object models the
@@ -99,7 +94,7 @@ def convolutional_1d(structure):
         in_channels = out_channels
 
         # Compute the input width for the next layer.
-        in_width = input_width(in_width, patch, stride, max_pool)
+        in_width = output_width(in_width, patch, stride, max_pool)
 
     # We add fully-connected layers to allow processing on the entire graph.
     in_width = in_width * in_channels
