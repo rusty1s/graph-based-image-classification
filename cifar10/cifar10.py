@@ -1,9 +1,8 @@
 from __future__ import print_function
 
 import os
-import shutil
-import cv2
 import numpy as np
+import cv2
 
 # Load the correct pickle implementation for different python versions.
 try:

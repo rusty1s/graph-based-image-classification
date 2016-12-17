@@ -40,7 +40,7 @@ NODE_FEATURE_6 = 'y'
 def main():
 
     cifar10 = Cifar10(CIFAR10_DIR)
-    cifar10.save_images()
+    # cifar10.save_images()
 
     path = os.path.join(CIFAR10_DIR, 'slic_zero', DATESTRING)
 
@@ -84,15 +84,15 @@ def main():
     for i in range(0, 5):
         batch = cifar10.get_train_batch(i)
 
-        np_array = np.zeros(shape=(len(batch['images']), 1, WIDTH * SIZE,
+        np_array = np.zeros(shape=(len(batch['data']), 1, WIDTH * SIZE,
                                    NODE_FEATURE_SIZE))
 
         print('Batch {}:'.format(i+1))
         print('========')
 
-        for j in range(0, len(batch['images'])):
-            image = batch['images'][j]
-            label = batch['labels'][j]
+        for j in range(0, len(batch['data'])):
+            image = batch['data'][j]
+            # label = batch['labels'][j]
 
             rep = image_to_slic_zero(image, NUM_SEGMENTS,
                                      compactness=COMPACTNESS,
@@ -110,24 +110,24 @@ def main():
             np_array[j] = fields
 
             if (j+1) % 100 == 0:
-                print('{}/{}'.format(j+1, len(batch['images'])))
+                print('{}/{}'.format(j+1, len(batch['data'])))
 
         with open(os.path.join(path, 'data_batch_{}'.format(i+1)),
                   'wb') as output:
 
-            pickle.dump(np_array, output, -1)
+            pickle.dump({'data': np_array, 'labels': batch['labels']},
+                        output, -1)
 
     batch = cifar10.get_test_batch()
 
-    np_array = np.zeros(shape=(len(batch['images']), 1, WIDTH * SIZE,
+    np_array = np.zeros(shape=(len(batch['data']), 1, WIDTH * SIZE,
                                NODE_FEATURE_SIZE))
 
     print('Test Batch:')
     print('==========')
 
-    for j in range(0, len(batch['images'])):
-        image = batch['images'][j]
-        label = batch['labels'][j]
+    for j in range(0, len(batch['data'])):
+        image = batch['data'][j]
 
         rep = image_to_slic_zero(image, NUM_SEGMENTS,
                                  compactness=COMPACTNESS,
@@ -145,11 +145,11 @@ def main():
         np_array[j] = fields
 
         if (j+1) % 100 == 0:
-            print('{}/{}'.format(j+1, len(batch['images'])))
+            print('{}/{}'.format(j+1, len(batch['data'])))
 
     with open(os.path.join(path, 'test_batch'), 'wb') as output:
 
-        pickle.dump(np_array, output, -1)
+        pickle.dump({'data': np_array, 'labels': batch['labels']}, output, -1)
 
 # Only run if the script is executed directly.
 if __name__ == '__main__':
