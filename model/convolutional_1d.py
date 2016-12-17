@@ -102,7 +102,7 @@ def convolutional_1d(structure):
 
     # We add fully-connected layers to allow processing on the entire graph.
     in_width = in_width * in_channels
-    input = tf.reshape(input, [-1, in_width])
+    input = tf.reshape(input, [-1, int(in_width)])
 
     if 'full' in structure:
         for out_width in structure['full']:
