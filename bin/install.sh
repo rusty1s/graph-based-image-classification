@@ -70,7 +70,7 @@ conda create -q -n "$NAME" python="$PYTHON"
 # shellcheck disable=SC1091
 source activate "$NAME"
 
-# install conda requirements
+# install conda packages
 conda install numpy scipy matplotlib
 conda install -c https://conda.binstar.org/menpo opencv3
 
