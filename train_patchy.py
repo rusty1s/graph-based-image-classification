@@ -4,7 +4,7 @@ import tensorflow as tf
 # import os
 
 from model import convolutional_1d
-from data import DataSet
+from data import load_data
 
 # Load the correct pickle implementation for different python versions.
 try:

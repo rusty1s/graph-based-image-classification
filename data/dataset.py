@@ -1,4 +1,22 @@
+import os
 import numpy as np
+
+# Load the correct pickle implementation for different python versions.
+try:
+    import cPickle as pickle
+except:
+    import _pickle as pickle
+
+
+def load_data(base_dir, names):
+    batches = []
+
+    for name in names:
+        path = os.path.join(base_dir, name)
+        with open(path, 'rb') as f:
+            batches += [pickle.load(f)]
+
+    return DataSet(batches)
 
 
 class DataSet(object):
