@@ -8,7 +8,7 @@ except:
     import _pickle as pickle
 
 
-def load_data(base_dir, names):
+def load_dataset(base_dir, names):
     batches = []
 
     for name in names:
@@ -16,13 +16,13 @@ def load_data(base_dir, names):
         with open(path, 'rb') as f:
             batches += [pickle.load(f)]
 
-    return DataSet(batches)
+    return Dataset(batches)
 
 
-class DataSet(object):
+class Dataset(object):
 
     def __init__(self, batches):
-        """Constructs a DataSet."""
+        """Constructs a Dataset."""
 
         assert len(batches) > 0
         assert 'data' in batches[0]

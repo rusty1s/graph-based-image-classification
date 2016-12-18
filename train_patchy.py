@@ -4,7 +4,7 @@ import tensorflow as tf
 # import os
 
 from model import convolutional_1d
-from data import load_data
+from data import load_dataset
 
 # Load the correct pickle implementation for different python versions.
 try:
@@ -14,8 +14,8 @@ except:
 
 # Load the train and test data.
 PATH = './datasets/cifar10/slic_zero/2016-12-17T15-22-11'
-train_set = load_data(PATH, ['data_batch_{}'.format(i) for i in range(1, 6)])
-test_set = load_data(PATH, ['test_batch'])
+train_set = load_dataset(PATH, ['data_batch_{}'.format(i+1) for i in range(5)])
+test_set = load_dataset(PATH, ['test_batch'])
 
 # Build the model.
 NEIGHBORHOOD_SIZE = 9

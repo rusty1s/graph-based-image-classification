@@ -1,1 +1,1 @@
-from .dataset import (load_data, DataSet)
+from .dataset import (load_dataset, Dataset)

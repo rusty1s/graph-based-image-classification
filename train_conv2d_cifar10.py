@@ -28,8 +28,8 @@ def max_pool_2x2(x):
 
 # Load the train and test data.
 PATH = './datasets/cifar10'
-train_set = load_data(PATH, ['data_batch_{}'.format(i) for i in range(1, 6)])
-test_set = load_data(PATH, ['test_batch'])
+train_set = load_dataset(PATH, ['data_batch_{}'.format(i+1) for i in range(5)])
+test_set = load_dataset(PATH, ['test_batch'])
 
 sess = tf.InteractiveSession()
 

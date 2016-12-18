@@ -3,7 +3,7 @@ from numpy import testing as np_test
 
 import numpy as np
 
-from .dataset import DataSet
+from .dataset import Dataset
 
 
 def test_create_dataset():
@@ -20,7 +20,7 @@ def test_create_dataset():
         ]),
     }
 
-    dataset = DataSet([batch, batch])
+    dataset = Dataset([batch, batch])
 
     assert_equals(dataset.num_examples, 10)
     assert_equals(dataset.data.shape, (10, 5))
@@ -54,7 +54,7 @@ def test_next_batch():
         ]),
     }
 
-    dataset = DataSet([batch])
+    dataset = Dataset([batch])
 
     data, labels = dataset.next_batch(2)
 
