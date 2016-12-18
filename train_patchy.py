@@ -12,29 +12,10 @@ try:
 except:
     import _pickle as pickle
 
-# Load the test data.
-PATH_DATA = './datasets/cifar10/slic_zero/2016-12-17T15-22-11'
-PATH_LABELS = './datasets/cifar10'
-
-
-with open(os.path.join(PATH_DATA, 'data_batch_1'), 'rb') as f:
-    batch_1 = pickle.load(f)
-with open(os.path.join(PATH_DATA, 'data_batch_2'), 'rb') as f:
-    batch_2 = pickle.load(f)
-with open(os.path.join(PATH_DATA, 'data_batch_3'), 'rb') as f:
-    batch_3 = pickle.load(f)
-with open(os.path.join(PATH_DATA, 'data_batch_4'), 'rb') as f:
-    batch_4 = pickle.load(f)
-with open(os.path.join(PATH_DATA, 'data_batch_5'), 'rb') as f:
-    batch_5 = pickle.load(f)
-
-data = DataSet([
-    batch_1,
-    batch_2,
-    batch_3,
-    batch_4,
-    batch_5,
-])
+# Load the train and test data.
+PATH = './datasets/cifar10/slic_zero/2016-12-17T15-22-11'
+train_set = load_data(PATH, ['data_batch_{}'.format(i) for i in range(1, 6)])
+test_set = load_data(PATH, ['test_batch'])
 
 # Build the model.
 NEIGHBORHOOD_SIZE = 9
@@ -89,10 +70,11 @@ with tf.Session() as sess:
 
     for i in range(20000):
         d, labels = data.next_batch(50)
-        train_step.run(feed_dict={x: d, y: labels, keep_prob: 0.5})
 
         if i % 100 == 0:
             train_accuracy = accuracy.eval(feed_dict={x: d,
                                                       y: labels,
                                                       keep_prob: 1.0})
             print('Step', i, 'Training accuracy', train_accuracy)
+
+        train_step.run(feed_dict={x: d, y: labels, keep_prob: 0.5})

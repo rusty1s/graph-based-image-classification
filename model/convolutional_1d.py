@@ -30,7 +30,7 @@ def max_pool(input, size):
 # the width of the pooling operation.
 def output_width(input_width, stride, pool):
     after_conv = math.ceil(float(input_width)/stride)
-    return math.ceil(after_conv/pool)
+    return int(math.ceil(after_conv/pool))
 
 
 # Builds a 1d convolutional neural net. The `structure` object models the
@@ -102,7 +102,7 @@ def convolutional_1d(structure):
 
     # We add fully-connected layers to allow processing on the entire graph.
     in_width = in_width * in_channels
-    input = tf.reshape(input, [-1, int(in_width)])
+    input = tf.reshape(input, [-1, in_width])
 
     if 'full' in structure:
         for out_width in structure['full']:

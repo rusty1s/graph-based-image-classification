@@ -27,9 +27,9 @@ def max_pool_2x2(x):
                           padding='SAME')
 
 # Load the train and test data.
-train_set = load_data('./datasets/cifar10',
-                      ['data_batch_{}'.format(i) for i in range(1, 6)])
-test_set = load_data('./datasets/cifar10', ['test_batch'])
+PATH = './datasets/cifar10'
+train_set = load_data(PATH, ['data_batch_{}'.format(i) for i in range(1, 6)])
+test_set = load_data(PATH, ['test_batch'])
 
 sess = tf.InteractiveSession()
 
@@ -71,17 +71,18 @@ correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(y_, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 sess.run(tf.initialize_all_variables())
 
-for i in range(2000):
+for i in range(20000):
     images, labels = train_set.next_batch(50)
-    train_step.run(feed_dict={
-        x: images, y_: labels, keep_prob: 0.5,
-    })
 
-    if i % 10 == 0:
+    if i % 100 == 0:
         train_accuracy = accuracy.eval(feed_dict={
             x: images, y_: labels, keep_prob: 1.0,
         })
         print('Step', i, 'Training accuracy', train_accuracy)
+
+    train_step.run(feed_dict={
+        x: images, y_: labels, keep_prob: 0.5,
+    })
 
 images = test_set.data
 labels = test_set.labels
