@@ -57,6 +57,11 @@ def path_exists(path, action):
         return False
 
 
+def convert_1d_images_to_3d(batch, width, height, depth):
+    reshaped = np.reshape(batch, (len(batch), depth, height, width))
+    return np.transpose(reshaped, (0, 2, 3, 1))
+
+
 def convert_batch(file, num_labels):
     """Converts a CIFAR-10 batch to a dictionary containing labels with the
     shape (10000, 10) and 3d images as data with the shape (10000, 32, 32, 3).
@@ -66,21 +71,10 @@ def convert_batch(file, num_labels):
         # Decode to latin1 to avoid `UnicodeDecodeError`.
         batch = pickle.load(f, encoding='latin1')
 
-    labels = np.zeros((len(batch['labels']), num_labels))
-    data = np.zeros((len(batch['data']), 32, 32, 3))
-
-    for i in range(len(batch['data'])):
-        labels[i][batch['labels'][i]] = 1.0
-
-        image = batch['data'][i]
-
-        red = image[0:1024].reshape(32, 32)
-        green = image[1024:2048].reshape(32, 32)
-        blue = image[2048:3072].reshape(32, 32)
-
-        data[i] = np.dstack((red, green, blue))
-
     os.remove(file)
 
     with open(file, 'wb') as f:
-        pickle.dump({'data': data, 'labels': labels}, f)
+        pickle.dump({
+            'data': convert_image_batch(batch['data'], 32, 32, 3),
+            'labels': batch['labels']
+        }, f)
