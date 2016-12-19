@@ -1,8 +1,8 @@
 import tensorflow as tf
 
 
-def inputs(data_dir, filenames, read, preprocess, num_examples_per_epoch,
-           batch_size, shuffle=True):
+def inputs(data_dir, filenames, read, num_examples_per_epoch,
+           batch_size, preprocess=None, shuffle=True):
 
     """Constructs inputs using the Reader ops.
 
@@ -20,10 +20,11 @@ def inputs(data_dir, filenames, read, preprocess, num_examples_per_epoch,
               0..num_labels.
             data: A [height, width, depth] float32 tensor with the data of the
               example.
-        preprocess: Preprocess operation on the data of the example.
         num_examples_per_epoch: Number of examples per epoch.
         batch_size: Number of data per batch.
-        shuffle: Boolean indicating whether to use a shuffling queue.
+        preprocess: Preprocess operation on the data of the example (optional).
+        shuffle: Boolean indicating whether to use a shuffling queue. Default:
+          true.
 
     Returns:
         data_batch: 4D tensor of [batch_size, height, width, depth] size.
@@ -47,7 +48,10 @@ def inputs(data_dir, filenames, read, preprocess, num_examples_per_epoch,
     depth = read_input.depth
 
     # Preprocess the data.
-    data = preprocess(read_input.data)
+    if preprocess is None:
+        data = read_input.data
+    else:
+        data = preprocess(read_input.data)
 
     # Set the shapes of tensors.
     data.set_shape([height, width, depth])
