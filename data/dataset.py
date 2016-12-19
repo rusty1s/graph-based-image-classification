@@ -26,7 +26,7 @@ class Dataset(object):
 
         self._data = np.concatenate([batch['data'] for batch in batches])
         self._labels = np.concatenate([batch['labels'] for batch in batches])
-        self._num_examples = self._data.shape[0]
+
         self._epochs_completed = 0
         self._index_in_epoch = 0
 
@@ -40,11 +40,15 @@ class Dataset(object):
 
     @property
     def num_examples(self):
-        return self._num_examples
+        return self.data.shape[0]
 
     @property
     def epochs_completed(self):
         return self._epochs_completed
+
+    def add_batch(self, batch):
+        self._data = np.concatenate([self.data, batch['data']])
+        self._labels = np.concatenate([self.labels, batch['labels']])
 
     def next_batch(self, batch_size):
         """Returns the next `batch_size` examples from this data set."""
