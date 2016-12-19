@@ -24,75 +24,51 @@ class Dataset(object):
     def __init__(self, batches):
         """Constructs a Dataset."""
 
-        assert len(batches) > 0
-        assert 'data' in batches[0]
-        assert 'labels' in batches[0]
-
-        self.__num_examples = 0
-        for batch in batches:
-            self.__num_examples += batch['data'].shape[0]
-
-        self.__epochs_completed = 0
-        self.__index_in_epoch = 0
-
-        data_shape = list(batches[0]['data'].shape)
-        labels_shape = list(batches[0]['labels'].shape)
-        data_shape[0] = self.__num_examples
-        labels_shape[0] = self.__num_examples
-
-        self.__data = np.zeros(data_shape)
-        self.__labels = np.zeros(labels_shape)
-
-        i = 0
-        j = 0
-        for batch in batches:
-            for data in batch['data']:
-                self.__data[i] = data
-                i += 1
-
-            for label in batch['labels']:
-                self.__labels[j] = label
-                j += 1
+        self._data = np.concatenate([batch['data'] for batch in batches])
+        self._labels = np.concatenate([batch['labels'] for batch in batches])
+        self._num_examples = self._data.shape[0]
+        self._epochs_completed = 0
+        self._index_in_epoch = 0
 
     @property
     def data(self):
-        return self.__data
+        return self._data
 
     @property
     def labels(self):
-        return self.__labels
+        return self._labels
 
     @property
     def num_examples(self):
-        return self.__num_examples
+        return self._num_examples
 
     @property
     def epochs_completed(self):
-        return self.__epochs_completed
+        return self._epochs_completed
 
     def next_batch(self, batch_size):
         """Returns the next `batch_size` examples from this data set."""
 
-        assert batch_size <= self.__num_examples
+        assert batch_size <= self.num_examples
 
-        start = self.__index_in_epoch
-        self.__index_in_epoch += batch_size
+        start = self._index_in_epoch
+        self._index_in_epoch += batch_size
 
-        if self.__index_in_epoch > self.__num_examples:
+        if self._index_in_epoch > self.num_examples:
             # Finished epoch.
-            self.__epochs_completed += 1
+            self._epochs_completed += 1
 
             # Shuffle the data.
-            perm = np.arange(self.__num_examples)
+            perm = np.arange(self.num_examples)
             np.random.shuffle(perm)
 
-            self.__data = self.__data[perm]
-            self.__labels = self.__labels[perm]
+            self.__data = self.data[perm]
+            self.__labels = self.labels[perm]
 
             # Start next epoch.
             start = 0
-            self.__index_in_epoch = batch_size
+            self._index_in_epoch = batch_size
 
-        end = self.__index_in_epoch
+        end = self._index_in_epoch
 
-        return self.__data[start:end], self.__labels[start:end]
+        return self.data[start:end], self.labels[start:end]
