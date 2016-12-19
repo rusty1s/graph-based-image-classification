@@ -136,7 +136,7 @@ def test_superpixel_4():
     assert_equals(superpixel.rounded_relative_center, (1, 0))
     assert_equals(superpixel.absolute_center, (2, 3))
     assert_equals(superpixel.rounded_absolute_center, (2, 3))
-    assert_equals(superpixel.relative_center_in_bounding_box, (1/3, 0))
+    assert_equals(superpixel.relative_center_in_bounding_box, (1.0/3, 0))
     assert_equals(superpixel.mean, (140.0, 0.0, 0.0))
 
     assert_equals(superpixel.neighbors, set([1, 3]))
