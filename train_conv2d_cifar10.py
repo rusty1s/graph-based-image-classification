@@ -3,12 +3,6 @@ import tensorflow as tf
 from model import convolutional_2d
 from data import load_dataset
 
-# Load the correct pickle implementation for different python versions.
-try:
-    import cPickle as pickle
-except:
-    import _pickle as pickle
-
 
 def weight_variable(shape):
     return tf.Variable(tf.truncated_normal(shape, stddev=0.1))
@@ -65,29 +59,31 @@ y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
 
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y_conv,
                                                                        y_))
-train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
+train_step = tf.train.AdamOptimizer(0.1).minimize(cross_entropy)
 correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(y_, 1))
 
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 sess.run(tf.initialize_all_variables())
 
 for i in range(20000):
-    images, labels = train_set.next_batch(50)
+    images, labels = train_set.next_batch(128)
 
     if i % 100 == 0:
         train_accuracy = accuracy.eval(feed_dict={
             x: images, y_: labels, keep_prob: 1.0,
         })
-        print('Step', i, 'Training accuracy', train_accuracy)
+        print('Training accuracy', train_accuracy)
 
-    train_step.run(feed_dict={
+    _, loss_val = sess.run([train_step, cross_entropy], feed_dict={
         x: images, y_: labels, keep_prob: 0.5,
     })
 
-images = test_set.data
-labels = test_set.labels
+    print('Step', i, 'Loss', loss_val)
 
-test_accuracy = accuracy.eval(feed_dict={
-    x: images, y_: labels, keep_prob: 1.0,
-})
-print('Test accuracy', test_accuracy)
+# images = test_set.data
+# labels = test_set.labels
+
+# test_accuracy = accuracy.eval(feed_dict={
+#     x: images, y_: labels, keep_prob: 1.0,
+# })
+# print('Test accuracy', test_accuracy)

@@ -85,6 +85,14 @@ class Superpixel(object):
         return (self.left + relative_center[0], self.top + relative_center[1])
 
     @property
+    def relative_center_in_bounding_box(self):
+        if self.width == 0 or self.height == 0:
+            return (0, 0)
+
+        relative_center = self.relative_center
+        return (relative_center[0]/self.width, relative_center[1]/self.height)
+
+    @property
     def mean(self):
         """The mean color of the superpixel."""
 
