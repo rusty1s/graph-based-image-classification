@@ -18,7 +18,7 @@ def inputs(data_dir, filenames, read, preprocess, num_examples_per_epoch,
               for this example.
             label: an int32 Tensor with the label of the example in the range
               0..num_labels.
-            data: A [height, width, depth] float32 Tensor with the data of the
+            data: A [height, width, depth] float32 tensor with the data of the
               example.
         preprocess: Preprocess operation on the data of the example.
         num_examples_per_epoch: Number of examples per epoch.
@@ -75,8 +75,8 @@ def _generate_image_and_label_batch(data, label, min_queue_examples,
     Args:
         data: 3D tensor of [height, width, depth] of type float32.
         label: 1D tensor of type int32.
-        min_queue_examples: int32, minimum number of samples to retain in the
-          queue that provides of batches of examples.
+        min_queue_examples: Minimum number of samples to retain in the queue
+          that provides of batches of examples.
         batch_size: Number of data per batch.
         shuffle: Boolean indicating whether to use a shuffling queue.
 
