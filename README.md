@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 ### Tested Versions
 
-* **TensorFlow**: 0.11.0
+* **TensorFlow**: 0.12.0
 * **nauty**: 26r7
 * **pynauty**: 0.6.0
 * **OpenCV**: 3.1.0

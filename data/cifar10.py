@@ -58,7 +58,6 @@ class Cifar10(Dataset):
 
     @property
     def data_shape(self):
-        return [32, 32, 3]
         return [POST_HEIGHT, POST_WIDTH, 3]
 
     def read(self, filename_queue):
@@ -136,7 +135,7 @@ class Cifar10(Dataset):
         image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
 
         # Subtract off the mean and divide by the variance of the pixels.
-        image = tf.image.per_image_whitening(image)
+        image = tf.image.per_image_standardization(image)
 
         return image
 
@@ -148,6 +147,6 @@ class Cifar10(Dataset):
                                                        POST_WIDTH)
 
         # Subtract off the mean and divide by the variance of the pixels.
-        image = tf.image.per_image_whitening(image)
+        image = tf.image.per_image_standardization(image)
 
         return image

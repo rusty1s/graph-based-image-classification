@@ -50,7 +50,7 @@ done
 
 # set default values
 PYTHON="${PYTHON:-3.5}"
-TENSORFLOW="${TENSORFLOW:-0.11.0}"
+TENSORFLOW="${TENSORFLOW:-0.12.0}"
 NAUTY="${NAUTY:-26r7}"
 PYNAUTY="${PYNAUTY:-0.6.0}"
 
