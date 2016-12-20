@@ -108,8 +108,8 @@ class Cifar10(Dataset):
 
         # The reamining bytes after the label represent the image, which we
         # reshape from [depth * height * width] to [depth, height, width].
-        data = tf.strided_slice(record_bytes, [LABEL_BYTES], [RECORD_BYTES],
-                                [1])
+        data = tf.strided_slice(
+            record_bytes, [LABEL_BYTES], [RECORD_BYTES], [1])
         data = tf.reshape(data, [DEPTH, HEIGHT, WIDTH])
 
         # Convert from [depth, height, width] to [height, width, depth].
@@ -148,6 +148,6 @@ class Cifar10(Dataset):
                                                        POST_WIDTH)
 
         # Subtract off the mean and divide by the variance of the pixels.
-        image = tf.image.per_image_standardization(image)
+        image = tf.image.per_image_whitening(image)
 
         return image
