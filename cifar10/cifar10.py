@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import os
 import numpy as np
 import cv2
@@ -10,8 +8,8 @@ try:
 except:
     import _pickle as pickle
 
-from .helper import (path_exists, extract_tar, download as download_tar,
-                     convert_batch)
+# from .helper import (path_exists, extract_tar, download as download_tar,
+#                      convert_batch)
 
 # The CIFAR-10 dataset consists of 60.000 32x32 colour images in 10 classes,
 # with 6.000 images per class. There are 50.000 training images and 10.000 test
@@ -58,115 +56,115 @@ class Cifar10(object):
 
         self.download()
 
-    @property
-    def dir(self):
-        return self.__dir
+    # @property
+    # def dir(self):
+    #     return self.__dir
 
-    @property
-    def label_names(self):
-        """A 10-element list which gives meaningful names to the numeric
-        labels, e.g. `label_names[0] == 'airplane'`."""
+    # @property
+    # def label_names(self):
+    #     """A 10-element list which gives meaningful names to the numeric
+    #     labels, e.g. `label_names[0] == 'airplane'`."""
 
-        with open(os.path.join(self.dir, 'batches.meta'), 'rb') as f:
-            return pickle.load(f)['label_names']
+    #     with open(os.path.join(self.dir, 'batches.meta'), 'rb') as f:
+    #         return pickle.load(f)['label_names']
 
-    @property
-    def num_labels(self):
-        """Returns the number of labels."""
+    # @property
+    # def num_labels(self):
+    #     """Returns the number of labels."""
 
-        return len(self.label_names)
+    #     return len(self.label_names)
 
-    def download(self):
-        """Downloads the CIFAR-10 dataset, extracts it and moves it to
-        `self.dir`."""
+    # def download(self):
+    #     """Downloads the CIFAR-10 dataset, extracts it and moves it to
+    #     `self.dir`."""
 
-        if path_exists(self.dir, 'downloading'):
-            print('Everything is fine if {} already contains the CIFAR-10 '
-                  'dataset.'.format(self.dir))
-            return
+    #     if path_exists(self.dir, 'downloading'):
+    #         print('Everything is fine if {} already contains the CIFAR-10 '
+    #               'dataset.'.format(self.dir))
+    #         return
 
-        download_tar(URL, TAR_NAME)
-        extract_tar(TAR_NAME, self.dir)
-        os.remove(os.path.join(self.dir, 'readme.html'))
+    #     download_tar(URL, TAR_NAME)
+    #     extract_tar(TAR_NAME, self.dir)
+    #     os.remove(os.path.join(self.dir, 'readme.html'))
 
-        for i in range(NUM_TRAIN_BATCHES):
-            file = os.path.join(self.dir, 'data_batch_{}'.format(i+1))
-            convert_batch(file, self.num_labels)
+    #     for i in range(NUM_TRAIN_BATCHES):
+    #         file = os.path.join(self.dir, 'data_batch_{}'.format(i+1))
+    #         convert_batch(file, self.num_labels)
 
-        convert_batch(os.path.join(self.dir, 'test_batch'), self.num_labels)
+    #     convert_batch(os.path.join(self.dir, 'test_batch'), self.num_labels)
 
-    def get_train_batch(self, batch_num):
-        """Gets the nth training batch (0 <= n < 5) and returns a dictionary
-        containing 10.000th labels and 3d images."""
+    # def get_train_batch(self, batch_num):
+    #     """Gets the nth training batch (0 <= n < 5) and returns a dictionary
+    #     containing 10.000th labels and 3d images."""
 
-        if not 0 <= batch_num < NUM_TRAIN_BATCHES:
-            raise ValueError('Invalid batch number. Batch number must be '
-                             'between 0 and 4.')
+    #     if not 0 <= batch_num < NUM_TRAIN_BATCHES:
+    #         raise ValueError('Invalid batch number. Batch number must be '
+    #                          'between 0 and 4.')
 
-        filename = 'data_batch_{}'.format(batch_num + 1)
-        path = os.path.join(self.dir, filename)
+    #     filename = 'data_batch_{}'.format(batch_num + 1)
+    #     path = os.path.join(self.dir, filename)
 
-        with open(path, 'rb') as f:
-            return pickle.load(f)
+    #     with open(path, 'rb') as f:
+    #         return pickle.load(f)
 
-    def get_test_batch(self):
-        """Gets the test batch and returns a dictionary containing 10.000th
-        labels and 3d images."""
+    # def get_test_batch(self):
+    #     """Gets the test batch and returns a dictionary containing 10.000th
+    #     labels and 3d images."""
 
-        with open(os.path.join(self.dir, 'test_batch'), 'rb') as f:
-            return pickle.load(f)
+    #     with open(os.path.join(self.dir, 'test_batch'), 'rb') as f:
+    #         return pickle.load(f)
 
-    def save_images(self, dir=None):
-        """Saves all images to the `dir` directory. Train images go to
-        `dir/train`. Test images go to `dir/test`. Images go to its
-        corresponding label directory and are named incrementally."""
+    # def save_images(self, dir=None):
+    #     """Saves all images to the `dir` directory. Train images go to
+    #     `dir/train`. Test images go to `dir/test`. Images go to its
+    #     corresponding label directory and are named incrementally."""
 
-        # Set fallback directory.
-        if dir is None:
-            dir = os.path.join(self.dir, 'images')
+    #     # Set fallback directory.
+    #     if dir is None:
+    #         dir = os.path.join(self.dir, 'images')
 
-        train_dir = os.path.join(dir, 'train')
-        test_dir = os.path.join(dir, 'test')
+    #     train_dir = os.path.join(dir, 'train')
+    #     test_dir = os.path.join(dir, 'test')
 
-        # Abort if any of the needed directories already exists
-        if path_exists(train_dir, 'saving images'):
-            return
+    #     # Abort if any of the needed directories already exists
+    #     if path_exists(train_dir, 'saving images'):
+    #         return
 
-        if path_exists(test_dir, 'saving images'):
-            return
+    #     if path_exists(test_dir, 'saving images'):
+    #         return
 
-        # Create the folder structure.
-        for label in self.label_names:
-            os.makedirs(os.path.join(train_dir, label))
-            os.makedirs(os.path.join(test_dir, label))
+    #     # Create the folder structure.
+    #     for label in self.label_names:
+    #         os.makedirs(os.path.join(train_dir, label))
+    #         os.makedirs(os.path.join(test_dir, label))
 
-        # Create two dictionaries that save the current file index for each
-        # label.
-        train_indices = {label: 1 for label in self.label_names}
-        test_indices = train_indices.copy()
+    #     # Create two dictionaries that save the current file index for each
+    #     # label.
+    #     train_indices = {label: 1 for label in self.label_names}
+    #     test_indices = train_indices.copy()
 
-        # Save the train images to train directory.
-        for batch_num in range(0, NUM_TRAIN_BATCHES):
-            batch = self.get_train_batch(batch_num)
-            self.__save_images_from_batch(batch, train_indices, train_dir)
+    #     # Save the train images to train directory.
+    #     for batch_num in range(0, NUM_TRAIN_BATCHES):
+    #         batch = self.get_train_batch(batch_num)
+    #         self.__save_images_from_batch(batch, train_indices, train_dir)
 
-        # Save the test images to the test directory.
-        test_batch = self.get_test_batch()
-        self.__save_images_from_batch(test_batch, test_indices, test_dir)
+    #     # Save the test images to the test directory.
+    #     test_batch = self.get_test_batch()
+    #     self.__save_images_from_batch(test_batch, test_indices, test_dir)
 
-    def __save_images_from_batch(self, batch, indices, dir):
-        """Saves all images of a batch to the `dir` directory. Images go to its
-        corresponding label directory and are named incrementally."""
+    # def __save_images_from_batch(self, batch, indices, dir):
+    #     """Saves all images of a batch to the `dir` directory. Images go to
+    #     its corresponding label directory and are named incrementally."""
 
-        for i in range(0, len(batch['labels'])):
-            label_index = np.argmax(batch['labels'][i])
-            label = self.label_names[label_index]
-            data = batch['data'][i]
+    #     for i in range(0, len(batch['labels'])):
+    #         label_index = np.argmax(batch['labels'][i])
+    #         label = self.label_names[label_index]
+    #         data = batch['data'][i]
 
-            filename = '{}.png'.format(indices[label])
-            file = os.path.join(dir, label, filename)
+    #         filename = '{}.png'.format(indices[label])
+    #         file = os.path.join(dir, label, filename)
 
-            cv2.imwrite(file, data)
+    #         cv2.imwrite(file, data)
 
-            # Increment the label index.
-            indices[label] += 1
+    #         # Increment the label index.
+    #         indices[label] += 1

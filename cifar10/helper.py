@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import urllib
+import sys
 import os
 import requests
 from clint.textui import (progress, colored)
@@ -28,21 +30,16 @@ def extract_tar(tar, dir):
     # Remove tar file.
     os.remove(tar)
 
+    # r = requests.get(url, stream=True)
 
-def download(url, file):
-    """Downloads the given contens of the given `url` to `file` and prints a
-    progress bar while waiting."""
-
-    r = requests.get(url, stream=True)
-
-    # Print a pretty progress bar while downloading.
-    with open(file, 'wb') as f:
-        total_length = r.headers.get('content-length')
-        for chunk in progress.bar(r.iter_content(chunk_size=1024),
-                                  expected_size=(int(total_length)/1024)):
-            if chunk:
-                f.write(chunk)
-                f.flush()
+    # # Print a pretty progress bar while downloading.
+    # with open(file, 'wb') as f:
+    #     total_length = r.headers.get('content-length')
+    #     for chunk in progress.bar(r.iter_content(chunk_size=1024),
+    #                               expected_size=(int(total_length)/1024)):
+    #         if chunk:
+    #             f.write(chunk)
+    #             f.flush()
 
 
 def path_exists(path, action):

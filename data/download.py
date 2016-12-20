@@ -1,21 +1,21 @@
 import os
 import sys
-import urllib
 import tarfile
 
+from six.moves import urllib
 
-def maybe_download_and_extract(url, data_dir, dirname, show_progress=True):
-    """Downloads and extracts the given `url` to `data_dir`. Renames the
-    extracted file to `dirname`."""
+
+def maybe_download_and_extract(url, data_dir, show_progress=True):
+    """Downloads and extracts the given url to data_dir."""
 
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
 
     filename = url.split('/')[-1]
     filepath = os.path.join(data_dir, filename)
-    dirpath = os.path.join(data_dir, dirname)
+    # dirpath = os.path.join(data_dir, dirname)
 
-    if not os.path.exists(dirpath):
+    if not os.path.exists(filepath):
         def _progress(count, block_size, total_size):
             if not show_progress:
                 return
@@ -32,14 +32,10 @@ def maybe_download_and_extract(url, data_dir, dirname, show_progress=True):
 
         print()
         print('Successfully downloaded {} ({} bytes).'.format(filename, size))
-        sys.stdout.write('Extracting {} to {}...'.format(filename, dirpath))
-        sys.stdout.flush()
 
-        with tarfile.open(filepath, 'r:gz') as f:
-            extracted_dir = f.getnames()[0]
-            f.extractall(data_dir)
+    sys.stdout.write('Extracting {} to {}...'.format(filename, data_dir))
+    sys.stdout.flush()
 
-        os.rename(os.path.join(data_dir, extracted_dir), dirpath)
-        os.remove(filepath)
+    tarfile.open(filepath, 'r:gz').extractall(data_dir)
 
-        print('Done!')
+    print('Done!')
