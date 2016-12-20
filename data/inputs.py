@@ -37,12 +37,13 @@ def inputs(dataset, batch_size, train=True, eval_data=False):
         num_examples_per_epoch = dataset.num_examples_per_epoch_for_eval
 
     # Construct the inputs.
-    return _inputs(dataset.data_dir, filenames, num_examples_per_epoch,
-                   batch_size, preprocess, shuffle)
+    return _inputs(dataset.data_dir, filenames, dataset.read,
+                   num_examples_per_epoch, batch_size, dataset.data_shape,
+                   preprocess, shuffle)
 
 
 def _inputs(data_dir, filenames, read, num_examples_per_epoch, batch_size,
-            preprocess, shuffle):
+            data_shape, preprocess, shuffle):
 
     """Constructs inputs using the Reader ops.
 
@@ -73,7 +74,7 @@ def _inputs(data_dir, filenames, read, num_examples_per_epoch, batch_size,
     filenames = [os.path.join(data_dir, f) for f in filenames]
 
     for f in filenames:
-        if not tf.gFile.Exists(f):
+        if not tf.gfile.Exists(f):
             raise ValueError('Failed to find file: {}'.format(f))
 
     # Create a queue that produces the filenames to read.
@@ -86,8 +87,8 @@ def _inputs(data_dir, filenames, read, num_examples_per_epoch, batch_size,
     data = preprocess(read_input.data)
 
     # Set the shapes of tensors.
-    data.set_shape(data.shape)
-    read_input.labels.set_shape([1])
+    data.set_shape(data_shape)
+    read_input.label.set_shape([1])
 
     min_fraction_of_examples_in_queue = 0.4
     min_queue_examples = int(num_examples_per_epoch *
@@ -102,8 +103,8 @@ def _inputs(data_dir, filenames, read, num_examples_per_epoch, batch_size,
                                           shuffle)
 
 
-def _generate_image_and_label_batch(data, label, min_queue_examples,
-                                    batch_size, shuffle):
+def _generate_data_and_label_batch(data, label, min_queue_examples,
+                                   batch_size, shuffle):
 
     """Constructs a queued batch of data and labels.
 

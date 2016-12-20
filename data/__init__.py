@@ -1,1 +1,2 @@
-from .download import maybe_download_and_extract
+from .inputs import inputs
+from .cifar10 import Cifar10

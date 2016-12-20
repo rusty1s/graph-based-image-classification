@@ -1,5 +1,10 @@
+import tensorflow as tf
 # ich brauche inputs
 # das dataset als parameter h
+
+from data import (Cifar10, inputs)
+
+cifar10 = Cifar10()
 
 
 def learning_rate(num_examples_per_epoch, batch_size, global_step,
@@ -23,3 +28,14 @@ def learning_rate(num_examples_per_epoch, batch_size, global_step,
     tf.contrib.deprecated.scalar_summary('learning_rate', learning_rate)
 
     return learning_rate
+
+
+def train():
+    with tf.Graph().as_default():
+        global_step = tf.contrib.framework.get_or_create_global_step()
+
+        # Get images and labels for CIFAR-10.
+        images, labels = inputs(cifar10, batch_size=128)
+
+        print(labels)
+        print(images)

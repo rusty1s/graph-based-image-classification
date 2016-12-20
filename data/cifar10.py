@@ -56,6 +56,11 @@ class Cifar10(Dataset):
     def num_examples_per_epoch_for_eval(self):
         return 10000
 
+    @property
+    def data_shape(self):
+        return [32, 32, 3]
+        return [POST_HEIGHT, POST_WIDTH, 3]
+
     def read(self, filename_queue):
         """Reads and parses examples from CIFAR-10 data files.
 
@@ -96,21 +101,22 @@ class Cifar10(Dataset):
 
         # The first bytes represent the label, which we convert from uint8 to
         # int32.
-        label = tf.strided_slice(record_bytes, [0], [LABEL_BYTES])
+        label = tf.strided_slice(record_bytes, [0], [LABEL_BYTES], [1])
         label = tf.cast(label, tf.int32)
 
         result.label = label
 
         # The reamining bytes after the label represent the image, which we
         # reshape from [depth * height * width] to [depth, height, width].
-        data = tf.strided_slice(record_bytes, [LABEL_BYTES], [RECORD_BYTES])
-        data = tf.reshape(data, [IMAGE_DEPTH, IMAGE_HEIGHT, IMAGE_WIDTH])
+        data = tf.strided_slice(record_bytes, [LABEL_BYTES], [RECORD_BYTES],
+                                [1])
+        data = tf.reshape(data, [DEPTH, HEIGHT, WIDTH])
 
         # Convert from [depth, height, width] to [height, width, depth].
         data = tf.transpose(data, [1, 2, 0])
 
         # Convert from uint8 to float32.
-        data = th.cast(data, tf.float32)
+        data = tf.cast(data, tf.float32)
 
         result.data = data
 
@@ -121,7 +127,7 @@ class Cifar10(Dataset):
         distortions applied to the image."""
 
         # Randomly crop a [height, width] section of the image.
-        image = tg.random_crop(image, [POST_HEIGHT, POST_WIDTH, DEPTH])
+        image = tf.random_crop(image, [POST_HEIGHT, POST_WIDTH, DEPTH])
 
         # Randomly flip the image horizontally.
         image = tf.image.random_flip_left_right(image)
@@ -130,7 +136,7 @@ class Cifar10(Dataset):
         image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
 
         # Subtract off the mean and divide by the variance of the pixels.
-        image = tf.image.per_image_standardization(image)
+        image = tf.image.per_image_whitening(image)
 
         return image
 

@@ -36,15 +36,18 @@ class Dataset():
     def num_examples_per_epoch_for_eval(self):
         pass
 
+    @property
+    @abc.abstractmethod
+    def data_shape(self):
+        pass
+
     @abc.abstractmethod
     def read(self, filename_queue):
         pass
 
-    @abc.abstractmethod
     def train_preprocess(self, data):
         return data
 
-    @abc.abstractmethod
     def eval_preprocess(self, data):
         return data
 

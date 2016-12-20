@@ -1,6 +1,7 @@
 def variable_with_weight_decay(name, shape, stddev, wd):
     pass
 
+
 def loss(logits, labels):
     """Add L2Loss to all the trainable variables.
     """
