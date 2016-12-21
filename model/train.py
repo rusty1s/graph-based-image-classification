@@ -3,7 +3,7 @@
 import tensorflow as tf
 
 from data import (Cifar10, inputs)
-from .helper import (weight_variable, bias_variable)
+# from .helper import (weight_variable, bias_variable)
 from .logger_hook import LoggerHook
 
 cifar10 = Cifar10()
@@ -38,38 +38,130 @@ def learning_rate(num_examples_per_epoch, batch_size, global_step,
     return learning_rate
 
 
-def inference(images):
-    """Build the model"""
+def _weight_variable(name, shape, stddev, decay):
+    var = tf.get_variable(name, shape,
+                          initializer=tf.truncated_normal_initializer(
+                              stddev=stddev, dtype=tf.float32),
+                          dtype=tf.float32)
 
-    with tf.variable_scope('conv1') as scope:
-        kernel = weight_variable([5, 5, 3, 64])
-        conv = tf.nn.conv2d(images, kernel, [1, 1, 1, 1], padding='SAME')
-        biases = bias_variable([64])
-        pre_activation = tf.nn.bias_add(conv, biases)
-        conv1 = tf.nn.relu(pre_activation, name=scope.name)
+    weight_decay = tf.mul(tf.nn.l2_loss(var), decay, name='weight_loss')
+    tf.add_to_collection('losses', weight_decay)
+    return var
 
-    pool1 = tf.nn.max_pool(conv1, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1],
-                           padding='SAME', name='pool1')
 
-    norm1 = tf.nn.lrn(pool1, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75,
-                      name='norm1')
+def _bias_variable(name, shape, constant):
+    return tf.get_variable(name, shape,
+                           initializer=tf.constant_initializer(constant),
+                           dtype=tf.float32)
 
-    with tf.variable_scope('local2') as scope:
-        reshape = tf.reshape(norm1, [128, -1])
-        dim = reshape.get_shape()[1].value
-        weights = weight_variable([dim, 384])
-        biases = bias_variable([384])
-        local2 = tf.nn.relu(tf.matmul(reshape, weights) + biases,
-                            name=scope.name)
+
+# {
+#   conv: [
+#      {
+#        output_channels: 64
+#        weights: { stddev, decay }
+#        biases: { constant: 0.1 },
+#        fields: { size: [5, 5], strides: [1, 1] }
+#        max_pool: { size: [3, 3], strides: [2, 2] }
+#     }
+#   ],
+#   local: [
+#      {
+#        output_channels: 1024,
+#        weights: { stddev, decay }
+#        biases: { constant: 0.1 },
+#     }
+#   ],
+#   softmax_linear: {
+#      output_channels: 10,
+#      weights: { stddev, decay }
+#      biases: { constant: 0.1 },
+#   }
+# }
+
+def inference(data, structure):
+    output = data
+    i = 1
+
+    for layer in structure['conv']:
+        input_channels = output.get_shape()[3].value
+        output_channels = layer['output_channels']
+
+        weights_shape = (layer['fields']['size'] + [input_channels] +
+                         [output_channels])
+
+        strides = [1] + layer['fields']['strides'] + [1]
+
+        with tf.variable_scope('conv_{}'.format(i)) as scope:
+
+            weights = _weight_variable(
+                name='weights',
+                shape=weights_shape,
+                stddev=layer['weights']['stddev'],
+                decay=layer['weights']['decay'])
+
+            biases = _bias_variable(
+                name='biases',
+                shape=[output_channels],
+                constant=layer['biases']['constant'])
+
+            output = tf.nn.conv2d(output, weights, strides, padding='SAME')
+            output = tf.nn.bias_add(output, biases)
+            output = tf.nn.relu(output, name=scope.name)
+
+        max_pool_size = [1] + layer['max_pool']['size'] + [1]
+        max_pool_strides = [1] + layer['max_pool']['strides'] + [1]
+
+        output = tf.nn.max_pool(output, max_pool_size, max_pool_strides,
+                                padding='SAME', name='pool_{}'.format(i))
+
+        i += 1
+
+    output = tf.reshape(output, [output.get_shape()[0].value, -1])
+
+    for layer in structure['local']:
+        input_channels = output.get_shape()[1].value
+        output_channels = layer['output_channels']
+
+        with tf.variable_scope('local_{}'.format(i)) as scope:
+
+            weights = _weight_variable(
+                name='weights',
+                shape=[input_channels, output_channels],
+                stddev=layer['weights']['stddev'],
+                decay=layer['weights']['decay'])
+
+            biases = _bias_variable(
+                name='biases',
+                shape=[output_channels],
+                constant=layer['biases']['constant'])
+
+            output = tf.matmul(output, weights) + biases
+            output = tf.nn.relu(output, name=scope.name)
+
+        i += 1
+
+    layer = structure['softmax_linear']
+    input_channels = output.get_shape()[1].value
+    output_channels = layer['output_channels']
 
     with tf.variable_scope('softmax_linear') as scope:
-        weights = weight_variable([384, 10])
-        biases = bias_variable([10])
 
-        softmax_linear = tf.add(tf.matmul(local2, weights), biases,
-                                name=scope.name)
+        weights = _weight_variable(
+            name='weights',
+            shape=[input_channels, output_channels],
+            stddev=layer['weights']['stddev'],
+            decay=layer['weights']['decay'])
 
-    return softmax_linear
+        biases = _bias_variable(
+            name='biases',
+            shape=[output_channels],
+            constant=layer['biases']['constant'])
+
+        output = tf.matmul(output, weights)
+        output = tf.add(output, biases, name=scope.name)
+
+    return output
 
 
 def loss(logits, labels):
