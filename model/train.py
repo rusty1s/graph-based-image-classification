@@ -103,13 +103,14 @@ def train():
             tf.gfile.DeleteRecursively(train_dir)
         tf.gfile.MakeDirs(train_dir)
 
+        steps = 2000
         with tf.train.MonitoredTrainingSession(
                 checkpoint_dir=train_dir,
                 save_checkpoint_secs=30,
                 hooks=[
-                    tf.train.StopAtStepHook(last_step=30),
+                    tf.train.StopAtStepHook(last_step=steps),
                     tf.train.NanTensorHook(loss),
-                    TimeLoggerHook(loss, acc, batch_size=128, max_steps=30,
+                    TimeLoggerHook(loss, acc, batch_size=128, max_steps=steps,
                                    display_step=10)]
                 ) as monitored_session:
             while not monitored_session.should_stop():
