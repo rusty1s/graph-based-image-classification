@@ -2,7 +2,7 @@ import os
 
 import tensorflow as tf
 
-from .dataset import Dataset
+from .dataset import DataSet
 from .download import maybe_download_and_extract
 
 DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
@@ -25,7 +25,7 @@ POST_HEIGHT = 24
 POST_WIDTH = 24
 
 
-class Cifar10(Dataset):
+class Cifar10(DataSet):
 
     def __init__(self, data_dir='/tmp/cifar10_data'):
         maybe_download_and_extract(DATA_URL, data_dir)

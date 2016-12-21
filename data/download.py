@@ -23,7 +23,7 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
             percent = count * block_size / total_size * 100.0
 
             sys.stdout.write(
-                '\r>> Downloading {0:s} {1:.1f}%'.format(filename, percent)
+                '\r>> Downloading {} {:.1f}%'.format(filename, percent)
             )
             sys.stdout.flush()
 

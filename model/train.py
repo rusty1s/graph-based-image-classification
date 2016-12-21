@@ -4,6 +4,7 @@ import tensorflow as tf
 
 from data import (Cifar10, inputs)
 from .helper import (weight_variable, bias_variable)
+from .logger_hook import LoggerHook
 
 cifar10 = Cifar10()
 
@@ -74,7 +75,7 @@ def inference(images):
 def loss(logits, labels):
     labels = tf.cast(labels, tf.int64)
     cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-        logits, labels, name='corss_entropy_per_example')
+        logits, labels, name='cross_entropy_per_example')
 
     cross_entropy_mean = tf.reduce_mean(cross_entropy, name='cross_entropy')
     tf.add_to_collection('losses', cross_entropy_mean)
@@ -94,23 +95,11 @@ def train():
 
         op = train_op(ls, global_step)
 
-        class _LoggerHook(tf.train.SessionRunHook):
-            def begin(self):
-                self._step = -1
-
-            def before_run(self, run_context):
-                self._step += 1
-                return tf.train.SessionRunArgs(ls)  # ask for loss value
-
-            def after_run(self, run_context, run_values):
-                loss_value = run_values.results
-                print(self._step, 'loss value', loss_value)
-
         with tf.train.MonitoredTrainingSession(
                 hooks=[
                     tf.train.StopAtStepHook(last_step=1000),
                     tf.train.NanTensorHook(ls),
-                    _LoggerHook()]
+                    LoggerHook(ls, batch_size=128, display_step=10)]
                 ) as mon_sess:
             while not mon_sess.should_stop():
                 mon_sess.run(op)

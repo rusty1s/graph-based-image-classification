@@ -4,7 +4,7 @@ import six
 
 
 @six.add_metaclass(abc.ABCMeta)
-class Dataset():
+class DataSet():
 
     @property
     @abc.abstractmethod
