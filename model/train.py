@@ -4,15 +4,36 @@ import tensorflow as tf
 
 from data import (Cifar10, inputs)
 # from .helper import (weight_variable, bias_variable)
-from .logger_hook import LoggerHook
+from .inference import inference
+from .logger.time import TimeLoggerHook
+from .structure.cifar10 import structure as cifar10_structure
 
 cifar10 = Cifar10()
 
 
+MOVING_AVERAGE_DECAY = 0.9999
+
+
 def train_op(total_loss, global_step):
     lr = learning_rate(50000, 128, global_step, 350.0, 0.1, 0.1)
-    opt = tf.train.AdamOptimizer(lr).minimize(total_loss)
-    return opt
+    loss_averages_op = _add_loss_summaries(total_loss)
+
+    with tf.control_dependencies([loss_averages_op]):
+        opt = tf.train.GradientDescentOptimizer(lr)
+        # opt = tf.train.AdamOptimizer(0.1)
+        grads = opt.compute_gradients(total_loss)
+
+    apply_gradient_op = opt.apply_gradients(grads, global_step=global_step)
+
+    variable_averages = tf.train.ExponentialMovingAverage(
+        MOVING_AVERAGE_DECAY, global_step)
+
+    variables_averages_op = variable_averages.apply(tf.trainable_variables())
+
+    with tf.control_dependencies([apply_gradient_op, variables_averages_op]):
+        train_op = tf.no_op(name='train')
+
+    return train_op
 
 
 def learning_rate(num_examples_per_epoch, batch_size, global_step,
@@ -38,134 +59,8 @@ def learning_rate(num_examples_per_epoch, batch_size, global_step,
     return learning_rate
 
 
-def _weight_variable(name, shape, stddev, decay):
-    var = tf.get_variable(name, shape,
-                          initializer=tf.truncated_normal_initializer(
-                              stddev=stddev, dtype=tf.float32),
-                          dtype=tf.float32)
-
-    weight_decay = tf.mul(tf.nn.l2_loss(var), decay, name='weight_loss')
-    tf.add_to_collection('losses', weight_decay)
-    return var
-
-
-def _bias_variable(name, shape, constant):
-    return tf.get_variable(name, shape,
-                           initializer=tf.constant_initializer(constant),
-                           dtype=tf.float32)
-
-
-# {
-#   conv: [
-#      {
-#        output_channels: 64
-#        weights: { stddev, decay }
-#        biases: { constant: 0.1 },
-#        fields: { size: [5, 5], strides: [1, 1] }
-#        max_pool: { size: [3, 3], strides: [2, 2] }
-#     }
-#   ],
-#   local: [
-#      {
-#        output_channels: 1024,
-#        weights: { stddev, decay }
-#        biases: { constant: 0.1 },
-#     }
-#   ],
-#   softmax_linear: {
-#      output_channels: 10,
-#      weights: { stddev, decay }
-#      biases: { constant: 0.1 },
-#   }
-# }
-
-def inference(data, structure):
-    output = data
-    i = 1
-
-    for layer in structure['conv']:
-        input_channels = output.get_shape()[3].value
-        output_channels = layer['output_channels']
-
-        weights_shape = (layer['fields']['size'] + [input_channels] +
-                         [output_channels])
-
-        strides = [1] + layer['fields']['strides'] + [1]
-
-        with tf.variable_scope('conv_{}'.format(i)) as scope:
-
-            weights = _weight_variable(
-                name='weights',
-                shape=weights_shape,
-                stddev=layer['weights']['stddev'],
-                decay=layer['weights']['decay'])
-
-            biases = _bias_variable(
-                name='biases',
-                shape=[output_channels],
-                constant=layer['biases']['constant'])
-
-            output = tf.nn.conv2d(output, weights, strides, padding='SAME')
-            output = tf.nn.bias_add(output, biases)
-            output = tf.nn.relu(output, name=scope.name)
-
-        max_pool_size = [1] + layer['max_pool']['size'] + [1]
-        max_pool_strides = [1] + layer['max_pool']['strides'] + [1]
-
-        output = tf.nn.max_pool(output, max_pool_size, max_pool_strides,
-                                padding='SAME', name='pool_{}'.format(i))
-
-        i += 1
-
-    output = tf.reshape(output, [output.get_shape()[0].value, -1])
-
-    for layer in structure['local']:
-        input_channels = output.get_shape()[1].value
-        output_channels = layer['output_channels']
-
-        with tf.variable_scope('local_{}'.format(i)) as scope:
-
-            weights = _weight_variable(
-                name='weights',
-                shape=[input_channels, output_channels],
-                stddev=layer['weights']['stddev'],
-                decay=layer['weights']['decay'])
-
-            biases = _bias_variable(
-                name='biases',
-                shape=[output_channels],
-                constant=layer['biases']['constant'])
-
-            output = tf.matmul(output, weights) + biases
-            output = tf.nn.relu(output, name=scope.name)
-
-        i += 1
-
-    layer = structure['softmax_linear']
-    input_channels = output.get_shape()[1].value
-    output_channels = layer['output_channels']
-
-    with tf.variable_scope('softmax_linear') as scope:
-
-        weights = _weight_variable(
-            name='weights',
-            shape=[input_channels, output_channels],
-            stddev=layer['weights']['stddev'],
-            decay=layer['weights']['decay'])
-
-        biases = _bias_variable(
-            name='biases',
-            shape=[output_channels],
-            constant=layer['biases']['constant'])
-
-        output = tf.matmul(output, weights)
-        output = tf.add(output, biases, name=scope.name)
-
-    return output
-
-
-def loss(logits, labels):
-    labels = tf.cast(labels, tf.int64)
+def cal_loss(logits, labels):
+    # labels = tf.cast(labels, tf.int64)
     cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
         logits, labels, name='cross_entropy_per_example')
 
@@ -175,6 +70,21 @@ def loss(logits, labels):
     return tf.add_n(tf.get_collection('losses'), name='total_loss')
 
 
+def cal_acc(logits, labels):
+    labels = tf.cast(labels, tf.int64)
+    corr_pred = tf.equal(tf.argmax(logits, 1), labels)
+    acc = tf.reduce_mean(tf.cast(corr_pred, tf.float32))
+    return acc
+
+
+def _add_loss_summaries(total_loss):
+    loss_averages = tf.train.ExponentialMovingAverage(0.9, name='avg')
+    losses = tf.get_collection('losses')
+    loss_averages_op = loss_averages.apply(losses + [total_loss])
+
+    return loss_averages_op
+
+
 def train():
     with tf.Graph().as_default():
         global_step = tf.contrib.framework.get_or_create_global_step()
@@ -182,16 +92,25 @@ def train():
         # Get images and labels for CIFAR-10.
         images, labels = inputs(cifar10, batch_size=128)
 
-        logits = inference(images)
-        ls = loss(logits, labels)
+        logits = inference(images, cifar10_structure)
+        loss = cal_loss(logits, labels)
+        acc = cal_acc(logits, labels)
 
-        op = train_op(ls, global_step)
+        op = train_op(loss, global_step)
+
+        train_dir = '/tmp/cifar10_train'
+        if tf.gfile.Exists(train_dir):
+            tf.gfile.DeleteRecursively(train_dir)
+        tf.gfile.MakeDirs(train_dir)
 
         with tf.train.MonitoredTrainingSession(
+                checkpoint_dir=train_dir,
+                save_checkpoint_secs=30,
                 hooks=[
-                    tf.train.StopAtStepHook(last_step=1000),
-                    tf.train.NanTensorHook(ls),
-                    LoggerHook(ls, batch_size=128, display_step=10)]
-                ) as mon_sess:
-            while not mon_sess.should_stop():
-                mon_sess.run(op)
+                    tf.train.StopAtStepHook(last_step=30),
+                    tf.train.NanTensorHook(loss),
+                    TimeLoggerHook(loss, acc, batch_size=128, max_steps=30,
+                                   display_step=10)]
+                ) as monitored_session:
+            while not monitored_session.should_stop():
+                monitored_session.run(op)

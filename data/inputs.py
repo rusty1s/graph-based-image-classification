@@ -122,6 +122,7 @@ def _generate_data_and_label_batch(data, label, min_queue_examples,
     """
 
     num_threads = 16
+    capacity = min_queue_examples + 3 * batch_size
 
     # Create a queue that shuffles the examples, and then read batch_size
     # data + labels from the example queue.
@@ -130,14 +131,14 @@ def _generate_data_and_label_batch(data, label, min_queue_examples,
             [data, label],
             batch_size=batch_size,
             num_threads=num_threads,
-            capacity=min_queue_examples + 3 * batch_size,
+            capacity=capacity,
             min_after_dequeue=min_queue_examples)
     else:
         data_batch, label_batch = tf.train.batch(
             [data, label],
             batch_size=batch_size,
             num_threads=num_threads,
-            capacity=min_queue_examples + 3 * batch_size)
+            capacity=capacity)
 
         # Display the data_batch in the visualizer.
         tf.contrib.deprecated.image_summary('data', data_batch)
