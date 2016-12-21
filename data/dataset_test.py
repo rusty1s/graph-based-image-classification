@@ -39,7 +39,7 @@
 #     np_test.assert_array_equal(dataset.data[8], [4, 4, 4, 4, 4])
 #     np_test.assert_array_equal(dataset.data[9], [5, 5, 5, 5, 5])
 
-#     np_test.assert_array_equal(dataset.labels, [1, 2, 3, 4, 5, 1, 2, 3, 4, 5])
+#    np_test.assert_array_equal(dataset.labels, [1, 2, 3, 4, 5, 1, 2, 3, 4, 5])
 
 
 # def test_add_to_dataset():

@@ -103,6 +103,3 @@ def train():
                 ) as mon_sess:
             while not mon_sess.should_stop():
                 mon_sess.run(op)
-
-        print(labels)
-        print(images)
