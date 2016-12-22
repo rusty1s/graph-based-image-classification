@@ -19,12 +19,14 @@ class TimeLoggerHook(LoggerHook):
 
     def after_display_step_run(self, run_context, run_values):
         duration = time.time() - self._start_time
-        examples_per_sec = self._batch_size / duration
-        datestring = '{:%Y-%m-%dT%H-%M-%S}'.format(datetime.now())
         remaining = (self._last_step - self._step) * duration / 60
+        examples_per_sec = self._batch_size / duration
 
-        s = ('[{}: step {}, {:.1f} min remaining, {:.1f} examples/sec, {:.2f} '
-             'sec/batch]').format(datestring, self._step, remaining,
-                                  examples_per_sec, duration)
+        s = ', '.join([
+            'step {}'.format(self._step),
+            '{:.1f} min remaining'.format(remaining),
+            '{:.1f} examples/sec'.format(examples_per_sec),
+            '{:.2f} sec/batch]'.format(duration)
+            ])
 
         print(s, end=' ')
