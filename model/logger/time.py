@@ -23,7 +23,7 @@ class TimeLoggerHook(LoggerHook):
         examples_per_sec = self._batch_size / duration
 
         s = ', '.join([
-            'step {}'.format(self._step),
+            '[step {}'.format(self._step),
             '{:.1f} min remaining'.format(remaining),
             '{:.1f} examples/sec'.format(examples_per_sec),
             '{:.2f} sec/batch]'.format(duration)
