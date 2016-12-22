@@ -25,7 +25,7 @@ POST_HEIGHT = 24
 POST_WIDTH = 24
 
 
-class Cifar10(DataSet):
+class Cifar10DataSet(DataSet):
 
     def __init__(self, data_dir='/tmp/cifar10_data'):
         maybe_download_and_extract(DATA_URL, data_dir)

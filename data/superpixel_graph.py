@@ -1,14 +1,13 @@
 from .dataset import DataSet
 
 
-# IDEA:
-# Curry the superpixel algorithm, so that it takes a single argument: image
-# Curry the graph algorithm, so that it takes a single argument: the superpixel
-# represenation
-class SuperpixelGraph(DataSet):
+class GraphDataSet(DataSet):
 
-    def __init__(self, dataset):
+    def __init__(self, dataset, grapher, normalizer):
         self._dataset = dataset
+
+        self._grapher = grapher
+        self._normalizer = normalizer
 
     @property
     def data_dir(self):
@@ -36,26 +35,20 @@ class SuperpixelGraph(DataSet):
 
     @property
     def data_shape(self):
-        # TODO
-        return None
+        return normalizer.shape
 
     def read(self, filename_queue):
         return self._dataset.read(filename_queue)
 
     def train_preprocess(self, image):
         image = self._dataset.train_preprocess(image)
-
-        data = image
-
-        # TODO
-
-        return data
+        return self.postprocess(image)
 
     def eval_preprocess(self, image):
         image = self._dataset.eval_preprocess(image)
+        return self.postprocess(image)
 
-        data = image
-
-        # TODO
-
-        return data
+    def _postprocesss(self, image):
+        graph = self._to_graph(image)
+        self._normalizer.graph = graph
+        return self._normalizer.normalize()

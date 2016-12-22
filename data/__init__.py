@@ -1,2 +1,2 @@
 from .inputs import inputs
-from .cifar10 import Cifar10
+from .cifar10 import Cifar10DataSet

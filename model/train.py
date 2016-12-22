@@ -1,14 +1,12 @@
-# TODO das dataset als parameter h
+import json
 
 import tensorflow as tf
 
-from data import (Cifar10, inputs)
-# from .helper import (weight_variable, bias_variable)
+from data import (Cifar10DataSet, inputs)
 from .inference import inference
-from .logger.time import TimeLoggerHook
-from .structure.cifar10 import structure as cifar10_structure
+from .logger import (TimeLoggerHook, LossLoggerHook, AccuracyLoggerHook, EolLoggerHook)
 
-cifar10 = Cifar10()
+cifar10 = Cifar10DataSet()
 
 
 MOVING_AVERAGE_DECAY = 0.9999
@@ -92,7 +90,10 @@ def train():
         # Get images and labels for CIFAR-10.
         images, labels = inputs(cifar10, batch_size=128)
 
-        logits = inference(images, cifar10_structure)
+        with open('network_params.json', 'r') as f:
+            structure = json.load(f)
+
+        logits = inference(images, structure)
         loss = cal_loss(logits, labels)
         acc = cal_acc(logits, labels)
 
@@ -103,15 +104,18 @@ def train():
             tf.gfile.DeleteRecursively(train_dir)
         tf.gfile.MakeDirs(train_dir)
 
-        steps = 2000
+        last_step = 2000
         with tf.train.MonitoredTrainingSession(
                 checkpoint_dir=train_dir,
                 save_checkpoint_secs=30,
                 hooks=[
-                    tf.train.StopAtStepHook(last_step=steps),
+                    tf.train.StopAtStepHook(last_step=last_step),
                     tf.train.NanTensorHook(loss),
-                    TimeLoggerHook(loss, acc, batch_size=128, max_steps=steps,
-                                   display_step=10)]
+                    TimeLoggerHook(display_step=10, batch_size=128,
+                                   last_step=last_step),
+                    LossLoggerHook(display_step=10, loss=loss),
+                    AccuracyLoggerHook(display_step=10, accuracy=acc),
+                    EolLoggerHook(display_step=10)]
                 ) as monitored_session:
             while not monitored_session.should_stop():
                 monitored_session.run(op)
