@@ -2,23 +2,19 @@ import json
 
 import tensorflow as tf
 
-from data import (Cifar10DataSet, inputs)
+from data import inputs
 from .inference import inference
-from .logger import (TimeLoggerHook, LossLoggerHook, AccuracyLoggerHook, EolLoggerHook)
-
-cifar10 = Cifar10DataSet()
-
+from .hooks import hooks
 
 MOVING_AVERAGE_DECAY = 0.9999
 
 
-def train_op(total_loss, global_step):
+def train_step(total_loss, global_step):
     lr = learning_rate(50000, 128, global_step, 350.0, 0.1, 0.1)
     loss_averages_op = _add_loss_summaries(total_loss)
 
     with tf.control_dependencies([loss_averages_op]):
         opt = tf.train.GradientDescentOptimizer(lr)
-        # opt = tf.train.AdamOptimizer(0.1)
         grads = opt.compute_gradients(total_loss)
 
     apply_gradient_op = opt.apply_gradients(grads, global_step=global_step)
@@ -29,9 +25,9 @@ def train_op(total_loss, global_step):
     variables_averages_op = variable_averages.apply(tf.trainable_variables())
 
     with tf.control_dependencies([apply_gradient_op, variables_averages_op]):
-        train_op = tf.no_op(name='train')
+        train_step = tf.no_op(name='train')
 
-    return train_op
+    return train_step
 
 
 def learning_rate(num_examples_per_epoch, batch_size, global_step,
@@ -83,39 +79,35 @@ def _add_loss_summaries(total_loss):
     return loss_averages_op
 
 
-def train():
+def train(dataset, train_dir, network_params_path):
+    if tf.gfile.Exists(train_dir):
+        tf.gfile.DeleteRecursively(train_dir)
+    tf.gfile.MakeDirs(train_dir)
+
+    with open(network_params_path, 'r') as f:
+        network_params = json.load(f)
+
+    structure = network_params['structure']
+    batch_size = network_params['batch_size']
+    last_step = network_params['last_step']
+
     with tf.Graph().as_default():
         global_step = tf.contrib.framework.get_or_create_global_step()
 
-        # Get images and labels for CIFAR-10.
-        images, labels = inputs(cifar10, batch_size=128)
+        data, labels = inputs(dataset, batch_size)
 
-        with open('network_params.json', 'r') as f:
-            structure = json.load(f)
+        logits = inference(data, structure)
 
-        logits = inference(images, structure)
         loss = cal_loss(logits, labels)
         acc = cal_acc(logits, labels)
 
-        op = train_op(loss, global_step)
+        op = train_step(loss, global_step)
 
-        train_dir = '/tmp/cifar10_train'
-        if tf.gfile.Exists(train_dir):
-            tf.gfile.DeleteRecursively(train_dir)
-        tf.gfile.MakeDirs(train_dir)
-
-        last_step = 2000
         with tf.train.MonitoredTrainingSession(
                 checkpoint_dir=train_dir,
                 save_checkpoint_secs=30,
-                hooks=[
-                    tf.train.StopAtStepHook(last_step=last_step),
-                    tf.train.NanTensorHook(loss),
-                    TimeLoggerHook(display_step=10, batch_size=128,
-                                   last_step=last_step),
-                    LossLoggerHook(display_step=10, loss=loss),
-                    AccuracyLoggerHook(display_step=10, accuracy=acc),
-                    EolLoggerHook(display_step=10)]
+                hooks=hooks(display_step=10, last_step=last_step,
+                            batch_size=batch_size, loss=loss, accuracy=acc)
                 ) as monitored_session:
             while not monitored_session.should_stop():
                 monitored_session.run(op)
