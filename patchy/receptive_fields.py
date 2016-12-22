@@ -6,16 +6,16 @@ from .neighborhood_assembly import assemble_neighborhood
 from .normalization import normalize
 
 
-def receptive_fields(graph, labeling, stride, width, receptive_field_size,
-                     node_features, node_features_size):
+def receptive_fields(graph, node_labeling, stride, width, receptive_field_size,
+                     neighborhood_labeling, node_features, node_features_size):
 
     # Create the initial receptive fields
-    receptive_fields = np.zeros((1, width * receptive_field_size,
+    receptive_fields = np.zeros((width, receptive_field_size,
                                  node_features_size))
 
     # Select a fixed-length sequence of nodes from the graph. A node in `nodes`
     # can have the value `None` for padding purposes.
-    nodes = node_sequence(graph, labeling, stride, width)
+    nodes = node_sequence(graph, node_labeling, stride, width)
 
     for y, main_node in enumerate(nodes):
         if main_node is None:
@@ -26,8 +26,8 @@ def receptive_fields(graph, labeling, stride, width, receptive_field_size,
         neighborhood = assemble_neighborhood(graph, main_node,
                                              receptive_field_size)
 
-        normalization = normalize(graph, neighborhood, main_node, labeling,
-                                  receptive_field_size)
+        normalization = normalize(graph, neighborhood, main_node,
+                                  neighborhood_labeling, receptive_field_size)
 
         for x, node in enumerate(normalization):
             if node is None:
@@ -37,6 +37,6 @@ def receptive_fields(graph, labeling, stride, width, receptive_field_size,
             features = node_features(graph.node[node])
 
             # Fill them into the receptive_fields array
-            receptive_fields[0][y * receptive_field_size + x] = features
+            receptive_fields[y][x] = features
 
     return receptive_fields

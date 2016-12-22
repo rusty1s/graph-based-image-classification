@@ -103,7 +103,7 @@ class Superpixel(object):
         """Returns a dictionary of the superpixels attributes."""
 
         color = self.mean
-        center = self.absolute_center
+        center = self.relative_center_in_bounding_box
 
         return {
             'order': self.order,

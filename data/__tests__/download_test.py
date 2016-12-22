@@ -8,7 +8,7 @@ from .download import maybe_download_and_extract
 def test_maybe_download_and_extract():
     url = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
 
-    maybe_download_and_extract(url, data_dir='/tmp/cifar10_data')
+    # maybe_download_and_extract(url, data_dir='/tmp/cifar10_data')
 
     # path = os.path.join('/tmp/cifar-10')
     # assert_true(os.path.exists(path))

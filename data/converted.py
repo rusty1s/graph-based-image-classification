@@ -1,17 +1,15 @@
 from .dataset import DataSet
 
 
-class GraphDataSet(DataSet):
+class ConvertedDataSet(DataSet):
 
-    def __init__(self, dataset, grapher, normalizer):
+    def __init__(self, dataset, converter):
         self._dataset = dataset
-
-        self._grapher = grapher
-        self._normalizer = normalizer
+        self._converter = converter
 
     @property
     def data_dir(self):
-        return self.dataset.data_dir
+        return self._dataset.data_dir
 
     @property
     def train_filenames(self):
@@ -35,20 +33,18 @@ class GraphDataSet(DataSet):
 
     @property
     def data_shape(self):
-        return normalizer.shape
+        return self._converter.shape
 
     def read(self, filename_queue):
         return self._dataset.read(filename_queue)
 
-    def train_preprocess(self, image):
-        image = self._dataset.train_preprocess(image)
-        return self.postprocess(image)
+    def train_preprocess(self, data):
+        data = self._dataset.train_preprocess(data)
+        return self._postprocess(data)
 
-    def eval_preprocess(self, image):
-        image = self._dataset.eval_preprocess(image)
-        return self.postprocess(image)
+    def eval_preprocess(self, data):
+        data = self._dataset.eval_preprocess(data)
+        return self._postprocess(data)
 
-    def _postprocesss(self, image):
-        graph = self._to_graph(image)
-        self._normalizer.graph = graph
-        return self._normalizer.normalize()
+    def _postprocess(self, data):
+        return self._converter.convert(data)
