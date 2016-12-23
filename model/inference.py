@@ -13,9 +13,11 @@ def _weight_variable(name, shape, stddev, decay):
 
 
 def _bias_variable(name, shape, constant):
-    return tf.get_variable(name, shape,
-                           initializer=tf.constant_initializer(constant),
-                           dtype=tf.float32)
+    var = tf.get_variable(name, shape,
+                          initializer=tf.constant_initializer(constant),
+                          dtype=tf.float32)
+
+    return var
 
 
 # {

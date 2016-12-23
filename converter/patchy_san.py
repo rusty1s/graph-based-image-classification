@@ -58,7 +58,7 @@ class PatchySan(Converter):
 
     @property
     def shape(self):
-        return [24, 24, 1]
+        return [24, 24, 3]
         # return [
         #     self._num_nodes,
         #     self._num_neighborhood,
@@ -78,10 +78,11 @@ class PatchySan(Converter):
         }
 
     def convert(self, image):
-        s = slico(image, 100)
-        s = tf.reshape(s, [24, 24, 1])
-        s = tf.cast(s, tf.float32)
-        return s
+        return image
+        # s = slico(image, 100)
+        # s = tf.reshape(s, [24, 24, 1])
+        # s = tf.cast(s, tf.float32)
+        # return s
 
         # image = tf.cast(data, tf.int32)
         # field = tf.py_func(convert_image_to_field, [image], tf.float32,
