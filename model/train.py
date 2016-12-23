@@ -10,7 +10,7 @@ MOVING_AVERAGE_DECAY = 0.9999
 
 
 def train_step(total_loss, global_step):
-    lr = learning_rate(50000, 128, global_step, 350.0, 0.1, 0.1)
+    lr = learning_rate(50000, 128, global_step, 350.0, 0.001, 0.1)
     loss_averages_op = _add_loss_summaries(total_loss)
 
     with tf.control_dependencies([loss_averages_op]):

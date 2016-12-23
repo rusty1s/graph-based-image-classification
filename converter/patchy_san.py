@@ -7,6 +7,7 @@ from .converter import Converter
 from patchy import (receptive_fields, betweenness_centrality, order)
 from superpixels import (image_to_slic_zero, extract_superpixels,
                          create_superpixel_graph)
+from superpixels import (slic, slico)
 
 
 def convert_image_to_field(image):
@@ -57,12 +58,13 @@ class PatchySan(Converter):
 
     @property
     def shape(self):
-        return [
-            self._num_nodes,
-            self._num_neighborhood,
-            8,
-            # len(self._node_channels),
-        ]
+        return [24, 24, 1]
+        # return [
+        #     self._num_nodes,
+        #     self._num_neighborhood,
+        #     8,
+        #     # len(self._node_channels),
+        # ]
 
     @property
     def params(self):
@@ -75,11 +77,16 @@ class PatchySan(Converter):
             'node_channels': self._node_channels,
         }
 
-    def convert(self, data):
-        image = tf.cast(data, tf.int32)
-        field = tf.py_func(convert_image_to_field, [image], tf.float32,
-                           stateful=False, name='GRAPH')
-        return field
+    def convert(self, image):
+        s = slico(image, 100)
+        s = tf.reshape(s, [24, 24, 1])
+        s = tf.cast(s, tf.float32)
+        return s
+
+        # image = tf.cast(data, tf.int32)
+        # field = tf.py_func(convert_image_to_field, [image], tf.float32,
+        #                    stateful=False, name='GRAPH')
+        # return field
 
 
 def node_sequence(sequence, width, stride=1):
