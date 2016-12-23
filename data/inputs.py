@@ -142,6 +142,7 @@ def _generate_data_and_label_batch(data, label, min_queue_examples,
             capacity=capacity)
 
         # Display the data_batch in the visualizer.
-        tf.summary.image('images', data_batch)
+        # tf.summary.image('images', data_batch)
+        tf.contrib.deprecated.image_summary('images', images)
 
     return data_batch, tf.reshape(label_batch, [batch_size])

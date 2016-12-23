@@ -78,8 +78,10 @@ class PatchySan(Converter):
         }
 
     def convert(self, image):
+        s = slico(image, 100)
+        # TODO to graph
+        # TODO to data
         return image
-        # s = slico(image, 100)
         # s = tf.reshape(s, [24, 24, 1])
         # s = tf.cast(s, tf.float32)
         # return s

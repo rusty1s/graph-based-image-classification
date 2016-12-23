@@ -26,7 +26,8 @@ def train(dataset, train_dir, network_params_path):
         logits = inference(data, structure)
         loss = cal_loss(logits, labels)
         acc = cal_acc(logits, labels)
-        train_op = train_step(loss, global_step)
+        train_op = train_step(loss, global_step, learning_rate=0.1,
+                              epsilon=1.0)
 
         with tf.train.MonitoredTrainingSession(
                 checkpoint_dir=train_dir,

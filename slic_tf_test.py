@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from superpixels import (slic, slico)
+from superpixel.algorithm import (slic, slico)
 
 
 class SlicTest(tf.test.TestCase):
