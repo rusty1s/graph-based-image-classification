@@ -129,8 +129,8 @@ class Superpixel(object):
             color[1],
             color[2],
             self.count,
-            center[0],
             center[1],
-            self.width,
+            center[0],
             self.height,
+            self.width,
         ]

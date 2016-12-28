@@ -13,12 +13,12 @@ class SlicTest(tf.test.TestCase):
             [0,   0,   255, 255],
         ])
 
-        expected = ([
+        expected = [
             [0, 0, 1, 1],
             [0, 0, 1, 1],
             [2, 2, 3, 3],
             [2, 2, 3, 3],
-        ])
+        ]
 
         with self.test_session() as sess:
             superpixels = slic(image, 4)
@@ -32,12 +32,12 @@ class SlicTest(tf.test.TestCase):
             [0,   0,   255, 255],
         ])
 
-        expected = ([
+        expected = [
             [0, 0, 1, 1],
             [0, 0, 1, 1],
             [2, 2, 3, 3],
             [2, 2, 3, 3],
-        ])
+        ]
 
         with self.test_session() as sess:
             superpixels = slico(image, 4)
