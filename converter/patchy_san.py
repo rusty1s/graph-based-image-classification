@@ -108,7 +108,9 @@ def node_sequence(sequence, width, stride):
     size = sequence.get_shape()[0].value
 
     if size < width:  # TODO if weg, muss auch ohne gehen
+        sequence = tf.add(sequence, tf.ones_like(sequence))
         sequence = tf.pad(sequence, [[0, width-size]])
+        sequence = tf.sub(sequence, tf.ones_like(sequence))
 
     return sequence
 
