@@ -1,28 +1,39 @@
 import tensorflow as tf
+import networkx as nx
+import numpy as np
+
+from .extract import extract_superpixels
 # returns a 1d tensor with all the infos of the segment
 # returns an 2d tensor with the adjacent matrix
 
-# count
-# red
-# green
-# blue
-# width
-# height
-NUM_CHANNELS = 6
-
 
 def create_graph(image, superpixels):
-    one_dim = tf.reshape(superpixels, [-1])
-    y, idx, count = tf.unique_with_counts(one_dim)
+    def _create_graph(image, superpixels):
+        superpixels = extract_superpixels(image, superpixels)
 
-    # print(y.eval())
-    # print(y.get_shape())
-    # num_nodes = y.get_shape()[0].value
-    # print(num_nodes)
-    nodes = tf.zeros([y.get_shape()[0].value, NUM_CHANNELS])
-    adjacent = tf.zeros([4, 4])
+        graph = nx.Graph()
 
-    return nodes, adjacent
+        def _node_mapping(superpixel):
+            return {
+                'features': superpixel.features
+            }
 
-    # Add count to nodes
-    # Superpixels is an
+        for s in superpixels:
+            graph.add_node(s.id, _node_mapping(s))
+
+            for id in s.neighbors:
+                graph.add_edge(s.id, id)
+
+        nodes = list(nx.get_node_attributes(graph, 'features').items())
+        nodes = sorted(nodes, key=lambda v: v[0])
+        nodes = [v[1] for v in nodes]
+        nodes = np.array(nodes, dtype=np.float32)
+
+        adjacent = nx.to_numpy_matrix(graph)
+        adjacent = adjacent.astype(np.float32)
+
+        return nodes, adjacent
+
+    return tf.py_func(_create_graph, [image, superpixels],
+                      [tf.float32, tf.float32], stateful=False,
+                      name='create_graph')

@@ -10,7 +10,7 @@ def slic(image, num_superpixels, compactness=1.0, max_iterations=10,
         superpixels = _slic(image, n_segments=num_superpixels,
                             compactness=compactness, max_iter=max_iterations,
                             sigma=sigma, slic_zero=False)
-        # py_func expects a float as out type
+        # py_func expects a float as out type.
         return superpixels.astype(np.float32)
 
     image = tf.cast(image, tf.int32)
