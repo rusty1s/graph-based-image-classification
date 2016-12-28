@@ -79,6 +79,9 @@ class PatchySan(Converter):
 
     def convert(self, image):
         graph = self._grapher.create_graph(image)
+
+        sequence = labelings[self._node_labeling](graph)
+        sequence = node_sequence(sequence, self._num_nodes, self._node_stride)
         # s = slico(image, 100)
         # TODO to graph
         # TODO to data
@@ -93,9 +96,10 @@ class PatchySan(Converter):
         # return field
 
 
-def node_sequence(sequence, width, stride=1):
+def node_sequence(sequence, width, stride):
     # Stride the sequence based on the given stride width.
-    sequence = tf.strided_slice(sequence, [0], [-1], [stride])
+    size = sequence.get_shape()[0].value
+    sequence = tf.strided_slice(sequence, [0], [size], [stride])
 
     # No more entries than we want.
     sequence = tf.strided_slice(sequence, [0], [width], [1])
