@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from superpixel.algorithm import (slic, slico)
+from .slic import (slic, slico)
 
 
 class SlicTest(tf.test.TestCase):
@@ -42,7 +42,3 @@ class SlicTest(tf.test.TestCase):
         with self.test_session() as sess:
             superpixels = slico(image, 4)
             self.assertAllEqual(superpixels.eval(), expected)
-
-
-if __name__ == '__main__':
-    tf.test.main()

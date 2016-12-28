@@ -7,7 +7,7 @@ from .converter import Converter
 from patchy import (receptive_fields, betweenness_centrality, order)
 from superpixels import (image_to_slic_zero, extract_superpixels,
                          create_superpixel_graph)
-from superpixels import (slic, slico)
+from superpixel.algorithm import (slic, slico)
 
 
 def convert_image_to_field(image):

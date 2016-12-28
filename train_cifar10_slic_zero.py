@@ -40,7 +40,6 @@ NODE_FEATURE_6 = 'y'
 def main():
 
     cifar10 = Cifar10(CIFAR10_DIR)
-    # cifar10.save_images()
 
     path = os.path.join(CIFAR10_DIR, 'slic_zero', DATESTRING)
 
