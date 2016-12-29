@@ -10,11 +10,6 @@ class Converter(object):
     def shape(self):
         pass
 
-    @property
-    @abc.abstractmethod
-    def params(self):
-        pass
-
     @abc.abstractmethod
     def convert(self, data):
         pass
