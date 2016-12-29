@@ -3,7 +3,7 @@ import numpy as np
 from .superpixel import Superpixel
 
 
-def extract_superpixels(image, superpixel_representation):
+def extract(image, superpixel_representation):
     """Returns an array of all the superpixels found in scan-line order of the
     superpixel representation with the superpixel values as identifiers."""
 

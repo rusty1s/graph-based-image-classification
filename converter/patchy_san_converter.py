@@ -1,6 +1,10 @@
 import tensorflow as tf
 
 from converter import Converter
+from .patchy_san.labeling import labelings
+from .patchy_san.node_sequence import node_sequence
+from .patchy_san.neighborhood_assembly import neighborhoods_assembly
+from .patchy_san.receptive_field import receptive_fields
 
 
 class PatchySan(Converter):
@@ -38,12 +42,8 @@ class PatchySan(Converter):
         sequence = labelings[self._node_labeling](adjacent)
         sequence = node_sequence(sequence, self._num_nodes, self._node_stride)
 
-        neighborhoods = neighborhood_assembly(
+        neighborhoods = neighborhoods_assembly(
             sequence, adjacent, self._neighborhood_size,
             labelings[self._neighborhood_labeling])
 
-
-
-
-
-        return data
+        return receptive_fields(neighborhoods, nodes, num_node_channels)

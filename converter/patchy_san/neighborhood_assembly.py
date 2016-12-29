@@ -1,4 +1,8 @@
-def assemble_neighborhoods(sequence, adjacent, size, labeling):
+import tensorflow as tf
+import networkx as nx
+
+
+def neighborhoods_assembly(sequence, adjacent, size, labeling):
     assemble = assemble_neighborhood(size, adjacent)
 
     sequence = tf.reshape([-1, 1])

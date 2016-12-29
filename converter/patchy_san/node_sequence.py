@@ -1,3 +1,6 @@
+import tensorflow as tf
+
+
 def node_sequence(sequence, width, stride):
     # Stride the sequence based on the given stride width.
     size = sequence.get_shape()[0].value

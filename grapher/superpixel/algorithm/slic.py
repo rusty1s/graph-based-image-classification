@@ -2,9 +2,13 @@ import tensorflow as tf
 import numpy as np
 from skimage.segmentation import slic as _slic
 
+COMPACTNESS = 1.0
+MAX_ITERATIONS = 10
+SIGMA = 0.0
 
-def slic(image, num_superpixels, compactness=1.0, max_iterations=10,
-         sigma=0.0):
+
+def slic(image, num_superpixels, compactness=COMPACTNESS,
+         max_iterations=MAX_ITERATIONS, sigma=SIGMA):
 
     def _slic_image(image):
         superpixels = _slic(image, n_segments=num_superpixels,
@@ -19,8 +23,8 @@ def slic(image, num_superpixels, compactness=1.0, max_iterations=10,
     return tf.cast(superpixels, tf.int32)
 
 
-def slico(image, num_superpixels, compactness=1.0, max_iterations=10,
-          sigma=0.0):
+def slico(image, num_superpixels, compactness=COMPACTNESS,
+          max_iterations=MAX_ITERATIONS, sigma=SIGMA):
 
     def _slico_image(image):
         superpixels = _slic(image, n_segments=num_superpixels,
@@ -33,3 +37,22 @@ def slico(image, num_superpixels, compactness=1.0, max_iterations=10,
     superpixels = tf.py_func(_slico_image, [image], tf.float32, stateful=False,
                              name='slico')
     return tf.cast(superpixels, tf.int32)
+
+
+def slic_generator(num_superpixels, compactness=COMPACTNESS,
+                   max_iterations=MAX_ITERATIONS, sigma=SIGMA):
+
+    def _generator(image):
+        return slic(image, num_superpixels, compactness, max_iterations, sigma)
+
+    return _generator
+
+
+def slico_generator(num_superpixels, compactness=COMPACTNESS,
+                    max_iterations=MAX_ITERATIONS, sigma=SIGMA):
+
+    def _generator(image):
+        return slico(image, num_superpixels, compactness, max_iterations,
+                     sigma)
+
+    return _generator

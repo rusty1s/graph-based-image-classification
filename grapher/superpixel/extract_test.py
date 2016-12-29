@@ -3,7 +3,7 @@ from numpy import testing as np_test
 
 import numpy as np
 
-from .extract import extract_superpixels
+from .extract import extract
 
 image = np.array([
         [0,   10,  20,  30],
@@ -21,13 +21,13 @@ superpixel_representation = np.array([
 
 
 def test_extract():
-    superpixels = extract_superpixels(image, superpixel_representation)
+    superpixels = extract(image, superpixel_representation)
 
     assert_equals(len(superpixels), 4)
 
 
 def test_superpixel_1():
-    superpixel = extract_superpixels(image, superpixel_representation)[0]
+    superpixel = extract(image, superpixel_representation)[0]
 
     assert_equals(superpixel.id, 1)
     assert_equals(superpixel.order, 0)
@@ -58,7 +58,7 @@ def test_superpixel_1():
 
 
 def test_superpixel_2():
-    superpixel = extract_superpixels(image, superpixel_representation)[1]
+    superpixel = extract(image, superpixel_representation)[1]
 
     assert_equals(superpixel.id, 2)
     assert_equals(superpixel.order, 1)
@@ -86,7 +86,7 @@ def test_superpixel_2():
 
 
 def test_superpixel_3():
-    superpixel = extract_superpixels(image, superpixel_representation)[2]
+    superpixel = extract(image, superpixel_representation)[2]
 
     assert_equals(superpixel.id, 3)
     assert_equals(superpixel.order, 2)
@@ -115,7 +115,7 @@ def test_superpixel_3():
 
 
 def test_superpixel_4():
-    superpixel = extract_superpixels(image, superpixel_representation)[3]
+    superpixel = extract(image, superpixel_representation)[3]
 
     assert_equals(superpixel.id, 4)
     assert_equals(superpixel.order, 3)

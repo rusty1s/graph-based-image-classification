@@ -10,7 +10,7 @@ def receptive_field(neighborhood, nodes, num_features):
             result = tf.strided_slice(nodes, [node], [node+1], [1])
             return tf.reshape(result, [-1])
 
-        return tf.cond(node > -1, _nonzero, _zero)
+        return tf.cond(node >= 0, _nonzero, _zero)
 
     return tf.map_fn(_replace, neighborhood, dtype=tf.float32)
 
