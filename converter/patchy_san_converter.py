@@ -10,7 +10,7 @@ from .patchy_san.receptive_field import receptive_fields
 class PatchySan(Converter):
 
     def __init__(self, grapher, num_nodes, node_labeling, node_stride,
-                 neighborhood_size, neighborhood_labeling, num_node_channels):
+                 neighborhood_size, neighborhood_labeling):
 
         if node_labeling not in labelings:
             raise ValueError(
@@ -26,14 +26,13 @@ class PatchySan(Converter):
         self._node_stride = node_stride
         self._neighborhood_size = neighborhood_size
         self._neighborhood_labeling = neighborhood_labeling
-        self._num_node_channels = num_node_channels
 
     @property
     def shape(self):
         return [
             self._num_nodes,
             self._neighborhood_size,
-            self._num_node_channels
+            self._grapher.node_channels_length,
         ]
 
     def convert(self, data):
@@ -46,4 +45,5 @@ class PatchySan(Converter):
             sequence, adjacent, self._neighborhood_size,
             labelings[self._neighborhood_labeling])
 
-        return receptive_fields(neighborhoods, nodes, num_node_channels)
+        return receptive_fields(neighborhoods, nodes,
+                                self._grapher.node_channels_length)

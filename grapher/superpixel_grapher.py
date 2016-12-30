@@ -2,14 +2,35 @@ import tensorflow as tf
 import networkx as nx
 import numpy as np
 
+from superpixel import (Superpixel, extract)
+
 from .grapher import Grapher
-from .superpixel.extract import extract
+
+
+def _node_channels(superpixel):
+    color = superpixel.mean
+    center = superpixel.relative_center_in_bounding_box
+
+    return [
+        color[0],
+        color[1],
+        color[2],
+        superpixel.count,
+        center[1],
+        center[0],
+        superpixel.height,
+        superpixel.width,
+    ]
 
 
 class SuperpixelGrapher(Grapher):
 
     def __init__(self, superpixel_generator):
         self._superpixel_generator = superpixel_generator
+
+    @property
+    def node_channels_length(self):
+        return len(_node_channels(Superpixel()))
 
     def create_graph(self, image):
         def _create_graph(image, superpixel_representation):
@@ -18,9 +39,7 @@ class SuperpixelGrapher(Grapher):
             graph = nx.Graph()
 
             def _node_mapping(superpixel):
-                return {
-                    'features': superpixel.features
-                }
+                return {'features': _node_channels(superpixel)}
 
             for s in superpixels:
                 graph.add_node(s.id, _node_mapping(s))

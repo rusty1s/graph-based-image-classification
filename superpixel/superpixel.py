@@ -98,39 +98,3 @@ class Superpixel(object):
 
         # Calculate mean color and remove the alpha channel.
         return cv2.mean(self.image, self.mask)[:-1]
-
-    def get_attributes(self):
-        """Returns a dictionary of the superpixels attributes."""
-
-        color = self.mean
-        center = self.relative_center_in_bounding_box
-
-        return {
-            'order': self.order,
-            'blue': color[0],
-            'green': color[1],
-            'red': color[2],
-            'count': self.count,
-            'x': center[0],
-            'y': center[1],
-            'left': self.left,
-            'top': self.top,
-            'width': self.width,
-            'height': self.height,
-        }
-
-    @property
-    def features(self):
-        color = self.mean
-        center = self.relative_center_in_bounding_box
-
-        return [
-            color[0],
-            color[1],
-            color[2],
-            self.count,
-            center[1],
-            center[0],
-            self.height,
-            self.width,
-        ]
