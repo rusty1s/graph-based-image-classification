@@ -6,13 +6,13 @@ from .receptive_field import (receptive_field, receptive_fields)
 class ReceptiveFieldTest(tf.test.TestCase):
 
     def test_receptive_field(self):
-        neighborhood = tf.constant([-1, 0, 2, 1])
+        neighborhood = tf.constant([-1, 0, 2, 1], dtype=tf.int32)
 
         nodes = tf.constant([
             [1.0, 0.5],
             [3.0, 0.0],
             [1.5, 1.0],
-        ])
+        ], dtype=tf.float32)
 
         expected = [[0.0, 0.0], [1.0, 0.5], [1.5, 1.0], [3.0, 0.0]]
 

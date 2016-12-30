@@ -19,4 +19,5 @@ def receptive_fields(neighborhoods, nodes, num_features):
     def _receptive_field(neighborhood):
         return receptive_field(neighborhood, nodes, num_features)
 
-    return tf.map_fn(_receptive_field, neighborhoods, dtype=tf.float32)
+    return tf.map_fn(_receptive_field, neighborhoods, dtype=tf.float32,
+                     name='receptive_fields')

@@ -2,21 +2,17 @@ import tensorflow as tf
 import networkx as nx
 
 
-def assemble_neighborhood(index, adjacent, size, labeling):
-    # this shall return a function assemble(index) with a fixed size
-    # this is neighborhood assembly where we already compute a fixed size
-    # neighborhood via labeling and distances
-    def _assemble(index):
-        return index
-
-    return _assemble
-
-
 def neighborhoods_assembly(sequence, adjacent, size, labeling):
-    assemble = assemble_neighborhood(size, adjacent)
+    def _neighborhoods_assembly(sequence, adjacent, size, labeling):
+        pass
 
-    # dont need to reshape i think
-    sequence = tf.reshape([-1, 1])
-    neighborhoods = tf.map_fn(assemble, t)
+
+    # graph = nx.Graph(adjacent)
+
+    def _assemble(node):
+        return tf.zeros([size], dtype=tf.int32)
+
+    neighborhoods = tf.map_fn(_assemble, sequence, dtype=tf.int32,
+                              name='neighborhood_assembly')
 
     return neighborhoods

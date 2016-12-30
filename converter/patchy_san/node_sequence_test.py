@@ -6,7 +6,7 @@ from .node_sequence import node_sequence
 class NodeSequenceTest(tf.test.TestCase):
 
     def test_node_sequence(self):
-        sequence = tf.constant([1, 2, 3, 4, 5, 6, 7, 8])
+        sequence = tf.constant([1, 2, 3, 4, 5, 6, 7, 8], dtype=tf.int32)
 
         with self.test_session() as sess:
             s = node_sequence(sequence, width=4, stride=1)

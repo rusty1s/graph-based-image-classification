@@ -3,18 +3,11 @@ import tensorflow as tf
 
 def node_sequence(sequence, width, stride):
     # Stride the sequence based on the given stride width.
-    size = sequence.get_shape()[0].value
-    sequence = tf.strided_slice(sequence, [0], [size], [stride])
+    sequence = tf.strided_slice(sequence, [0], [width*stride], [stride])
 
-    # No more entries than we want.
-    sequence = tf.strided_slice(sequence, [0], [width], [1])
+    # Pad right with -1 if we need to.
+    padding = tf.ones([width], dtype=tf.int32)
+    padding = tf.negative(padding)
+    sequence = tf.concat(0, [sequence, padding])
 
-    # Pad with zeros if we need to.
-    size = sequence.get_shape()[0].value
-
-    if size < width:  # TODO if weg, muss auch ohne gehen
-        sequence = tf.add(sequence, tf.ones_like(sequence))
-        sequence = tf.pad(sequence, [[0, width-size]])
-        sequence = tf.sub(sequence, tf.ones_like(sequence))
-
-    return sequence
+    return tf.strided_slice(sequence, [0], [width], [1])

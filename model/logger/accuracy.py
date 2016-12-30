@@ -18,6 +18,6 @@ class AccuracyLoggerHook(LoggerHook):
     def after_display_step_run(self, run_context, run_values):
         accuracy = run_values.results
 
-        s = '[accuracy = {:.2f}] '.format(accuracy)
+        s = '[accuracy = {:.2f}]'.format(accuracy)
 
         print(s, end=' ')

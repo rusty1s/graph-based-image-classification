@@ -3,9 +3,19 @@ from data import (Cifar10DataSet, ConvertedDataSet)
 from converter import PatchySan
 from superpixel.algorithm import slico_generator
 from grapher import SuperpixelGrapher
+from data import inputs
 
-if __name__ == '__main__':
-    superpixel_grapher = SuperpixelGrapher(slico_generator)
+import tensorflow as tf
+
+
+def main():
+    slico = slico_generator(
+        num_superpixels=100,
+        compactness=1.0,
+        max_iterations=10,
+        sigma=0.0)
+
+    superpixel_grapher = SuperpixelGrapher(superpixel_algorithm=slico)
 
     patchy_san = PatchySan(
         grapher=superpixel_grapher,
@@ -15,7 +25,15 @@ if __name__ == '__main__':
         neighborhood_size=10,
         neighborhood_labeling='betweenness_centrality')
 
-    cifar10 = Cifar10DataSet()
+    cifar10 = Cifar10DataSet(data_dir='/tmp/cifar10_data')
 
-    dataset = ConvertedDataSet(cifar10, patchy_san)
-    # train(dataset, '/tmp/cifar10_train', 'network_params.json')
+    dataset = ConvertedDataSet(dataset=cifar10, converter=patchy_san)
+
+    train(
+        dataset,
+        train_dir='/tmp/cifar10_train',
+        network_params_path='network_params_slic.json')
+
+
+if __name__ == '__main__':
+    main()
