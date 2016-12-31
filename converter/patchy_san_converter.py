@@ -34,11 +34,11 @@ class PatchySan(Converter):
 
     @property
     def shape(self):
+        # return [24, 24, 3]
         return [
             self._num_nodes,
             self._neighborhood_size,
-            # self._grapher.node_channels_length,
-            1
+            self._grapher.node_channels_length,
         ]
 
     def convert(self, data):
@@ -49,18 +49,21 @@ class PatchySan(Converter):
         # # nodes = tf.zeros([100, 8])
         # adjacent = tf.zeros([100, 100])
         # return tf.pad(data, [[]])
+
         nodes, adjacent = self._grapher.create_graph(data)
-        # nodes = tf.zeros([self._num_nodes])
-        # result = tf.strided_slice(nodes, [0], [self._num_nodes], [1])
-        # result = tf.map_fn(lambda x: tf.zeros([self._neighborhood_size, 8]), result)
-        # return result
 
-        sequence = labelings[self._node_labeling](adjacent)
-        sequence = node_sequence(sequence, self._num_nodes, self._node_stride)
+        # test speed
+        result = tf.strided_slice(nodes, [0], [self._num_nodes], [1])
+        result = tf.map_fn(lambda x: tf.zeros([self._neighborhood_size, 8]), result)
+        return result
 
-        neighborhoods = neighborhoods_assembly(
-            sequence, adjacent, self._neighborhood_size,
-            labelings[self._neighborhood_labeling])
 
-        return receptive_fields(neighborhoods, nodes, 1)
-                                # self._grapher.node_channels_length)
+        # sequence = labelings[self._node_labeling](adjacent)
+        # sequence = node_sequence(sequence, self._num_nodes, self._node_stride)
+
+        # neighborhoods = neighborhoods_assembly(
+        #     sequence, adjacent, self._neighborhood_size,
+        #     labelings[self._neighborhood_labeling])
+
+        # return receptive_fields(neighborhoods, nodes,
+        #                         self._grapher.node_channels_length)

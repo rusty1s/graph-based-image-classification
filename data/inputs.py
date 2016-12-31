@@ -90,7 +90,7 @@ def _inputs(data_dir, filenames, read, num_examples_per_epoch, batch_size,
     data.set_shape(data_shape)
     read_input.label.set_shape([1])
 
-    min_fraction_of_examples_in_queue = 0.004
+    min_fraction_of_examples_in_queue = 0.04
     min_queue_examples = int(num_examples_per_epoch *
                              min_fraction_of_examples_in_queue)
 

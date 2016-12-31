@@ -4,27 +4,34 @@ from superpixel.algorithm import slico_generator
 
 from .superpixel_grapher import SuperpixelGrapher
 
-import numpy as np
-
 
 class SuperpixelGrapherTest(tf.test.TestCase):
 
+    def test_mean_pair(self):
+        A = tf.constant([[0, 0, 0], [5, 5, 5], [30, 30, 30]], dtype=tf.float32)
+        expanded_a = tf.expand_dims(A, 1)
+        expanded_b = tf.expand_dims(A, 0)
+        distances = tf.reduce_sum(tf.squared_difference(expanded_a, expanded_b), 2)
+
+        # A = tf.reduce_sum(A, 1)
+
+        with self.test_session() as sess:
+            pass
+            # print('A', A.eval())
+            # print('a', expanded_a.eval())
+            # print('b', expanded_b.eval())
+            # print('distances', distances.eval())
+            # print('X', X.eval())
+            # print('r', r.eval())
+            # print('D', D.eval())
+
+
     def test_create_graph(self):
-        img1 = np.zeros((10, 10))
-        img1[2:7, 2:7] = 1.0
-
-        cols = np.any(img1, axis=0)
-        rows = np.any(img1, axis=1)
-        rows = np.where(rows)[0]
-        # print(rows)
-
-
-
         image = tf.constant([
-            [[255, 255, 255], [255, 255, 255], [0, 0, 0], [0, 0, 0]],
-            [[255, 255, 255], [255, 255, 255], [0, 0, 0], [0, 0, 0]],
-            [[0, 0, 0], [0, 0, 0], [255, 255, 255], [255, 255, 255]],
-            [[0, 0, 0], [0, 0, 0], [255, 255, 255], [255, 255, 255]],
+            [[255, 255, 255], [255, 255, 255], [1, 1, 1], [1, 1, 1]],
+            [[255, 255, 255], [255, 255, 255], [1, 1, 1], [1, 1, 1]],
+            [[0, 0, 0], [0, 0, 0], [254, 254, 254], [254, 254, 254]],
+            [[0, 0, 0], [0, 0, 0], [254, 254, 254], [254, 254, 254]],
         ], dtype=tf.float32)
 
         slico = slico_generator(num_superpixels=4)
@@ -32,8 +39,9 @@ class SuperpixelGrapherTest(tf.test.TestCase):
 
         with self.test_session() as sess:
             # self.assertEqual(grapher.node_channels_length, 8)
-            nodes = grapher.create_graph(image)
+            nodes, adjacent = grapher.create_graph(image)
             print(nodes.eval())
+            print(adjacent.eval())
             # self.assertAllEqual(nodes.eval(), expected_nodes)
             # self.assertAllEqual(adjacent.eval(), expected_adjacent)
 

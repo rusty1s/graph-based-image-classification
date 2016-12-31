@@ -19,7 +19,7 @@ def main():
 
     patchy_san = PatchySan(
         grapher=superpixel_grapher,
-        num_nodes=100,
+        num_nodes=50,
         node_labeling='betweenness_centrality',
         node_stride=1,
         neighborhood_size=10,
