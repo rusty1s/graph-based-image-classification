@@ -63,7 +63,7 @@ def write(dataset, filename, train=True, eval_data=False, epochs=EPOCHS,
             data, labels = sess.run([data_batch, label_batch])
 
             example = tf.train.Example(features=tf.train.Features(feature={
-                'batch_size': BATCH_SIZE,
+                'batch_size': _int64_feature(BATCH_SIZE),
                 'height': _int64_feature(record.height),
                 'width': _int64_feature(record.width),
                 'depth': _int64_feature(record.depth),
