@@ -2,6 +2,7 @@ import os
 
 import tensorflow as tf
 
+from .record import Record
 from .dataset import DataSet
 from .download import maybe_download_and_extract
 
@@ -31,6 +32,10 @@ class Cifar10DataSet(DataSet):
         maybe_download_and_extract(DATA_URL, data_dir)
 
         self._data_dir = os.path.join(data_dir, 'cifar-10-batches-bin')
+
+    @property
+    def name(self):
+        return 'CIFAR-10'
 
     @property
     def data_dir(self):
@@ -65,44 +70,23 @@ class Cifar10DataSet(DataSet):
             filename_queue: A queue of strings with the filenames to read from.
 
         Returns:
-            An object representing a single example, with the following fields:
-
-            height: Number of rows in the example (32).
-            width: Number of columns in the example (32).
-            depth: Number of color channels in the example (3).
-            key: a scalar string tensor describing the filename & record number
-              for the example.
-            label: An int32 tensor with the label of the example in the range
-              0..9.
-            data: A [height, width, depth] float32 tensor with the image data
-              of the example.
+            A record object.
         """
-
-        class Record(object):
-            pass
-
-        result = Record()
-
-        result.height = HEIGHT
-        result.width = WIDTH
-        result.depth = DEPTH
 
         # Read a record, getting filenames from the filename_queue. No header
         # or footer in the CIFAR-10 format, so we leave header_bytes and
         # footer_bytes at their default of 0.
         reader = tf.FixedLengthRecordReader(record_bytes=RECORD_BYTES)
-        result.key, value = reader.read(filename_queue)
+        _, value = reader.read(filename_queue)
 
         # Convert from a string to a vector of uint8 that is RECORD_BYTES long.
         record_bytes = tf.decode_raw(value, tf.uint8)
 
         # The first bytes represent the label, which we convert from uint8 to
-        # int32.
+        # int64.
         label = tf.strided_slice(record_bytes, [0], [LABEL_BYTES], [1])
-        label = tf.cast(label, tf.int32)
-
-        result.label = label
-        result.label.set_shape([1])
+        label = tf.cast(label, tf.int64)
+        label.set_shape([1])
 
         # The reamining bytes after the label represent the image, which we
         # reshape from [depth * height * width] to [depth, height, width].
@@ -115,15 +99,15 @@ class Cifar10DataSet(DataSet):
 
         # Convert from uint8 to float32.
         data = tf.cast(data, tf.float32)
+        data.set_shape([HEIGHT, WIDTH, DEPTH])
 
-        result.data = data
-        result.data.set_shape([HEIGHT, WIDTH, DEPTH])
+        return Record(HEIGHT, WIDTH, DEPTH, label, data)
 
-        return result
-
-    def train_preprocess(self, image):
+    def train_preprocess(self, record):
         """Image processing for training the network with many random
         distortions applied to the image."""
+
+        image = record.data
 
         # Randomly crop a [height, width] section of the image.
         image = tf.random_crop(image, [POST_HEIGHT, POST_WIDTH, DEPTH])
@@ -137,12 +121,14 @@ class Cifar10DataSet(DataSet):
         # Subtract off the mean and divide by the variance of the pixels.
         image = tf.image.per_image_standardization(image)
 
-        image.set_shape([POSTHEIGHT, POSTWIDTH, DEPTH])
+        image.set_shape([POST_HEIGHT, POST_WIDTH, DEPTH])
 
-        return image
+        return Record(POST_HEIGHT, POST_WIDTH, DEPTH, record.label, image)
 
-    def eval_preprocess(self, image):
+    def eval_preprocess(self, record):
         """Image processing for evaluating the network."""
+
+        image = record.data
 
         # Crop the central [height, width] of the image.
         image = tf.image.resize_image_with_crop_or_pad(image, POST_HEIGHT,
@@ -151,6 +137,6 @@ class Cifar10DataSet(DataSet):
         # Subtract off the mean and divide by the variance of the pixels.
         image = tf.image.per_image_standardization(image)
 
-        image.set_shape([POSTHEIGHT, POSTWIDTH, DEPTH])
+        image.set_shape([POST_HEIGHT, POST_WIDTH, DEPTH])
 
-        return image
+        return Record(POST_HEIGHT, POST_WIDTH, DEPTH, record.label, image)

@@ -13,7 +13,6 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
 
     filename = url.split('/')[-1]
     filepath = os.path.join(data_dir, filename)
-    # dirpath = os.path.join(data_dir, dirname)
 
     if not os.path.exists(filepath):
         def _progress(count, block_size, total_size):
@@ -33,7 +32,7 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
         print()
         print('Successfully downloaded {} ({} bytes).'.format(filename, size))
 
-    sys.stdout.write('Extracting {} to {}...'.format(filename, data_dir))
+    sys.stdout.write('>> Extracting {} to {}...'.format(filename, data_dir))
     sys.stdout.flush()
 
     tarfile.open(filepath, 'r:gz').extractall(data_dir)

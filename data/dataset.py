@@ -7,6 +7,11 @@ class DataSet():
 
     @property
     @abc.abstractmethod
+    def name(self):
+        pass
+
+    @property
+    @abc.abstractmethod
     def data_dir(self):
         pass
 
