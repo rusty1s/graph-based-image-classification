@@ -89,7 +89,7 @@ def write(dataset, filename, train=True, eval_data=False, epochs=EPOCHS,
             sys.stdout.flush()
 
     except KeyboardInterrupt:
-        print()
+        pass
 
     finally:
         coord.request_stop()
@@ -98,10 +98,10 @@ def write(dataset, filename, train=True, eval_data=False, epochs=EPOCHS,
         writer.close()
         sess.close()
 
+        print()
         print(' '.join([
             'Successfully written {} batches'.format(i),
-            '(~{:.2f}'.format(i * batch_size / num_examples_per_epoch),
-            'epochs).'
+            '(~{:.2f} epochs)'.format(i * batch_size / num_examples_per_epoch),
         ]))
 
 
@@ -112,5 +112,7 @@ if __name__ == '__main__':
     write(
         dataset=dataset,
         filename=filename,
-        epochs=1,
+        train=False,
+        eval_data=True,
+        epochs=2,
         batch_size=100)

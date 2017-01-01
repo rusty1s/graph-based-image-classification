@@ -48,7 +48,7 @@ class Cifar10DataSet(DataSet):
 
     @property
     def eval_filenames(self):
-        return tf.train.match_filenams_once(
+        return tf.train.match_filenames_once(
             '{}/test_batch.bin'.format(self.data_dir))
 
     @property
