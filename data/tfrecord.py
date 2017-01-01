@@ -5,7 +5,7 @@ import tensorflow as tf
 from six.moves import xrange
 
 EPOCHS = 1
-BATCH_SIZE = 100
+BATCH_SIZE = 128
 NUM_THREADS = 16
 CAPACITY = 1000
 
@@ -63,6 +63,7 @@ def write(dataset, filename, train=True, eval_data=False, epochs=EPOCHS,
             data, labels = sess.run([data_batch, label_batch])
 
             example = tf.train.Example(features=tf.train.Features(feature={
+                'batch_size': BATCH_SIZE,
                 'height': _int64_feature(record.height),
                 'width': _int64_feature(record.width),
                 'depth': _int64_feature(record.depth),
