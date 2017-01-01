@@ -76,9 +76,8 @@ def write(dataset, filename, train=True, eval_data=False, epochs=EPOCHS,
 
             remaining = (steps - i) * ((time.time() - start_time) / i) / 60
 
-            # >> Saving CIFAR-10 train dataset to /tmp 
             sys.stdout.write(' '.join([
-                '\r>> Saving',
+                '\r>> Writing',
                 '{}'.format(dataset.name),
                 '{}'.format('eval' if eval_data else 'train'),
                 'dataset to',
@@ -98,6 +97,12 @@ def write(dataset, filename, train=True, eval_data=False, epochs=EPOCHS,
 
         writer.close()
         sess.close()
+
+        print(' '.join([
+            'Successfully written {} batches'.format(i),
+            '(~{:.2f}'.format(i * batch_size / num_examples_per_epoch),
+            'epochs).'
+        ]))
 
 
 if __name__ == '__main__':
