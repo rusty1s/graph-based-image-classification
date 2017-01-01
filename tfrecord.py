@@ -5,10 +5,10 @@ from six.moves import xrange
 
 from data import Cifar10DataSet
 
+EPOCHS = 1
 BATCH_SIZE = 100
 NUM_THREADS = 16
 CAPACITY = 1000
-EPOCHS = 1
 
 
 def _int64_feature(value):
@@ -19,7 +19,7 @@ def _bytes_feature(value):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
 
-def write(dataset, epochs=EPOCHS, batch_size=BATCH_SIZE):
+def write(dataset, train=True, epochs=EPOCHS, batch_size=BATCH_SIZE):
     steps = -(-dataset.num_examples_per_epoch_for_train // batch_size) * epochs
 
     filenames = dataset.train_filenames
@@ -50,6 +50,8 @@ def write(dataset, epochs=EPOCHS, batch_size=BATCH_SIZE):
 
         for i in xrange(1, steps+1):
             data, labels = sess.run([data_batch, label_batch])
+
+            # TODO save in batches instead of this shitty for loop
             for j in xrange(BATCH_SIZE):
                 example = tf.train.Example(features=tf.train.Features(feature={
                     'height': _int64_feature(read_input.height),
@@ -76,4 +78,8 @@ def write(dataset, epochs=EPOCHS, batch_size=BATCH_SIZE):
 
 
 if __name__ == '__main__':
-    write(Cifar10DataSet(data_dir='/tmp/cifar10_data'))
+    dataset = Cifar10DataSet(data_dir='/tmp/cifar10_data')
+    write(
+        dataset=dataset,
+        epochs=1,
+        batch_size=100)
