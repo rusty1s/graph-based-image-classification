@@ -7,7 +7,8 @@ def betweenness_centrality(adjacent):
     def _betweenness_centrality(adjacent):
         graph = nx.Graph(adjacent)
 
-        labeling = nx.betweenness_centrality(graph, normalized=False)
+        labeling = nx.betweenness_centrality(
+            graph, normalized=False, weight='weight')
         labeling = list(labeling.items())
         labeling = sorted(labeling, key=lambda v: v[1], reverse=True)
         labeling = [v[0] for v in labeling]

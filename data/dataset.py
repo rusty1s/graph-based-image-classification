@@ -35,11 +35,6 @@ class DataSet():
     def num_examples_per_epoch_for_eval(self):
         pass
 
-    @property
-    @abc.abstractmethod
-    def data_shape(self):
-        pass
-
     @abc.abstractmethod
     def read(self, filename_queue):
         pass

@@ -38,11 +38,13 @@ class Cifar10DataSet(DataSet):
 
     @property
     def train_filenames(self):
-        return ['data_batch_{}.bin'.format(i) for i in range(1, 6)]
+        return tf.train.match_filenames_once(
+            '{}/data_batch_*.bin'.format(self.data_dir))
 
     @property
     def eval_filenames(self):
-        return ['test_batch.bin']
+        return tf.train.match_filenams_once(
+            '{}/test_batch.bin'.format(self.data_dir))
 
     @property
     def num_labels(self):
@@ -55,10 +57,6 @@ class Cifar10DataSet(DataSet):
     @property
     def num_examples_per_epoch_for_eval(self):
         return 10000
-
-    @property
-    def data_shape(self):
-        return [POST_HEIGHT, POST_WIDTH, 3]
 
     def read(self, filename_queue):
         """Reads and parses examples from CIFAR-10 data files.
@@ -104,6 +102,7 @@ class Cifar10DataSet(DataSet):
         label = tf.cast(label, tf.int32)
 
         result.label = label
+        result.label.set_shape([1])
 
         # The reamining bytes after the label represent the image, which we
         # reshape from [depth * height * width] to [depth, height, width].
@@ -118,6 +117,7 @@ class Cifar10DataSet(DataSet):
         data = tf.cast(data, tf.float32)
 
         result.data = data
+        result.data.set_shape([HEIGHT, WIDTH, DEPTH])
 
         return result
 
@@ -137,6 +137,8 @@ class Cifar10DataSet(DataSet):
         # Subtract off the mean and divide by the variance of the pixels.
         image = tf.image.per_image_standardization(image)
 
+        image.set_shape([POSTHEIGHT, POSTWIDTH, DEPTH])
+
         return image
 
     def eval_preprocess(self, image):
@@ -148,5 +150,7 @@ class Cifar10DataSet(DataSet):
 
         # Subtract off the mean and divide by the variance of the pixels.
         image = tf.image.per_image_standardization(image)
+
+        image.set_shape([POSTHEIGHT, POSTWIDTH, DEPTH])
 
         return image

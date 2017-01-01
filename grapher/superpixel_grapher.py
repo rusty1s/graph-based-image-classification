@@ -9,11 +9,10 @@ class SuperpixelGrapher(Grapher):
         self._superpixel_algorithm = superpixel_algorithm
 
     @property
-    def node_channels_length(self):
+    def num_node_channels(self):
         return 8
 
     def create_graph(self, image):
-        # return tf.random_normal([100, 8]), tf.zeros([100, 100])
         image = tf.cast(image, tf.float32)
         segmentation = self._superpixel_algorithm(image)
         num_segments = tf.reduce_max(segmentation) + 1
@@ -74,10 +73,13 @@ class SuperpixelGrapher(Grapher):
 
         # adjacent, difference in color values with threshold
         means = tf.strided_slice(nodes, [0, 0], [num_segments, 3], [1, 1])
-        expanded_a = tf.expand_dims(means, 1)
-        expanded_b = tf.expand_dims(means, 0)
-        distances = tf.reduce_sum(tf.squared_difference(expanded_a, expanded_b), 2)
+        a = tf.expand_dims(means, 1)
+        b = tf.expand_dims(means, 0)
+        distances = tf.reduce_sum(tf.squared_difference(a, b), 2)
+
+        # Apply threshold
         threshold = tf.ones_like(distances) * 20
-        distances = tf.select(tf.less(distances, threshold), distances, tf.zeros_like(distances))
+        mask = tf.less(distances, threshold)
+        distances = tf.select(mask, distances, tf.zeros_like(distances))
 
         return nodes, distances

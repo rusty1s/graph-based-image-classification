@@ -7,7 +7,7 @@ class Grapher(object):
 
     @property
     @abc.abstractmethod
-    def node_channels_length(self):
+    def num_node_channels(self):
         pass
 
     @abc.abstractmethod

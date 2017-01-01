@@ -6,11 +6,6 @@ from .patchy_san.node_sequence import node_sequence
 from .patchy_san.neighborhood_assembly import neighborhoods_assembly
 from .patchy_san.receptive_field import receptive_fields
 
-from superpixel.algorithm import slico_generator
-
-
-slic = slico_generator(120)
-
 
 class PatchySan(Converter):
 
@@ -34,31 +29,26 @@ class PatchySan(Converter):
 
     @property
     def shape(self):
-        # return [24, 24, 3]
         return [
             self._num_nodes,
             self._neighborhood_size,
-            self._grapher.node_channels_length,
+            self._grapher.num_node_channels,
         ]
 
     def convert(self, data):
-        # s = slic(data)
-        # nodes = tf.strided_slice(s, [0, 0], [100, 8], [1, 1])
-        # nodes = tf.cast(nodes, tf.float32)
-
-        # # nodes = tf.zeros([100, 8])
-        # adjacent = tf.zeros([100, 100])
-        # return tf.pad(data, [[]])
-
         nodes, adjacent = self._grapher.create_graph(data)
 
-        # test speed
+        # Test speed.
         result = tf.strided_slice(nodes, [0], [self._num_nodes], [1])
-        result = tf.map_fn(lambda x: tf.zeros([self._neighborhood_size, 8]), result)
+        result = tf.map_fn(lambda x: tf.random_normal([self._neighborhood_size, 8]), result)
         return result
 
-
-        # sequence = labelings[self._node_labeling](adjacent)
+        # TODO
+        sequence = labelings[self._node_labeling](adjacent)
+        sequence = tf.cast(sequence, tf.float32)
+        result = tf.strided_slice(sequence, [0], [self._num_nodes], [1])
+        result = tf.map_fn(lambda x: tf.random_normal([self._neighborhood_size, 8]), result)
+        return result
         # sequence = node_sequence(sequence, self._num_nodes, self._node_stride)
 
         # neighborhoods = neighborhoods_assembly(

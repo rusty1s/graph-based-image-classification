@@ -22,7 +22,7 @@ def main():
         num_nodes=50,
         node_labeling='betweenness_centrality',
         node_stride=1,
-        neighborhood_size=10,
+        neighborhood_size=20,
         neighborhood_labeling='betweenness_centrality')
 
     cifar10 = Cifar10DataSet(data_dir='/tmp/cifar10_data')
