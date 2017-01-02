@@ -35,7 +35,7 @@ def write(num_examples_per_epoch, input_filenames, output_filename, read,
 
     data_batch, label_batch = tf.train.batch(
         [record.data, record.label],
-        batch_size=BATCH_SIZE,
+        batch_size=batch_size,
         num_threads=NUM_THREADS,
         capacity=CAPACITY)
 
