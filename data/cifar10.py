@@ -35,7 +35,7 @@ class Cifar10DataSet(DataSet):
 
     @property
     def name(self):
-        return 'CIFAR-10'
+        return 'cifar_10'
 
     @property
     def data_dir(self):
@@ -86,7 +86,6 @@ class Cifar10DataSet(DataSet):
         # int64.
         label = tf.strided_slice(record_bytes, [0], [LABEL_BYTES], [1])
         label = tf.cast(label, tf.int64)
-        label.set_shape([1])
 
         # The reamining bytes after the label represent the image, which we
         # reshape from [depth * height * width] to [depth, height, width].
@@ -99,7 +98,6 @@ class Cifar10DataSet(DataSet):
 
         # Convert from uint8 to float32.
         data = tf.cast(data, tf.float32)
-        data.set_shape([HEIGHT, WIDTH, DEPTH])
 
         return Record(HEIGHT, WIDTH, DEPTH, label, data)
 

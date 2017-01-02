@@ -16,11 +16,14 @@ class Record(object):
 
         # TODO Assertions for label and data
 
-        self._height = int(height)
-        self._width = int(width)
-        self._depth = int(depth)
+        self._height = height
+        self._width = width
+        self._depth = depth
+
         self._label = label
+        self._label.set_shape([1])
         self._data = data
+        self._data.set_shape([height, width, depth])
 
     @property
     def height(self):

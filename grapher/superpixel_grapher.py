@@ -13,8 +13,8 @@ class SuperpixelGrapher(Grapher):
         return 8
 
     def create_graph(self, image):
-        image = tf.cast(image, tf.float32)
         segmentation = self._superpixel_algorithm(image)
+
         num_segments = tf.reduce_max(segmentation) + 1
         values = tf.range(0, num_segments, dtype=tf.int32)
 
@@ -64,12 +64,13 @@ class SuperpixelGrapher(Grapher):
                 tf.reshape(mean, [-1]),
                 tf.reshape(center, [-1]),
                 [count],
-                tf.cast(right - left, tf.float32),
                 tf.cast(bottom - top, tf.float32),
+                tf.cast(right - left, tf.float32),
             ])
             return features
 
         nodes = tf.map_fn(_extract, values, dtype=tf.float32)
+        return nodes, tf.zeros([2, 2])
 
         # adjacent, difference in color values with threshold
         means = tf.strided_slice(nodes, [0, 0], [num_segments, 3], [1, 1])

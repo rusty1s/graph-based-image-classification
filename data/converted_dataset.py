@@ -5,19 +5,19 @@ class ConvertedDataSet(DataSet):
 
     def __init__(self, dataset, converter):
         self._dataset = dataset
-        self._converter = converter
+        self._converter = converter(dataset)
 
     @property
     def data_dir(self):
-        return self._dataset.data_dir
+        return self._converter.data_dir
 
     @property
     def train_filenames(self):
-        return self._dataset.train_filenames
+        return self._converter.train_filenames
 
     @property
     def eval_filenames(self):
-        return self._dataset.eval_filenames
+        return self._converter.eval_filenames
 
     @property
     def num_labels(self):
@@ -33,18 +33,8 @@ class ConvertedDataSet(DataSet):
 
     @property
     def data_shape(self):
-        return self._converter.shape
+        return self._converter.data_shape
 
+    @property
     def read(self, filename_queue):
-        return self._dataset.read(filename_queue)
-
-    def train_preprocess(self, data):
-        data = self._dataset.train_preprocess(data)
-        return self._postprocess(data)
-
-    def eval_preprocess(self, data):
-        data = self._dataset.eval_preprocess(data)
-        return self._postprocess(data)
-
-    def _postprocess(self, data):
-        return self._converter.convert(data)
+        return self._converter.read(filename_queue)
