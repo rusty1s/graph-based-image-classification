@@ -82,7 +82,7 @@ def _inputs(data_dir, filenames, read, preprocess, num_examples_per_epoch,
     min_fraction_of_examples_in_queue = 0.4
     min_queue_examples = int(num_examples_per_epoch *
                              min_fraction_of_examples_in_queue)
-    # min_queue_examples = 200
+    min_queue_examples = 200
 
     print('Filling queue with {} examples before starting. This can take a '
           'few minutes.'.format(min_queue_examples))

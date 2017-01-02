@@ -18,7 +18,7 @@ class PatchySanDataSet(DataSet):
 
         self._dataset = dataset
         self._data_dir = data_dir
-        self._grapher = SuperpixelGrapher(slico_generator(25))
+        self._grapher = SuperpixelGrapher(slico_generator(100))
 
         if tf.gfile.Exists(data_dir):
             tf.gfile.DeleteRecursively(data_dir)
@@ -59,7 +59,7 @@ class PatchySanDataSet(DataSet):
         return self._dataset.num_examples_per_epoch_for_eval
 
     def read(self, filename_queue):
-        return read_and_decode(filename_queue, 20, 1, 8)
+        return read_and_decode(filename_queue, 10, 10, 1)
 
     def train_convert(self, record):
         record = self._dataset.train_preprocess(record)
@@ -71,7 +71,10 @@ class PatchySanDataSet(DataSet):
 
     def convert(self, record):
         nodes, adjacent = self._grapher.create_graph(record.data)
+        adjacent = tf.strided_slice(adjacent, [0, 0], [10, 10], [1, 1])
+        adjacent = tf.reshape(adjacent, [10, 10, 1])
+        print(adjacent)
         nodes = tf.reshape(nodes, [-1, 1, 8])
-        nodes = tf.strided_slice(nodes, [0], [20], [1])
+        nodes = tf.strided_slice(nodes, [0], [100], [1])
 
-        return Record(20, 1, 8, record.label, nodes)
+        return Record(10, 10, 1, record.label, adjacent)

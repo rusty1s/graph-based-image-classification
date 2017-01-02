@@ -70,7 +70,6 @@ class SuperpixelGrapher(Grapher):
             return features
 
         nodes = tf.map_fn(_extract, values, dtype=tf.float32)
-        return nodes, tf.zeros([2, 2])
 
         # adjacent, difference in color values with threshold
         means = tf.strided_slice(nodes, [0, 0], [num_segments, 3], [1, 1])
@@ -79,8 +78,8 @@ class SuperpixelGrapher(Grapher):
         distances = tf.reduce_sum(tf.squared_difference(a, b), 2)
 
         # Apply threshold
-        threshold = tf.ones_like(distances) * 20
-        mask = tf.less(distances, threshold)
-        distances = tf.select(mask, distances, tf.zeros_like(distances))
+        # threshold = tf.ones_like(distances) * 20
+        # mask = tf.less(distances, threshold)
+        # distances = tf.select(mask, distances, tf.zeros_like(distances))
 
         return nodes, distances
