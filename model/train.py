@@ -32,7 +32,7 @@ def train(dataset, train_dir, network_params_path):
         with tf.train.MonitoredTrainingSession(
                 checkpoint_dir=train_dir,
                 save_checkpoint_secs=30,
-                hooks=hooks(display_step=1, last_step=last_step,
+                hooks=hooks(display_step=10, last_step=last_step,
                             batch_size=batch_size, loss=loss, accuracy=acc)
                 ) as monitored_session:
             while not monitored_session.should_stop():
