@@ -109,7 +109,7 @@ class Cifar10DataSet(DataSet):
 
         # We need to convert the image back to integer values, so the
         # distortions doesn't mess up with our image.
-        # image = tf.cast(image, tf.int32)
+        image = tf.cast(image, tf.int32)
 
         # Randomly crop a [height, width] section of the image.
         image = tf.random_crop(image, [POST_HEIGHT, POST_WIDTH, DEPTH])
@@ -117,12 +117,9 @@ class Cifar10DataSet(DataSet):
         # Randomly flip the image horizontally.
         image = tf.image.random_flip_left_right(image)
 
-        image = tf.image.random_brightness(image, max_delta=63)
         image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
 
-        image = tf.image.per_image_standardization(image)
-
-        # image = tf.cast(image, tf.float32)
+        image = tf.cast(image, tf.float32)
         image.set_shape([POST_HEIGHT, POST_WIDTH, DEPTH])
 
         return Record(POST_HEIGHT, POST_WIDTH, DEPTH, record.label, image)
