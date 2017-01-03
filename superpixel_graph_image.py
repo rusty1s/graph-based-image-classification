@@ -9,7 +9,7 @@ from data import inputs
 from grapher import SuperpixelGrapher
 from superpixel.algorithm import slic_generator
 
-slic = slic_generator(100)
+slic = slic_generator(25)
 grapher = SuperpixelGrapher(slic)
 
 
@@ -43,19 +43,14 @@ def main():
         image_op = tf.reshape(image_op, [24, 24, 3])
         image_op = tf.cast(image_op, tf.int32)
         image = sess.run(image_op)
-        centers = sess.run(centers)
+        adjacent = tf.cast(adjacent, tf.int32)
+        print(sess.run(adjacent))
 
-        for center in centers:
-            draw.set_color(image, center, [255, 0, 0])
 
         io.imsave('/home/vagrant/shared/org.png', data.astype(np.int32))
         io.imsave('/home/vagrant/shared/test.png', image)
         # print(image)
         print(centers)
-
-
-
-
 
     coord.request_stop()
     coord.join(threads)

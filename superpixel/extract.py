@@ -13,17 +13,17 @@ def extract(image, superpixel_representation):
     # their identifier and false bounding box coordinates).
     values = np.unique(superpixel_representation)
     superpixels = {
-                i: Superpixel(id=i, left=float('inf'), top=float('inf'))
-                for i in values
-            }
+        i: Superpixel(id=i, left=float('inf'), top=float('inf'))
+        for i in values
+    }
 
     bounding = {
-            i: {
-                'right': float('-inf'),
-                'bottom': float('-inf'),
-            }
-            for i in values
+        i: {
+            'right': float('-inf'),
+            'bottom': float('-inf'),
         }
+        for i in values
+    }
 
     # Helper variable to calculate the scan-line order of the superpixels.
     order = 0

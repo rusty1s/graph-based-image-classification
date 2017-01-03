@@ -3,6 +3,10 @@ import networkx as nx
 import numpy as np
 
 
+def identity(adjacent):
+    pass
+
+
 def betweenness_centrality(adjacent):
     def _betweenness_centrality(adjacent):
         graph = nx.Graph(adjacent)
@@ -21,5 +25,6 @@ def betweenness_centrality(adjacent):
 
 
 labelings = {
+    'identity': identity,
     'betweenness_centrality': betweenness_centrality,
 }
