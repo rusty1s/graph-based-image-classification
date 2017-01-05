@@ -82,24 +82,26 @@ class Cifar10DataSet(DataSet):
         # Convert from a string to a vector of uint8 that is RECORD_BYTES long.
         record_bytes = tf.decode_raw(value, tf.uint8)
 
-        # The first bytes represent the label, which we convert from uint8 to
-        # int64.
-        label = tf.strided_slice(record_bytes, [0], [LABEL_BYTES], [1])
-        label = tf.cast(label, tf.int64)
+        with tf.name_scope('read_label', values=[record_bytes]):
+            # The first bytes represent the label, which we convert from uint8
+            # to int64.
+            label = tf.strided_slice(record_bytes, [0], [LABEL_BYTES], [1])
+            label = tf.cast(label, tf.int64)
 
-        # The reamining bytes after the label represent the image, which we
-        # reshape from [depth * height * width] to [depth, height, width].
-        data = tf.strided_slice(
-            record_bytes, [LABEL_BYTES], [RECORD_BYTES], [1])
-        data = tf.reshape(data, [DEPTH, HEIGHT, WIDTH])
+        with tf.name_scope('read_image', values=[record_bytes]):
+            # The reamining bytes after the label represent the image, which we
+            # reshape from [depth * height * width] to [depth, height, width].
+            image = tf.strided_slice(
+                record_bytes, [LABEL_BYTES], [RECORD_BYTES], [1])
+            image = tf.reshape(image, [DEPTH, HEIGHT, WIDTH])
 
-        # Convert from [depth, height, width] to [height, width, depth].
-        data = tf.transpose(data, [1, 2, 0])
+            # Convert from [depth, height, width] to [height, width, depth].
+            image = tf.transpose(image, [1, 2, 0])
 
-        # Convert from uint8 to float32.
-        data = tf.cast(data, tf.float32)
+            # Convert from uint8 to float32.
+            image = tf.cast(data, tf.float32)
 
-        return Record(HEIGHT, WIDTH, DEPTH, label, data)
+        return Record(HEIGHT, WIDTH, DEPTH, label, image)
 
     def train_preprocess(self, record):
         """Image processing for training the network with many random
@@ -107,7 +109,7 @@ class Cifar10DataSet(DataSet):
 
         image = record.data
 
-        with tf.name_scope('train_distorted_inputs', values=[image]):
+        with tf.name_scope('train_distorted_input', values=[image]):
             # We need to convert the image to integer values, so the
             # distortions doesn't mess up with our image.
             image = tf.cast(image, tf.int32)
@@ -132,7 +134,7 @@ class Cifar10DataSet(DataSet):
 
         image = record.data
 
-        with tf.name_scope('eval_distorted_inputs', values=[image]):
+        with tf.name_scope('eval_distorted_input', values=[image]):
             # Crop the central [height, width] of the image.
             image = tf.image.resize_image_with_crop_or_pad(image, POST_HEIGHT,
                                                            POST_WIDTH)
