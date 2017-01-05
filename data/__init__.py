@@ -1,6 +1,7 @@
 from .inputs import inputs
 
 from .cifar10 import Cifar10DataSet
-from .patchy_san import PatchySanDataSet
+from .pascal import PascalVOC
+# from .patchy_san import PatchySanDataSet
 
-from .io import (read_and_decode, write)
+# from .io import (read_and_decode, write)

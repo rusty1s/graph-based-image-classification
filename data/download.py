@@ -19,7 +19,7 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
             if not show_progress:
                 return
 
-            percent = count * block_size / total_size * 100.0
+            percent = 100.0 * count * block_size / total_size
 
             sys.stdout.write(
                 '\r>> Downloading {} {:.1f}%'.format(filename, percent)
@@ -35,6 +35,9 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
     sys.stdout.write('>> Extracting {} to {}...'.format(filename, data_dir))
     sys.stdout.flush()
 
-    tarfile.open(filepath, 'r:gz').extractall(data_dir)
+    if filename.split('.')[-1] == 'gz':
+        tarfile.open(filepath, 'r:gz').extractall(data_dir)
+    else:
+        tarfile.open(filepath, 'r').extractall(data_dir)
 
     print('Done!')

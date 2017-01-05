@@ -21,47 +21,70 @@ LABEL_BYTES = 1
 IMAGE_BYTES = HEIGHT * WIDTH * DEPTH
 RECORD_BYTES = LABEL_BYTES + IMAGE_BYTES
 
-# After preprocessing the image, its width and height will change.
+# After applying distortions to the image, its width and height will change.
 POST_HEIGHT = 24
 POST_WIDTH = 24
+
+# Global constants describing the CIFAR-10 data set.
+NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
+NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 
 
 class Cifar10DataSet(DataSet):
 
     def __init__(self, data_dir='/tmp/cifar10_data'):
+        """Creates a CIFAR-10 dataset.
+
+        Args:
+            data_dir: The path to the directory where the CIFAR-10 dataset is
+            downloaded and extracted to.
+        """
+
         maybe_download_and_extract(DATA_URL, data_dir)
 
         self._data_dir = os.path.join(data_dir, 'cifar-10-batches-bin')
 
     @property
     def name(self):
-        return 'cifar_10'
+        """The name of the CIFAR-10 dataset for pretty printing."""
+        return 'CIFAR-10'
 
     @property
     def data_dir(self):
+        """The path to the directory where the extracted CIFAR-10 dataset is
+        stored."""
         return self._data_dir
 
     @property
     def train_filenames(self):
+        """The filenames of the training batches from the CIFAR-10 dataset."""
         return tf.train.match_filenames_once(
-            '{}/data_batch_*.bin'.format(self.data_dir))
+            os.path.join('{}'.format(self.data_dir), 'data_batch_*.bin'))
 
     @property
     def eval_filenames(self):
+        """The filenames of the evaluation batches from the CIFAR-10
+        dataset."""
         return tf.train.match_filenames_once(
-            '{}/test_batch.bin'.format(self.data_dir))
+            os.path.join('{}'.format(self.data_dir), 'test_batch.bin'))
 
     @property
-    def num_labels(self):
-        return 10
+    def classes(self):
+        """The ordered classes of the CIFAR-10 dataset."""
+        return ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog',
+                'horse', 'ship', 'truck']
 
     @property
     def num_examples_per_epoch_for_train(self):
-        return 50000
+        """The number of examples per epoch for training the CIFAR-10 dataset.
+        """
+        return NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN
 
     @property
     def num_examples_per_epoch_for_eval(self):
-        return 10000
+        """The number of examples per epoch for evaluating the CIFAR-10
+        dataset."""
+        return NUM_EXAMPLES_PER_EPOCH_FOR_EVAL
 
     def read(self, filename_queue):
         """Reads and parses examples from CIFAR-10 data files.
@@ -103,13 +126,21 @@ class Cifar10DataSet(DataSet):
 
         return Record(HEIGHT, WIDTH, DEPTH, label, image)
 
-    def train_preprocess(self, record):
-        """Image processing for training the network with many random
-        distortions applied to the image."""
+    def distort_for_train(self, record):
+        """Applies random distortions for training to the image of a CIFAR-10
+        record.
+
+        Args:
+            record: The record of the example before applying distortions.
+
+        Returns:
+            A new record object of the passed record after applying
+            distortions.
+        """
 
         image = record.data
 
-        with tf.name_scope('train_distorted_input', values=[image]):
+        with tf.name_scope('distort_for_train', values=[image]):
             # We need to convert the image to integer values, so the
             # distortions doesn't mess up with our image.
             image = tf.cast(image, tf.int32)
@@ -129,12 +160,21 @@ class Cifar10DataSet(DataSet):
         # Return a new record with the applied distortions.
         return Record(POST_HEIGHT, POST_WIDTH, DEPTH, record.label, image)
 
-    def eval_preprocess(self, record):
-        """Image processing for evaluating the network."""
+    def distort_for_eval(self, record):
+        """Applies distortions for evaluation to the image of a CIFAR-10
+        record.
+
+        Args:
+            record: The record before applying distortions.
+
+        Returns:
+            A new record object of the passed record after applying
+            distortions.
+        """
 
         image = record.data
 
-        with tf.name_scope('eval_distorted_input', values=[image]):
+        with tf.name_scope('distort_for_eval', values=[image]):
             # Crop the central [height, width] of the image.
             image = tf.image.resize_image_with_crop_or_pad(image, POST_HEIGHT,
                                                            POST_WIDTH)
