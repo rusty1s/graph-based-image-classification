@@ -16,38 +16,79 @@ class PascalVOC():
 
         extracted_dir = os.path.join(data_dir, 'VOCdevkit', 'VOC2012')
 
-        annotation_paths = [os.path.join(extracted_dir, 'Annotations', '2007_000033.xml'),
-                            os.path.join(extracted_dir, 'Annotations', '2007_000027.xml'),
-                            os.path.join(extracted_dir, 'Annotations', '2007_001175.xml')]
+        train_files = tf.train.match_filenames_once(
+            os.path.join(extracted_dir, 'ImageSets', 'Main', 'train.txt'))
+        eval_files = tf.train.match_filenames_once(
+            os.path.join(extracted_dir, 'ImageSets', 'Main', 'val.txt'))
 
-        for annotation_path in annotation_paths:
-            annotation_name = annotation_path.split('/')[-1]
-            image_name = '{}.jpg'.format(annotation_name.split('.')[0])
-            image_path = os.path.join(extracted_dir, 'JPEGImages', image_name)
+        self._read_example_name(train_files, base_dir=extracted_dir)
+        self._read_example_name(eval_files, base_dir=extracted_dir)
+        # data_batch, label_batch = tf.train.batch(
+        #     [data, label],
+        #     batch_size=batch_size,
+        #     num_threads=num_threads,
+        #     capacity=capacity)
 
-            image = io.imread(image_path)
+    def _read_example_name(files, base_dir):
+        filename_queue = tf.train.string_input_producer(
+            train_file, num_epochs=1)
 
-            print(annotation_path)
-            xmldoc = parse(annotation_path)
-            objects = xmldoc.getElementsByTagName('object')
+        reader = tf.TextLineReader()
+        _, value = reader.read(filename_queue)
 
-            # Find the biggest bounding box to specify one label.
-            area = 0
-            label = ''
-            for obj in objects:
-                xmin = int(obj.getElementsByTagName('xmin')[0].firstChild.nodeValue)
-                xmax = int(obj.getElementsByTagName('xmax')[0].firstChild.nodeValue)
-                ymin = int(obj.getElementsByTagName('ymin')[0].firstChild.nodeValue)
-                ymax = int(obj.getElementsByTagName('ymax')[0].firstChild.nodeValue)
+        return os.path.join(base_dir, 'Annotations', '{}.xml'.format(value)),
+        os.path.join(base_dir, 'JPEGImages', '{}.jpg'.format(value))
 
-                a = (ymax - ymin) * (xmax - xmin)
+    def _read_annotation(name, ba):
+        name = '{}.xml'.format(name)
 
-                if a >= area:
-                    area = a
-                    label = obj.getElementsByTagName('name')[0].firstChild.nodeValue
+        filename_queue = tf.train.string_input_producer(
+            os.path.join(base_dir, 'Annotations', name), num_epochs=1)
 
-            print(label)
-            # TODO save to tfrecord
+
+                
+
+        # annotation_filenames = tf.train.match_filenames_once(
+        #     os.path.join(extracted_dir, 'Annotatoions', '*.xml'))
+
+        # filename_queue = tf.train.string_input_producer(
+        #     annotation_filenames, num_epochs=1)
+
+        # reader = tf.WholeFileReader()
+        # _, value = reader.read(filename_queue)
+
+        # annotation_paths = [os.path.join(extracted_dir, 'Annotations', '2007_000033.xml'),
+        #                     os.path.join(extracted_dir, 'Annotations', '2007_000027.xml'),
+        #                     os.path.join(extracted_dir, 'Annotations', '2007_001175.xml')]
+
+        # for annotation_path in annotation_paths:
+        #     annotation_name = annotation_path.split('/')[-1]
+        #     image_name = '{}.jpg'.format(annotation_name.split('.')[0])
+        #     image_path = os.path.join(extracted_dir, 'JPEGImages', image_name)
+
+        #     image = io.imread(image_path)
+
+        #     print(annotation_path)
+        #     xmldoc = parse(annotation_path)
+        #     objects = xmldoc.getElementsByTagName('object')
+
+        #     # Find the biggest bounding box to specify one label.
+        #     area = 0
+        #     label = ''
+        #     for obj in objects:
+        #         xmin = int(obj.getElementsByTagName('xmin')[0].firstChild.nodeValue)
+        #         xmax = int(obj.getElementsByTagName('xmax')[0].firstChild.nodeValue)
+        #         ymin = int(obj.getElementsByTagName('ymin')[0].firstChild.nodeValue)
+        #         ymax = int(obj.getElementsByTagName('ymax')[0].firstChild.nodeValue)
+
+        #         a = (ymax - ymin) * (xmax - xmin)
+
+        #         if a >= area:
+        #             area = a
+        #             label = obj.getElementsByTagName('name')[0].firstChild.nodeValue
+
+        #     print(label)
+        #     # TODO save to tfrecord
 
     def name(self):
         """The name of the dataset for pretty printing.
