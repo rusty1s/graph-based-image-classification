@@ -107,21 +107,24 @@ class Cifar10DataSet(DataSet):
 
         image = record.data
 
-        # We need to convert the image back to integer values, so the
-        # distortions doesn't mess up with our image.
-        image = tf.cast(image, tf.int32)
+        with tf.name_scope('train_distorted_inputs', values=[image]):
+            # We need to convert the image to integer values, so the
+            # distortions doesn't mess up with our image.
+            image = tf.cast(image, tf.int32)
 
-        # Randomly crop a [height, width] section of the image.
-        image = tf.random_crop(image, [POST_HEIGHT, POST_WIDTH, DEPTH])
+            # Randomly crop a [height, width] section of the image.
+            image = tf.random_crop(image, [POST_HEIGHT, POST_WIDTH, DEPTH])
 
-        # Randomly flip the image horizontally.
-        image = tf.image.random_flip_left_right(image)
+            # Randomly flip the image horizontally.
+            image = tf.image.random_flip_left_right(image)
 
-        image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
+            # Ramdomly adjust the contrast of the image.
+            image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
 
-        image = tf.cast(image, tf.float32)
-        image.set_shape([POST_HEIGHT, POST_WIDTH, DEPTH])
+            # Convert the image back to the default type.
+            image = tf.cast(image, tf.float32)
 
+        # Return a new record with the applied distortions.
         return Record(POST_HEIGHT, POST_WIDTH, DEPTH, record.label, image)
 
     def eval_preprocess(self, record):
@@ -129,10 +132,10 @@ class Cifar10DataSet(DataSet):
 
         image = record.data
 
-        # Crop the central [height, width] of the image.
-        image = tf.image.resize_image_with_crop_or_pad(image, POST_HEIGHT,
-                                                       POST_WIDTH)
+        with tf.name_scope('eval_distorted_inputs', values=[image]):
+            # Crop the central [height, width] of the image.
+            image = tf.image.resize_image_with_crop_or_pad(image, POST_HEIGHT,
+                                                           POST_WIDTH)
 
-        image.set_shape([POST_HEIGHT, POST_WIDTH, DEPTH])
-
+        # Return a new record with the applied distortions.
         return Record(POST_HEIGHT, POST_WIDTH, DEPTH, record.label, image)
