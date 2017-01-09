@@ -47,7 +47,7 @@ class PascalVOC():
             length = len(lines)
             count = 0
             bypassed = 0
-            cutted = 0
+            dissected = 0
             smaller = 0
 
             for i, line in enumerate(lines):
@@ -55,7 +55,7 @@ class PascalVOC():
                 stats = self._write_example(writer, example_name)
                 count += stats['count']
                 bypassed += stats['bypassed']
-                cutted += stats['cutted']
+                dissected += stats['dissected']
                 smaller += stats['smaller']
 
                 if show_progress:
@@ -71,7 +71,7 @@ class PascalVOC():
                 'Extracted {} objects'.format(count),
                 'from {} images'.format(length),
                 '({} bypassed,'.format(bypassed),
-                '{} with a dissected bounding box,'.format(cutted),
+                '{} with a dissected bounding box,'.format(dissected),
                 '{} with a smaller image shape)'.format(smaller),
             ]))
 
@@ -91,7 +91,7 @@ class PascalVOC():
 
         count = 0
         bypassed = 0
-        cutted = 0
+        dissected = 0
         smaller = 0
 
         # Iterate over all bounding boxes.
@@ -104,10 +104,10 @@ class PascalVOC():
 
             count += 1
 
-            # Check whether the bounding box is cutted.
+            # Check whether the bounding box is dissected.
             if cropped_image.shape[0] < bb_height or\
                cropped_image.shape[1] < bb_width:
-                cutted += 1
+                dissected += 1
 
             # Check whether the resulting image shape is smaller than the
             # specified max height/width.
@@ -123,7 +123,7 @@ class PascalVOC():
         return {
             'count': count,
             'bypassed': bypassed,
-            'cutted': cutted,
+            'dissected': dissected,
             'smaller': smaller,
         }
 
