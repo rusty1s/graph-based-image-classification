@@ -90,7 +90,7 @@ def write(num_examples_per_epoch, input_filenames, output_filename, read,
 
         print()
         print(' '.join([
-            'Successfully written {} examples'.format(i*batch_size),
+            'Successfully written {} example'.format(i * batch_size),
             '({:.2f} epochs).'.format(i * batch_size / num_examples_per_epoch),
         ]))
 

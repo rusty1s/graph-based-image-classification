@@ -16,14 +16,12 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
 
     if not os.path.exists(filepath):
         def _progress(count, block_size, total_size):
-            if not show_progress:
-                return
+            if show_progress:
+                percent = 100.0 * count * block_size / total_size
 
-            percent = 100.0 * count * block_size / total_size
-
-            sys.stdout.write(
-                '\r>> Downloading {} {:.1f}%'.format(filename, percent))
-            sys.stdout.flush()
+                sys.stdout.write(
+                    '\r>> Downloading {} {:.1f}%'.format(filename, percent))
+                sys.stdout.flush()
 
         filepath, _ = urllib.request.urlretrieve(url, filepath, _progress)
         size = os.stat(filepath).st_size
