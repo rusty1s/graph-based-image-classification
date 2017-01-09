@@ -88,7 +88,9 @@ def write(num_examples_per_epoch, input_filenames, output_filename, read,
         writer.close()
         sess.close()
 
-        print()
+        if show_progress:
+            print('')
+
         print(' '.join([
             'Successfully written {} example'.format(i * batch_size),
             '({:.2f} epochs).'.format(i * batch_size / num_examples_per_epoch),

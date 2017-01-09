@@ -39,9 +39,10 @@ class PascalVOC():
             os.path.join(data_dir, 'eval.tfrecords'))
 
     def _write_set(self, input_path, filename, show_progress=True):
-        writer = tf.python_io.TFRecordWriter(filename)
+        try:
+            writer = tf.python_io.TFRecordWriter(filename)
 
-        with open(input_path) as f:
+            f = open(input_path)
             lines = f.readlines()
 
             length = len(lines)
@@ -64,19 +65,25 @@ class PascalVOC():
                         .format(filename, 100.0 * i / length))
                     sys.stdout.flush()
 
+        except KeyboardInterrupt:
+            pass
+
+        finally:
+            writer.close()
+            f.close()
+
             if show_progress:
-                print()
+                print('')
 
             print(' '.join([
-                'Extracted {} objects'.format(count),
+                'Successfully extracted {} objects'.format(count),
                 'from {} images'.format(length),
                 '({} bypassed,'.format(bypassed),
                 '{} with a dissected bounding box,'.format(dissected),
                 '{} with a smaller image shape)'.format(smaller),
             ]))
 
-        writer.close()
-        return count
+            return count
 
     def _write_example(self, writer, example_name):
         extracted_dir = os.path.join(self._data_dir, 'VOCdevkit', 'VOC2012')
@@ -146,7 +153,7 @@ class PascalVOC():
         if height < self._min_object_height or width < self._min_object_width:
             return None, height, width
 
-        # Crop the image from the center of the bounding box.
+        # Crop the image based on the center of the bounding box.
         crop_top = max(top + height // 2 - self._max_height // 2, 0)
         crop_left = max(left + width // 2 - self._max_width // 2, 0)
 

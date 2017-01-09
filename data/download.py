@@ -27,7 +27,7 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
         size = os.stat(filepath).st_size
 
         if show_progress:
-            print()
+            print('')
 
         print('Successfully downloaded {} ({} bytes).'.format(filename, size))
 
