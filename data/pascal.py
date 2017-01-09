@@ -8,6 +8,7 @@ from xml.dom.minidom import parse
 from .download import maybe_download_and_extract
 from .io import get_example
 from .io import read_and_decode
+from .distort import (distort_image_for_train, distort_image_for_eval)
 
 DATA_URL = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/'\
            'VOCtrainval_11-May-2012.tar'
@@ -223,7 +224,9 @@ class PascalVOC():
         return read_and_decode(filename_queue, self.height, self.width, 3)
 
     def distort_for_train(self, record):
-        return record
+        return distort_image_for_train(record, int(0.75 * self._height),
+                                       int(0.75 * self._width))
 
     def distort_for_eval(self, record):
-        return record
+        return distort_image_for_eval(record, int(0.75 * self._height),
+                                      int(0.75 * self._width))
