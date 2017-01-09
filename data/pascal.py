@@ -7,6 +7,7 @@ from xml.dom.minidom import parse
 
 from .download import maybe_download_and_extract
 from .io import get_example
+from .io import read_and_decode
 
 DATA_URL = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/'\
            'VOCtrainval_11-May-2012.tar'
@@ -17,12 +18,12 @@ def _get_first_tag_text(dom, tag):
 
 
 class PascalVOC():
-    def __init__(self, data_dir='/tmp/pascal_voc_data', max_height=224,
-                 max_width=224, min_object_height=50, min_object_width=50):
+    def __init__(self, data_dir='/tmp/pascal_voc_data', height=224, width=224,
+                 min_object_height=50, min_object_width=50):
 
         self._data_dir = data_dir
-        self._max_height = max_height
-        self._max_width = max_width
+        self._height = height
+        self._width = width
         self._min_object_height = min_object_height
         self._min_object_width = min_object_width
 
@@ -32,15 +33,25 @@ class PascalVOC():
         image_sets_dir = os.path.join(extracted_dir, 'ImageSets', 'Main')
 
         train_file = os.path.join(data_dir, 'train.tfrecords')
+        train_info_file = os.path.join(data_dir, 'train_info.txt')
         if not os.path.exists(train_file):
             self._write_set(os.path.join(image_sets_dir, 'train.txt'),
-                            train_file)
+                            train_file, train_info_file)
 
         eval_file = os.path.join(data_dir, 'eval.tfrecords')
+        eval_info_file = os.path.join(data_dir, 'eval_info.txt')
         if not os.path.exists(eval_file):
-            self._write_set(os.path.join(image_sets_dir, 'val.txt'), eval_file)
+            self._write_set(os.path.join(image_sets_dir, 'val.txt'),
+                            eval_file, eval_info_file)
 
-    def _write_set(self, input_path, filename, show_progress=True):
+        with open(train_info_file, 'r') as f:
+            self._num_examples_per_epoch_for_train = int(f.readline())
+
+        with open(eval_info_file, 'r') as f:
+            self._num_examples_per_epoch_for_eval = int(f.readline())
+
+    def _write_set(self, input_path, filename, info_filename,
+                   show_progress=True):
         try:
             writer = tf.python_io.TFRecordWriter(filename)
 
@@ -74,6 +85,9 @@ class PascalVOC():
             writer.close()
             f.close()
 
+            with open(info_filename, 'w') as f:
+                f.write(str(count))
+
             if show_progress:
                 print('')
 
@@ -88,7 +102,7 @@ class PascalVOC():
             return count
 
     def _write_example(self, writer, example_name):
-        extracted_dir = os.path.join(self._data_dir, 'VOCdevkit', 'VOC2012')
+        extracted_dir = os.path.join(self.data_dir, 'VOCdevkit', 'VOC2012')
 
         annotation_path = os.path.join(
             extracted_dir, 'Annotations', '{}.xml'.format(example_name))
@@ -120,8 +134,8 @@ class PascalVOC():
 
             # Check whether the resulting image shape is smaller than the
             # specified max height/width.
-            if cropped_image.shape[0] < self._max_height or\
-               cropped_image.shape[1] < self._max_width:
+            if cropped_image.shape[0] < self._height or\
+               cropped_image.shape[1] < self._width:
                 smaller += 1
 
             label_name = _get_first_tag_text(obj, 'name')
@@ -156,17 +170,17 @@ class PascalVOC():
             return None, height, width
 
         # Crop the image based on the center of the bounding box.
-        crop_top = max(top + height // 2 - self._max_height // 2, 0)
-        crop_left = max(left + width // 2 - self._max_width // 2, 0)
+        crop_top = max(top + height // 2 - self._height // 2, 0)
+        crop_left = max(left + width // 2 - self._width // 2, 0)
 
         # We need to adjust the variables if the object is at the right or the
         # bottom of the image, so that we can get a full max height/width
         # cropping.
-        crop_top = min(crop_top, max(image.shape[0] - self._max_height, 0))
-        crop_left = min(crop_left, max(image.shape[1] - self._max_width, 0))
+        crop_top = min(crop_top, max(image.shape[0] - self._height, 0))
+        crop_left = min(crop_left, max(image.shape[1] - self._width, 0))
 
-        crop_bottom = min(crop_top + self._max_height, image.shape[0])
-        crop_right = min(crop_left + self._max_width, image.shape[1])
+        crop_bottom = min(crop_top + self._height, image.shape[0])
+        crop_right = min(crop_left + self._width, image.shape[1])
 
         return image[crop_top:crop_bottom, crop_left:crop_right], height, width
 
@@ -206,7 +220,7 @@ class PascalVOC():
         return self._num_examples_per_epoch_for_eval
 
     def read(self, filename_queue):
-        pass
+        return read_and_decode(filename_queue, self.height, self.width, 3)
 
     def distort_for_train(self, record):
         return record

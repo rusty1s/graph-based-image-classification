@@ -5,6 +5,7 @@ import tensorflow as tf
 from .record import Record
 from .dataset import DataSet
 from .download import maybe_download_and_extract
+from .distort import (distort_image_for_train, distort_image_for_eval)
 
 DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
 
@@ -30,7 +31,7 @@ NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
 NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 
 
-class Cifar10DataSet(DataSet):
+class Cifar10(DataSet):
 
     def __init__(self, data_dir='/tmp/cifar10_data'):
         """Creates a CIFAR-10 dataset.
@@ -138,27 +139,7 @@ class Cifar10DataSet(DataSet):
             distortions.
         """
 
-        image = record.data
-
-        with tf.name_scope('distort_for_train', values=[image]):
-            # We need to convert the image to integer values, so the
-            # distortions doesn't mess up with our image.
-            image = tf.cast(image, tf.int32)
-
-            # Randomly crop a [height, width] section of the image.
-            image = tf.random_crop(image, [POST_HEIGHT, POST_WIDTH, DEPTH])
-
-            # Randomly flip the image horizontally.
-            image = tf.image.random_flip_left_right(image)
-
-            # Ramdomly adjust the contrast of the image.
-            image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
-
-            # Convert the image back to the default type.
-            image = tf.cast(image, tf.float32)
-
-        # Return a new record with the applied distortions.
-        return Record(POST_HEIGHT, POST_WIDTH, DEPTH, record.label, image)
+        return distort_image_for_train(record, POST_HEIGHT, POST_WIDTH)
 
     def distort_for_eval(self, record):
         """Applies distortions for evaluation to the image of a CIFAR-10
@@ -172,12 +153,4 @@ class Cifar10DataSet(DataSet):
             distortions.
         """
 
-        image = record.data
-
-        with tf.name_scope('distort_for_eval', values=[image]):
-            # Crop the central [height, width] of the image.
-            image = tf.image.resize_image_with_crop_or_pad(image, POST_HEIGHT,
-                                                           POST_WIDTH)
-
-        # Return a new record with the applied distortions.
-        return Record(POST_HEIGHT, POST_WIDTH, DEPTH, record.label, image)
+        return distort_image_for_eval(record, POST_HEIGHT, POST_WIDTH)
