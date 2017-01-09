@@ -138,7 +138,7 @@ class PascalVOC():
         label = self.classes.index(name)
 
         if label == -1:
-            raise ValueError('Couldn\'t find label name in defined classes.')
+            raise ValueError('{} in no valid label.'.format(name))
 
         return label
 
