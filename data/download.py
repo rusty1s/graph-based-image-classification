@@ -22,22 +22,28 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
             percent = 100.0 * count * block_size / total_size
 
             sys.stdout.write(
-                '\r>> Downloading {} {:.1f}%'.format(filename, percent)
-            )
+                '\r>> Downloading {} {:.1f}%'.format(filename, percent))
             sys.stdout.flush()
 
         filepath, _ = urllib.request.urlretrieve(url, filepath, _progress)
         size = os.stat(filepath).st_size
 
-        print()
+        if show_progress:
+            print()
+
         print('Successfully downloaded {} ({} bytes).'.format(filename, size))
 
-    sys.stdout.write('>> Extracting {} to {}...'.format(filename, data_dir))
-    sys.stdout.flush()
+    mode = 'r:gz' if filename.split('.')[-1] == 'gz' else 'r'
+    archive = tarfile.open(filepath, mode)
 
-    if filename.split('.')[-1] == 'gz':
-        tarfile.open(filepath, 'r:gz').extractall(data_dir)
-    else:
-        tarfile.open(filepath, 'r').extractall(data_dir)
+    top_level_dir = os.path.commonprefix(archive.getnames())
+    extracted_dir = os.path.join(data_dir, top_level_dir)
 
-    print('Done!')
+    if not os.path.exists(extracted_dir):
+        sys.stdout.write(
+            '>> Extracting {} to {}...'.format(filename, extracted_dir))
+        sys.stdout.flush()
+
+        tarfile.open(filepath, mode).extractall(data_dir)
+
+        print('Done!')

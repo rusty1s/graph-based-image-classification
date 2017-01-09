@@ -21,6 +21,13 @@ def _bytes_feature(value):
         bytes_list=tf.train.BytesList(value=[value.tostring()]))
 
 
+def get_example(data, label):
+    return tf.train.Example(features=tf.train.Features(feature={
+        'label': _int64_feature(label),
+        'data': _bytes_feature(data),
+    }))
+
+
 def write(num_examples_per_epoch, input_filenames, output_filename, read,
           preprocess=None, epochs=EPOCHS, batch_size=BATCH_SIZE,
           eval_data=False, dataset_name='', show_progress=True):
@@ -54,11 +61,7 @@ def write(num_examples_per_epoch, input_filenames, output_filename, read,
             data, labels = sess.run([data_batch, label_batch])
 
             for j in xrange(batch_size):
-                example = tf.train.Example(features=tf.train.Features(feature={
-                    'label': _int64_feature(int(labels[j][0])),
-                    'data': _bytes_feature(data[j]),
-                }))
-
+                example = get_example(data[j], int(labels[j][0]))
                 writer.write(example.SerializeToString())
 
             remaining = (steps - i) * ((time.time() - start_time) / i) / 60
