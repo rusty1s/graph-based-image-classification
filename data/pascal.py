@@ -31,12 +31,14 @@ class PascalVOC():
         extracted_dir = os.path.join(data_dir, 'VOCdevkit', 'VOC2012')
         image_sets_dir = os.path.join(extracted_dir, 'ImageSets', 'Main')
 
-        self._num_examples_per_epoch_for_train = self._write_set(
-            os.path.join(image_sets_dir, 'train.txt'),
-            os.path.join(data_dir, 'train.tfrecords'))
-        self._num_examples_per_epoch_for_eval = self._write_set(
-            os.path.join(image_sets_dir, 'val.txt'),
-            os.path.join(data_dir, 'eval.tfrecords'))
+        train_file = os.path.join(data_dir, 'train.tfrecords')
+        if not os.path.exists(train_file):
+            self._write_set(os.path.join(image_sets_dir, 'train.txt'),
+                            train_file)
+
+        eval_file = os.path.join(data_dir, 'eval.tfrecords')
+        if not os.path.exists(eval_file):
+            self._write_set(os.path.join(image_sets_dir, 'val.txt'), eval_file)
 
     def _write_set(self, input_path, filename, show_progress=True):
         try:
