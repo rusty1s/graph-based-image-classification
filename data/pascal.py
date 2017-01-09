@@ -100,8 +100,6 @@ class PascalVOC():
                 '{} with a smaller image shape)'.format(smaller),
             ]))
 
-            return count
-
     def _write_example(self, writer, example_name):
         extracted_dir = os.path.join(self.data_dir, 'VOCdevkit', 'VOC2012')
 
@@ -137,6 +135,7 @@ class PascalVOC():
             # specified max height/width.
             if cropped_image.shape[0] < self._height or\
                cropped_image.shape[1] < self._width:
+                # TODO rescale the image
                 smaller += 1
 
             label_name = _get_first_tag_text(obj, 'name')

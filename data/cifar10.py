@@ -22,10 +22,6 @@ LABEL_BYTES = 1
 IMAGE_BYTES = HEIGHT * WIDTH * DEPTH
 RECORD_BYTES = LABEL_BYTES + IMAGE_BYTES
 
-# After applying distortions to the image, its width and height will change.
-POST_HEIGHT = 24
-POST_WIDTH = 24
-
 # Global constants describing the CIFAR-10 data set.
 NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
 NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
@@ -139,7 +135,8 @@ class Cifar10(DataSet):
             distortions.
         """
 
-        return distort_image_for_train(record, POST_HEIGHT, POST_WIDTH)
+        return distort_image_for_train(record, int(0.75 * HEIGHT),
+                                       int(0.75 * WIDTH))
 
     def distort_for_eval(self, record):
         """Applies distortions for evaluation to the image of a CIFAR-10
@@ -153,4 +150,5 @@ class Cifar10(DataSet):
             distortions.
         """
 
-        return distort_image_for_eval(record, POST_HEIGHT, POST_WIDTH)
+        return distort_image_for_eval(record, int(0.75 * HEIGHT),
+                                      int(0.75 * WIDTH))
