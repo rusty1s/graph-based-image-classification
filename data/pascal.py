@@ -180,6 +180,7 @@ class PascalVOC():
         crop_top = min(crop_top, max(image.shape[0] - self._height, 0))
         crop_left = min(crop_left, max(image.shape[1] - self._width, 0))
 
+        # Calculate the opposite sides of the cropping.
         crop_bottom = min(crop_top + self._height, image.shape[0])
         crop_right = min(crop_left + self._width, image.shape[1])
 
