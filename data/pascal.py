@@ -2,7 +2,8 @@ import os
 import sys
 
 import tensorflow as tf
-import skimage.io as io
+from skimage.io import imread
+from skimage.transform import resize
 from xml.dom.minidom import parse
 
 from .download import maybe_download_and_extract
@@ -50,6 +51,44 @@ class PascalVOC():
 
         with open(eval_info_file, 'r') as f:
             self._num_examples_per_epoch_for_eval = int(f.readline())
+
+    def name(self):
+        """The name of the dataset for pretty printing.
+
+        Returns:
+            A String with the name of the dataset.
+        """
+        return 'PascalVOC'
+
+    @property
+    def data_dir(self):
+        return self._data_dir
+
+    @property
+    def train_filenames(self):
+        return [os.path.join(self.data_dir, 'train.tfrecords')]
+
+    @property
+    def eval_filenames(self):
+        return [os.path.join(self.data_dir, 'eval.tfrecords')]
+
+    @property
+    def classes(self):
+        return ['person', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
+                'aeroplane', 'bicycle', 'boat', 'bus', 'car', 'motorbike',
+                'train', 'bottle', 'chair', 'diningtable', 'pottedplant',
+                'sofa', 'tvmonitor']
+
+    @property
+    def num_examples_per_epoch_for_train(self):
+        return self._num_examples_per_epoch_for_train
+
+    @property
+    def num_examples_per_epoch_for_eval(self):
+        return self._num_examples_per_epoch_for_eval
+
+    def read(self, filename_queue):
+        return read_and_decode(filename_queue, self.height, self.width, 3)
 
     def _write_set(self, input_path, filename, info_filename,
                    show_progress=True):
@@ -109,7 +148,7 @@ class PascalVOC():
             extracted_dir, 'JPEGImages', '{}.jpg'.format(example_name))
 
         annotation = parse(annotation_path)
-        image = io.imread(image_path)
+        image = imread(image_path)
 
         count = 0
         bypassed = 0
@@ -135,10 +174,33 @@ class PascalVOC():
             # specified max height/width.
             if cropped_image.shape[0] < self._height or\
                cropped_image.shape[1] < self._width:
-                # TODO rescale the image
+
+                # Rescale the image.
+                height = cropped_image.shape[0]
+                width = cropped_image.shape[1]
+                scale = max(1.0*self._height / height, 1.0*self._width / width)
+                print(scale)
+                shape = [int(scale * height), int(scale * width)]
+                crop_top = min(shape[0] // 2 - self._height // 2, 0)
+                crop_bottom = max(crop_top + self._height, self._height)
+                crop_left = min(shape[1] // 2 - self._width // 2, 0)
+                crop_right = max(crop_left + self._width, self._width)
+
+                print(cropped_image.shape)
+                cropped_image = resize(cropped_image, shape)
+                cropped_image = cropped_image[crop_top:crop_bottom,
+                                              crop_left:crop_right]
+                print(cropped_image.shape)
+
                 smaller += 1
 
             label_name = _get_first_tag_text(obj, 'name')
+
+            if cropped_image.shape[0] != self._height or\
+               cropped_image.shape[1] != self._width:
+                print(label_name)
+                print(example_name)
+                print(cropped_image.shape)
 
             example = get_example(cropped_image, self._get_label(label_name))
             writer.write(example.SerializeToString())
@@ -184,49 +246,3 @@ class PascalVOC():
         crop_right = min(crop_left + self._width, image.shape[1])
 
         return image[crop_top:crop_bottom, crop_left:crop_right], height, width
-
-    def name(self):
-        """The name of the dataset for pretty printing.
-
-        Returns:
-            A String with the name of the dataset.
-        """
-        return 'PascalVOC'
-
-    @property
-    def data_dir(self):
-        return self._data_dir
-
-    @property
-    def train_filenames(self):
-        return [os.path.join(self.data_dir, 'train.tfrecords')]
-
-    @property
-    def eval_filenames(self):
-        return [os.path.join(self.data_dir, 'eval.tfrecords')]
-
-    @property
-    def classes(self):
-        return ['person', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
-                'aeroplane', 'bicycle', 'boat', 'bus', 'car', 'motorbike',
-                'train', 'bottle', 'chair', 'diningtable', 'pottedplant',
-                'sofa', 'tvmonitor']
-
-    @property
-    def num_examples_per_epoch_for_train(self):
-        return self._num_examples_per_epoch_for_train
-
-    @property
-    def num_examples_per_epoch_for_eval(self):
-        return self._num_examples_per_epoch_for_eval
-
-    def read(self, filename_queue):
-        return read_and_decode(filename_queue, self.height, self.width, 3)
-
-    def distort_for_train(self, record):
-        return distort_image_for_train(record, int(0.75 * self._height),
-                                       int(0.75 * self._width))
-
-    def distort_for_eval(self, record):
-        return distort_image_for_eval(record, int(0.75 * self._height),
-                                      int(0.75 * self._width))

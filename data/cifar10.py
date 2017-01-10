@@ -122,33 +122,3 @@ class Cifar10(DataSet):
             image = tf.cast(data, tf.float32)
 
         return Record(HEIGHT, WIDTH, DEPTH, label, image)
-
-    def distort_for_train(self, record):
-        """Applies random distortions for training to the image of a CIFAR-10
-        record.
-
-        Args:
-            record: The record of the example before applying distortions.
-
-        Returns:
-            A new record object of the passed record after applying
-            distortions.
-        """
-
-        return distort_image_for_train(record, int(0.75 * HEIGHT),
-                                       int(0.75 * WIDTH))
-
-    def distort_for_eval(self, record):
-        """Applies distortions for evaluation to the image of a CIFAR-10
-        record.
-
-        Args:
-            record: The record before applying distortions.
-
-        Returns:
-            A new record object of the passed record after applying
-            distortions.
-        """
-
-        return distort_image_for_eval(record, int(0.75 * HEIGHT),
-                                      int(0.75 * WIDTH))

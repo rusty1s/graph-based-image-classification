@@ -34,8 +34,8 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
     mode = 'r:gz' if filename.split('.')[-1] == 'gz' else 'r'
     archive = tarfile.open(filepath, mode)
 
-    top_level_dir = os.path.commonprefix(archive.getnames())
-    extracted_dir = os.path.join(data_dir, top_level_dir)
+    extracted_dir = os.path.join(
+        data_dir, os.path.commonprefix(archive.getnames()))
 
     if not os.path.exists(extracted_dir):
         sys.stdout.write(

@@ -3,7 +3,7 @@ import tensorflow as tf
 from .record import Record
 
 
-def distort_image_for_train(record, new_height, new_width):
+def distort_image_for_train(record):
     """Applies random distortions for training to the image of a CIFAR-10
     record.
 
@@ -17,6 +17,8 @@ def distort_image_for_train(record, new_height, new_width):
     """
 
     image = record.data
+    new_height = int(0.75 * record.height)
+    new_width = int(0.75 * record.width)
 
     with tf.name_scope('distort_for_train', values=[image]):
 
@@ -50,6 +52,8 @@ def distort_image_for_eval(record, new_height, new_width):
     """
 
     image = record.data
+    new_height = int(0.75 * record.height)
+    new_width = int(0.75 * record.width)
 
     with tf.name_scope('distort_image_for_eval', values=[image]):
 

@@ -96,27 +96,3 @@ class DataSet():
             A record object.
         """
         pass
-
-    def distort_for_train(self, record):
-        """Applies random distortions for training to the data of a record.
-
-        Args:
-            record: The record of the example before applying distortions.
-
-        Returns:
-            A new record object of the passed record after applying
-            distortions.
-        """
-        return record
-
-    def distort_for_eval(self, record):
-        """Applies distortions for evaluation to the data of a record.
-
-        Args:
-            record: The record of the example before applying distortions.
-
-        Returns:
-            A new record object of the passed record after applying
-            distortions.
-        """
-        return record
