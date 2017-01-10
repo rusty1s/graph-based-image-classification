@@ -4,13 +4,10 @@ from .record import Record
 
 
 def distort_image_for_train(record):
-    """Applies random distortions for training to the image of a CIFAR-10
-    record.
+    """Applies random distortions for training to the image of a record.
 
     Args:
         record: The record before applying distortions.
-        new_height: The new height of the image.
-        new_width: The new width of the image.
 
     Returns:
         A new record object of the passed record after applying distortions.
@@ -44,8 +41,6 @@ def distort_image_for_eval(record, new_height, new_width):
 
     Args:
         record: The record before applying distortions.
-        new_height: The new height of the image.
-        new_width: The new width of the image.
 
     Returns:
         A new record object of the passed record after applying distortions.
