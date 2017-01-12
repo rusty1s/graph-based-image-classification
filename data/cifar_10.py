@@ -2,10 +2,10 @@ import os
 
 import tensorflow as tf
 
-from .record import Record
 from .dataset import DataSet
+from .record import Record
 from .download import maybe_download_and_extract
-from .distort import (distort_image_for_train, distort_image_for_eval)
+
 
 DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
 
@@ -42,14 +42,8 @@ class Cifar10(DataSet):
         self._data_dir = os.path.join(data_dir, 'cifar-10-batches-bin')
 
     @property
-    def name(self):
-        """The name of the CIFAR-10 dataset for pretty printing."""
-        return 'CIFAR-10'
-
-    @property
     def data_dir(self):
-        """The path to the directory where the extracted CIFAR-10 dataset is
-        stored."""
+        """The path to the directory where the CIFAR-10 dataset is stored."""
         return self._data_dir
 
     @property
@@ -62,12 +56,11 @@ class Cifar10(DataSet):
     def eval_filenames(self):
         """The filenames of the evaluation batches from the CIFAR-10
         dataset."""
-        return tf.train.match_filenames_once(
-            os.path.join('{}'.format(self.data_dir), 'test_batch.bin'))
+        return [os.path.join(self.data_dir, 'test_batch.bin')]
 
     @property
-    def classes(self):
-        """The ordered classes of the CIFAR-10 dataset."""
+    def labels(self):
+        """The ordered labels of the CIFAR-10 dataset."""
         return ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog',
                 'horse', 'ship', 'truck']
 
@@ -121,4 +114,4 @@ class Cifar10(DataSet):
             # Convert from uint8 to float32.
             image = tf.cast(data, tf.float32)
 
-        return Record(HEIGHT, WIDTH, DEPTH, label, image)
+        return Record(image, [HEIGHT, WIDTH, DEPTH], label)

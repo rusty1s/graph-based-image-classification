@@ -1,7 +1,12 @@
+from .dataset import DataSet
+
+from .cifar_10 import Cifar10
+from .pascal_voc import PascalVOC
+
 from .inputs import inputs
+from .tfrecord import (tfrecord_example, read_tfrecord)
 
-from .cifar10 import Cifar10
-from .pascal import PascalVOC
-# from .patchy_san import PatchySanDataSet
-
-# from .io import (read_and_decode, write)
+datasets = {
+    'cifar-10': Cifar10,
+    'pascal-voc': PascalVOC,
+}

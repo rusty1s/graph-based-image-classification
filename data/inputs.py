@@ -10,7 +10,7 @@ NUM_THREADS = 16
 
 
 def inputs(dataset, batch_size=BATCH_SIZE, train=True, eval_data=False):
-    """ Constructs inputs using the Reader ops.
+    """Constructs inputs from a dataset.
 
     Args:
         dataset: Instance of the dataset to use.
@@ -43,17 +43,16 @@ def inputs(dataset, batch_size=BATCH_SIZE, train=True, eval_data=False):
         num_examples_per_epoch = dataset.num_examples_per_epoch_for_eval
 
     # Construct the inputs.
-    return _inputs(dataset.data_dir, filenames, dataset.read,
-                   distort, num_examples_per_epoch, batch_size, shuffle)
+    return _inputs(filenames, dataset.read, distort, num_examples_per_epoch,
+                   batch_size, shuffle)
 
 
-def _inputs(data_dir, filenames, read, distort, num_examples_per_epoch,
-            batch_size, shuffle):
+def _inputs(filenames, read, distort, num_examples_per_epoch, batch_size,
+            shuffle):
 
-    """Constructs inputs using the Reader ops.
+    """Constructs inputs from data files using the read operation.
 
     Args:
-        data_dir: Path to the data directory.
         filenames: The filenames of the data batches in the data directory.
         read: Reader operation that returns a single record.
         distort: Distort operation on the data of the example.
@@ -86,14 +85,14 @@ def _inputs(data_dir, filenames, read, distort, num_examples_per_epoch,
     # data + labels from the example queue.
     if shuffle:
         data_batch, label_batch = tf.train.shuffle_batch(
-            [data, label],
+            [record.data, record.label],
             batch_size=batch_size,
             num_threads=NUM_THREADS,
             capacity=capacity,
             min_after_dequeue=min_queue_examples)
     else:
         data_batch, label_batch = tf.train.batch(
-            [data, label],
+            [record.data, record.label],
             batch_size=batch_size,
             num_threads=NUM_THREADS,
             capacity=capacity)

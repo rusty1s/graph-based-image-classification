@@ -1,33 +1,3 @@
-import sys
-import time
-
-import tensorflow as tf
-from six.moves import xrange
-
-from .record import Record
-
-EPOCHS = 1
-BATCH_SIZE = 100
-NUM_THREADS = 16
-CAPACITY = 1000
-
-
-def _int64_feature(value):
-    return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
-
-
-def _bytes_feature(value):
-    return tf.train.Feature(
-        bytes_list=tf.train.BytesList(value=[value.tostring()]))
-
-
-def get_example(data, label):
-    return tf.train.Example(features=tf.train.Features(feature={
-        'label': _int64_feature(label),
-        'data': _bytes_feature(data),
-    }))
-
-
 def write(num_examples_per_epoch, input_filenames, output_filename, read,
           preprocess=None, epochs=EPOCHS, batch_size=BATCH_SIZE,
           eval_data=False, dataset_name='', show_progress=True):
@@ -95,22 +65,3 @@ def write(num_examples_per_epoch, input_filenames, output_filename, read,
             'Successfully written {} example'.format(i * batch_size),
             '({:.2f} epochs).'.format(i * batch_size / num_examples_per_epoch),
         ]))
-
-
-def read_and_decode(filename_queue, height, width, depth):
-    reader = tf.TFRecordReader()
-    _, serialized_example = reader.read(filename_queue)
-
-    features = tf.parse_single_example(
-        serialized_example,
-        features={
-            'label': tf.FixedLenFeature([], tf.int64),
-            'data': tf.FixedLenFeature([], tf.string),
-        })
-
-    data = tf.decode_raw(features['data'], tf.float32)
-    data = tf.reshape(data, [height, width, depth])
-
-    label = tf.reshape(features['label'], [1])
-
-    return Record(height, width, depth, label, data)

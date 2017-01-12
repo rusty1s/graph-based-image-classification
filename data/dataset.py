@@ -8,16 +8,6 @@ class DataSet():
 
     @property
     @abc.abstractmethod
-    def name(self):
-        """The name of the dataset for pretty printing.
-
-        Returns:
-            A String with the name of the dataset.
-        """
-        pass
-
-    @property
-    @abc.abstractmethod
     def data_dir(self):
         """The path to the directory where the dataset is stored.
 
@@ -48,22 +38,61 @@ class DataSet():
 
     @property
     @abc.abstractmethod
-    def classes(self):
-        """The ordered classes of the dataset.
+    def labels(self):
+        """The ordered labels of the dataset.
 
         Returns:
-            A list of classes.
+            A list of labels.
         """
         pass
 
     @property
-    def num_classes(self):
-        """The number of classes of the dataset.
+    def num_labels(self):
+        """The number of labels of the dataset.
 
         Return:
             A number.
         """
         return len(self.classes)
+
+    def label_index(self, label):
+        """The index of the given label.
+
+        Args:
+            label: The label.
+
+        Returns:
+            A number.
+
+        Raises:
+            ValueError: If the label cannot be found in the labels.
+        """
+
+        index = self.labels.index(label)
+
+        if index == -1:
+            raise ValueError('{} is no valid label.'.format(label))
+
+        return index
+
+    def label_name(self, index):
+        """The label name of the given index.
+
+        Args:
+            index: The index:
+
+        Returns:
+            A string describing the label.
+
+        Raises:
+            ValueError: If the label of the index cannot be found in the
+              labels.
+        """
+
+        if 0 <= index < self.num_labels:
+            return self.labels[index]
+
+        raise ValueError('{} is no valid index.'.format(index))
 
     @property
     @abc.abstractmethod

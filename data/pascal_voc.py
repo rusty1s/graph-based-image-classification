@@ -10,23 +10,21 @@ from .download import maybe_download_and_extract
 from .io import get_example
 from .io import read_and_decode
 
+
 DATA_URL = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/'\
            'VOCtrainval_11-May-2012.tar'
 
+HEIGHT = 224
+WIDTH = 224
 
-def _get_first_tag_text(dom, tag):
-    return dom.getElementsByTagName(tag)[0].firstChild.nodeValue
+MIN_OBJECT_HEIGHT = 50
+MIN_OBJECT_WIDTH = 50
 
 
 class PascalVOC():
-    def __init__(self, data_dir='/tmp/pascal_voc_data', height=224, width=224,
-                 min_object_height=50, min_object_width=50):
+    def __init__(self, data_dir='/tmp/pascal_voc_data'):
 
         self._data_dir = data_dir
-        self._height = height
-        self._width = width
-        self._min_object_height = min_object_height
-        self._min_object_width = min_object_width
 
         maybe_download_and_extract(DATA_URL, data_dir)
 
@@ -51,14 +49,6 @@ class PascalVOC():
         with open(eval_info_file, 'r') as f:
             self._num_examples_per_epoch_for_eval = int(f.readline())
 
-    def name(self):
-        """The name of the dataset for pretty printing.
-
-        Returns:
-            A String with the name of the dataset.
-        """
-        return 'PascalVOC'
-
     @property
     def data_dir(self):
         return self._data_dir
@@ -72,7 +62,7 @@ class PascalVOC():
         return [os.path.join(self.data_dir, 'eval.tfrecords')]
 
     @property
-    def classes(self):
+    def labels(self):
         return ['person', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
                 'aeroplane', 'bicycle', 'boat', 'bus', 'car', 'motorbike',
                 'train', 'bottle', 'chair', 'diningtable', 'pottedplant',
@@ -211,14 +201,6 @@ class PascalVOC():
             'smaller': smaller,
         }
 
-    def _get_label(self, name):
-        label = self.classes.index(name)
-
-        if label == -1:
-            raise ValueError('{} in no valid label.'.format(name))
-
-        return label
-
     def _crop_image(self, image, obj):
         top = int(_get_first_tag_text(obj, 'ymin'))
         height = int(_get_first_tag_text(obj, 'ymax')) - top
@@ -245,3 +227,7 @@ class PascalVOC():
         crop_right = min(crop_left + self._width, image.shape[1])
 
         return image[crop_top:crop_bottom, crop_left:crop_right], height, width
+
+
+def _get_first_tag_text(dom, tag):
+    return dom.getElementsByTagName(tag)[0].firstChild.nodeValue

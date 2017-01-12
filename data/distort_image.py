@@ -3,6 +3,10 @@ import tensorflow as tf
 from .record import Record
 
 
+# The ratio to crop the image.
+CROP_RATIO = 0.75
+
+
 def distort_image_for_train(record):
     """Applies random distortions for training to the image of a record.
 
@@ -14,13 +18,12 @@ def distort_image_for_train(record):
     """
 
     image = record.data
-    new_height = int(0.75 * record.height)
-    new_width = int(0.75 * record.width)
+    crop_shape = _crop_shape(record.shape)
 
-    with tf.name_scope('distort_for_train', values=[image]):
+    with tf.name_scope('distort_image_for_train', values=[image, crop_shape]):
 
         # Randomly crop a [height, width] section of the image.
-        image = tf.random_crop(image, [new_height, new_width, record.depth])
+        image = tf.random_crop(image, crop_shape)
 
         # Randomly flip the image horizontally.
         image = tf.image.random_flip_left_right(image)
@@ -33,7 +36,7 @@ def distort_image_for_train(record):
 
         image = tf.image.per_image_standardization(image)
 
-    return Record(new_height, new_width, record.depth, record.label, image)
+    return Record(image, crop_shape, record.label)
 
 
 def distort_image_for_eval(record, new_height, new_width):
@@ -47,15 +50,17 @@ def distort_image_for_eval(record, new_height, new_width):
     """
 
     image = record.data
-    new_height = int(0.75 * record.height)
-    new_width = int(0.75 * record.width)
+    crop_shape = _crop_shape(record.shape)
 
-    with tf.name_scope('distort_image_for_eval', values=[image]):
+    with tf.name_scope('distort_image_for_eval', values=[image, crop_shape]):
 
         # Crop the central [new_height, new_width] of the image.
-        image = tf.image.resize_image_with_crop_or_pad(
-            image, new_height, new_width)
+        image = tf.image.resize_image_with_crop_or_pad(image, crop_shape)
 
         image = tf.image.per_image_standardization(image)
 
-    return Record(new_height, new_width, record.depth, record.label, image)
+    return Record(image, crop_shape, record.label)
+
+
+def _crop_shape(shape):
+    return [int(CROP_RATIO * shape[0]), int(CROP_RATIO * shape[1]), shape[2]]
