@@ -205,8 +205,8 @@ class PascalVOC(DataSet):
         width = max(bb_width, WIDTH)
 
         # Crop the image based on the center of the bounding box.
-        crop_top = max(bb_top + bb_height // 2 - height // 2, 0)
-        crop_left = max(bb_left + bb_width // 2 - width // 2, 0)
+        crop_top = max(bb_top + (bb_height - height) // 2, 0)
+        crop_left = max(bb_left + (bb_width - width) // 2, 0)
 
         # We need to adjust the variables if the object is too far at the right
         # or the bottom of the image, so that we can get the maximal cropping
@@ -229,7 +229,6 @@ class PascalVOC(DataSet):
         # The passed image can be greater or smaller than the wished fixed
         # resolution. We need to either scale the image up or down and crop it
         # again if this is the case.
-
         if image.shape[0] == HEIGHT and image.shape[1] == WIDTH:
             # Nothing to do here.
             return image
@@ -251,9 +250,9 @@ class PascalVOC(DataSet):
         image = resize(image, shape)
 
         # Finally crop the image again based on its center.
-        crop_top = image.shape[0] // 2 - HEIGHT // 2
+        crop_top = (image.shape[0] - HEIGHT) // 2
         crop_bottom = crop_top + HEIGHT
-        crop_left = image.shape[1] // 2 - WIDTH // 2
+        crop_left = (image.shape[1] - WIDTH) // 2
         crop_right = crop_left + WIDTH
 
         return image[crop_top:crop_bottom, crop_left:crop_right]
