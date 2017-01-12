@@ -24,6 +24,14 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
 
     # Only download if file doesn't exist.
     if not os.path.exists(filepath):
+        def _progress(count, block_size, total_size):
+            if show_progress:
+                percent = 100.0 * count * block_size / total_size
+
+                sys.stdout.write(
+                    '\r>> Downloading {} {:.1f}%'.format(filename, percent))
+                sys.stdout.flush()
+
         filepath, _ = urllib.request.urlretrieve(url, filepath, _progress)
         size = os.stat(filepath).st_size
 
@@ -47,23 +55,6 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
 
         tarfile.open(filepath, mode).extractall(data_dir)
 
-        print('Done!')
+        print(' Done!')
 
     return extracted_dir
-
-
-def _progress(count, block_size, total_size):
-    """Prints a progress bar for downloads.
-
-    Args:
-        count: The number of blocks already downloaded.
-        block_size: The size of a block.
-        total_size: The total size of the file.
-    """
-
-    if show_progress:
-        percent = 100.0 * count * block_size / total_size
-
-        sys.stdout.write(
-                '\r>> Downloading {} {:.1f}%'.format(filename, percent))
-        sys.stdout.flush()

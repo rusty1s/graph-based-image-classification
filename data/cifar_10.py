@@ -29,7 +29,7 @@ NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 
 class Cifar10(DataSet):
 
-    def __init__(self, data_dir='/tmp/cifar10_data'):
+    def __init__(self, data_dir='/tmp/cifar_10_data'):
         """Creates a CIFAR-10 dataset.
 
         Args:

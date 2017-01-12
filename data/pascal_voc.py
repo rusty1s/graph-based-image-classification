@@ -6,47 +6,41 @@ from skimage.io import imread
 from skimage.transform import resize
 from xml.dom.minidom import parse
 
+from .dataset import DataSet
 from .download import maybe_download_and_extract
-from .io import get_example
-from .io import read_and_decode
+from .tfrecord import (tfrecord_example, read_tfrecord)
 
 
 DATA_URL = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/'\
            'VOCtrainval_11-May-2012.tar'
 
+# The final shape of all images of the PascalVOC dataset.
 HEIGHT = 224
 WIDTH = 224
 
+# Pass objects whose bounding boxes fall below a given bound.
 MIN_OBJECT_HEIGHT = 50
 MIN_OBJECT_WIDTH = 50
 
+TRAIN_FILENAME = 'train.tfrecords'
+TRAIN_INFO_FILENAME = 'train_info.txt'
 
-class PascalVOC():
+EVAL_FILENAME = 'eval.tfrecords'
+EVAL_INFO_FILENAME = 'eval_info.txt'
+
+
+class PascalVOC(DataSet):
     def __init__(self, data_dir='/tmp/pascal_voc_data'):
 
         self._data_dir = data_dir
 
         maybe_download_and_extract(DATA_URL, data_dir)
+        self._save_as_tfrecord()
 
-        extracted_dir = os.path.join(data_dir, 'VOCdevkit', 'VOC2012')
-        image_sets_dir = os.path.join(extracted_dir, 'ImageSets', 'Main')
-
-        train_file = os.path.join(data_dir, 'train.tfrecords')
-        train_info_file = os.path.join(data_dir, 'train_info.txt')
-        if not os.path.exists(train_file):
-            self._write_set(os.path.join(image_sets_dir, 'train.txt'),
-                            train_file, train_info_file)
-
-        eval_file = os.path.join(data_dir, 'eval.tfrecords')
-        eval_info_file = os.path.join(data_dir, 'eval_info.txt')
-        if not os.path.exists(eval_file):
-            self._write_set(os.path.join(image_sets_dir, 'val.txt'),
-                            eval_file, eval_info_file)
-
-        with open(train_info_file, 'r') as f:
+        with open(os.path.join(data_dir, TRAIN_INFO_FILENAME), 'r') as f:
             self._num_examples_per_epoch_for_train = int(f.readline())
 
-        with open(eval_info_file, 'r') as f:
+        with open(os.path.join(data_dir, EVAL_INFO_FILENAME), 'r') as f:
             self._num_examples_per_epoch_for_eval = int(f.readline())
 
     @property
@@ -55,11 +49,11 @@ class PascalVOC():
 
     @property
     def train_filenames(self):
-        return [os.path.join(self.data_dir, 'train.tfrecords')]
+        return [os.path.join(self.data_dir, TRAIN_FILENAME)]
 
     @property
     def eval_filenames(self):
-        return [os.path.join(self.data_dir, 'eval.tfrecords')]
+        return [os.path.join(self.data_dir, EVAL_FILENAME)]
 
     @property
     def labels(self):
@@ -77,35 +71,59 @@ class PascalVOC():
         return self._num_examples_per_epoch_for_eval
 
     def read(self, filename_queue):
-        return read_and_decode(filename_queue, self.height, self.width, 3)
+        return read_tfrecord(filename_queue, [HEIGHT, WIDTH, 3])
 
-    def _write_set(self, input_path, filename, info_filename,
-                   show_progress=True):
+    def _save_as_tfrecord(self):
+        extracted_dir = os.path.join(self.data_dir, 'VOCdevkit', 'VOC2012')
+
+        # Collect all relevant directories.
+        image_sets_dir = os.path.join(extracted_dir, 'ImageSets', 'Main')
+        image_dir = os.path.join(extracted_dir, 'JPEGImages')
+        annotation_dir = os.path.join(extracted_dir, 'Annotations')
+
+        # Save the training data.
+        self._save_image_set_as_tfrecord(
+            os.path.join(image_sets_dir, 'train.txt'), image_dir,
+            annotation_dir, os.path.join(self.data_dir, TRAIN_FILENAME),
+            os.path.join(self.data_dir, TRAIN_INFO_FILENAME))
+
+        # Save the evaluation data.
+        self._save_image_set_as_tfrecord(
+            os.path.join(image_sets_dir, 'val.txt'), image_dir, annotation_dir,
+            os.path.join(self.data_dir, EVAL_FILENAME),
+            os.path.join(self.data_dir, EVAL_INFO_FILENAME))
+
+    def _save_image_set_as_tfrecord(self, image_set_filename, image_dir,
+                                    annotation_dir, tfrecord_filename,
+                                    info_filename, show_progress=True):
+
+        if os.path.exists(tfrecord_filename):
+            return
+
         try:
-            writer = tf.python_io.TFRecordWriter(filename)
+            writer = tf.python_io.TFRecordWriter(tfrecord_filename)
 
-            f = open(input_path)
-            lines = f.readlines()
+            # Read the lines of the image set filename which correspond to the
+            # image names.
+            f = open(image_set_filename)
+            image_names = f.readlines()
 
-            length = len(lines)
-            count = 0
-            bypassed = 0
-            dissected = 0
-            smaller = 0
+            # Save statistics in variables.
+            num_image_names = len(image_names)
+            num_objects = 0
+            num_objects_bypassed = 0
 
-            for i, line in enumerate(lines):
-                example_name = line.strip('\n')
-                stats = self._write_example(writer, example_name)
-                count += stats['count']
-                bypassed += stats['bypassed']
-                dissected += stats['dissected']
-                smaller += stats['smaller']
+            # Iterate over all images and save them as a TFRecord to the
+            # defined writer.
+            for i, image_name in enumerate(image_names):
+                image_name = image_name.strip('\n')
+                statistic = self._save_image_by_writer(
+                    writer, image_name, image_dir, annotation_dir, i,
+                    num_image_names, tfrecord_filename, show_progress)
 
-                if show_progress:
-                    sys.stdout.write(
-                        '\r>> Extracting objects to {} {:.1f}%'
-                        .format(filename, 100.0 * i / length))
-                    sys.stdout.flush()
+                # Update the statistic.
+                num_objects += statistic['num_objects']
+                num_objects_bypassed += statistic['num_objects_bypassed']
 
         except KeyboardInterrupt:
             pass
@@ -115,119 +133,131 @@ class PascalVOC():
             f.close()
 
             with open(info_filename, 'w') as f:
-                f.write(str(count))
+                f.write(str(num_objects))
 
             if show_progress:
                 print('')
 
             print(' '.join([
-                'Successfully extracted {} objects'.format(count),
-                'from {} images'.format(length),
-                '({} bypassed,'.format(bypassed),
-                '{} with a dissected bounding box,'.format(dissected),
-                '{} with a smaller image shape)'.format(smaller),
+                'Successfully extracted {} objects'.format(num_objects),
+                'from {} images'.format(num_image_names),
+                '({} bypassed).'.format(num_objects_bypassed),
             ]))
 
-    def _write_example(self, writer, example_name):
-        extracted_dir = os.path.join(self.data_dir, 'VOCdevkit', 'VOC2012')
+    def _save_image_by_writer(self, writer, image_name, image_dir,
+                              annotation_dir, current_index, count,
+                              tfrecord_filename, show_progress):
 
-        annotation_path = os.path.join(
-            extracted_dir, 'Annotations', '{}.xml'.format(example_name))
-        image_path = os.path.join(
-            extracted_dir, 'JPEGImages', '{}.jpg'.format(example_name))
+        # Parse the xml annotation file and read the image into memory.
+        annotation = parse(os.path.join(annotation_dir,
+                                        '{}.xml'.format(image_name)))
+        image = imread(os.path.join(image_dir, '{}.jpg'.format(image_name)))
 
-        annotation = parse(annotation_path)
-        image = imread(image_path)
+        num_objects = 0
+        num_objects_bypassed = 0
 
-        count = 0
-        bypassed = 0
-        dissected = 0
-        smaller = 0
-
-        # Iterate over all bounding boxes.
+        # Iterate over all objects in the image.
         for obj in annotation.getElementsByTagName('object'):
-            cropped_image, bb_height, bb_width = self._crop_image(image, obj)
+            cropped_image = self._crop_and_rescale_image(image, obj)
 
             if cropped_image is None:
-                bypassed += 1
+                # Bypass the image if the bounding box is too small.
+                num_objects_bypassed += 1
                 continue
+            else:
+                num_objects += 1
 
-            count += 1
+                # Extract the label index from the annotation.
+                label_name = _text_of_first_tag(obj, 'name')
+                label_index = self.label_index(label_name)
 
-            # Check whether the bounding box is dissected.
-            if cropped_image.shape[0] < bb_height or\
-               cropped_image.shape[1] < bb_width:
-                dissected += 1
+                # Save the cropped image as a TFRecord example.
+                example = tfrecord_example(cropped_image, label_index)
+                writer.write(example.SerializeToString())
 
-            # Check whether the resulting image shape is smaller than the
-            # specified max height/width.
-            if cropped_image.shape[0] < self._height or\
-               cropped_image.shape[1] < self._width:
-
-                # Rescale the image.
-                height = cropped_image.shape[0]
-                width = cropped_image.shape[1]
-                scale = max(1.0*self._height / height, 1.0*self._width / width)
-                print(scale)
-                shape = [int(scale * height), int(scale * width)]
-                crop_top = min(shape[0] // 2 - self._height // 2, 0)
-                crop_bottom = max(crop_top + self._height, self._height)
-                crop_left = min(shape[1] // 2 - self._width // 2, 0)
-                crop_right = max(crop_left + self._width, self._width)
-
-                print(cropped_image.shape)
-                cropped_image = resize(cropped_image, shape)
-                cropped_image = cropped_image[crop_top:crop_bottom,
-                                              crop_left:crop_right]
-                print(cropped_image.shape)
-
-                smaller += 1
-
-            label_name = _get_first_tag_text(obj, 'name')
-
-            if cropped_image.shape[0] != self._height or\
-               cropped_image.shape[1] != self._width:
-                print(label_name)
-                print(example_name)
-                print(cropped_image.shape)
-
-            example = get_example(cropped_image, self._get_label(label_name))
-            writer.write(example.SerializeToString())
+        if show_progress:
+            sys.stdout.write(
+                '\r>> Extracting objects to {} {:.1f}%'
+                .format(tfrecord_filename, 100.0 * current_index / count))
+            sys.stdout.flush()
 
         return {
-            'count': count,
-            'bypassed': bypassed,
-            'dissected': dissected,
-            'smaller': smaller,
+            'num_objects': num_objects,
+            'num_objects_bypassed': num_objects_bypassed,
         }
 
-    def _crop_image(self, image, obj):
-        top = int(_get_first_tag_text(obj, 'ymin'))
-        height = int(_get_first_tag_text(obj, 'ymax')) - top
-        left = int(_get_first_tag_text(obj, 'xmin'))
-        width = int(_get_first_tag_text(obj, 'xmax')) - left
+    def _crop_and_rescale_image(self, image, obj):
+        # Extract the bounding box from the annotation object.
+        bb_top = int(_text_of_first_tag(obj, 'ymin'))
+        bb_height = int(_text_of_first_tag(obj, 'ymax')) - bb_top
+        bb_left = int(_text_of_first_tag(obj, 'xmin'))
+        bb_width = int(_text_of_first_tag(obj, 'xmax')) - bb_left
 
         # Check whether the bounding box is too small. If so, we discard the
-        # object.
-        if height < self._min_object_height or width < self._min_object_width:
-            return None, height, width
+        # object because it's irrelevant for classification tasks.
+        if bb_height < MIN_OBJECT_HEIGHT or bb_width < MIN_OBJECT_WIDTH:
+            return None
+
+        # Crop the bounding box or the maximal defined resolution of the image,
+        # whichever resolution is greater, so that we always crop the full
+        # bounding box of the object into the image.
+        height = max(bb_height, HEIGHT)
+        width = max(bb_width, WIDTH)
 
         # Crop the image based on the center of the bounding box.
-        crop_top = max(top + height // 2 - self._height // 2, 0)
-        crop_left = max(left + width // 2 - self._width // 2, 0)
+        crop_top = max(bb_top + bb_height // 2 - height // 2, 0)
+        crop_left = max(bb_left + bb_width // 2 - width // 2, 0)
 
-        # We need to adjust the variables if the object is at the right or the
-        # bottom of the image, so that we can get a full max height/width
-        # cropping.
-        crop_top = min(crop_top, max(image.shape[0] - self._height, 0))
-        crop_left = min(crop_left, max(image.shape[1] - self._width, 0))
+        # We need to adjust the variables if the object is too far at the right
+        # or the bottom of the image, so that we can get the maximal cropping
+        # defined by the height and width.
+        crop_top = min(crop_top, max(image.shape[0] - height, 0))
+        crop_left = min(crop_left, max(image.shape[1] - width, 0))
 
-        # Calculate the opposite sides of the cropping.
-        crop_bottom = min(crop_top + self._height, image.shape[0])
-        crop_right = min(crop_left + self._width, image.shape[1])
+        # Calculate the opposite sides of the cropping in case the image is
+        # smaller than the defined cropping.
+        crop_bottom = min(crop_top + height, image.shape[0])
+        crop_right = min(crop_left + width, image.shape[1])
 
-        return image[crop_top:crop_bottom, crop_left:crop_right], height, width
+        # Finally crop the image.
+        image = image[crop_top:crop_bottom, crop_left:crop_right]
+
+        # Rescale the image if needed and return.
+        return self._rescale(image)
+
+    def _rescale(self, image):
+        # The passed image can be greater or smaller than the wished fixed
+        # resolution. We need to either scale the image up or down and crop it
+        # again if this is the case.
+
+        if image.shape[0] == HEIGHT and image.shape[1] == WIDTH:
+            # Nothing to do here.
+            return image
+
+        if image.shape[0] < HEIGHT or image.shape[1] < WIDTH:
+            # Scale up.
+            scale = max(1.0 * HEIGHT / image.shape[0],
+                        1.0 * WIDTH / image.shape[1])
+
+        else:
+            # Scale down.
+            scale = min(1.0 * image.shape[0] / HEIGHT,
+                        1.0 * image.shape[1] / WIDTH)
+
+        # Calculate the shape after resizing and resize the image based on this
+        # shape.
+        shape = [max(int(scale * image.shape[0]), HEIGHT),
+                 max(int(scale * image.shape[1]), WIDTH)]
+        image = resize(image, shape)
+
+        # Finally crop the image again based on its center.
+        crop_top = image.shape[0] // 2 - HEIGHT // 2
+        crop_bottom = crop_top + HEIGHT
+        crop_left = image.shape[1] // 2 - WIDTH // 2
+        crop_right = crop_left + WIDTH
+
+        return image[crop_top:crop_bottom, crop_left:crop_right]
 
 
-def _get_first_tag_text(dom, tag):
+def _text_of_first_tag(dom, tag):
     return dom.getElementsByTagName(tag)[0].firstChild.nodeValue

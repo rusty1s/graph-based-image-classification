@@ -53,9 +53,9 @@ class DataSet():
         Return:
             A number.
         """
-        return len(self.classes)
+        return len(self.labels)
 
-    def label_index(self, label):
+    def label_index(self, label_name):
         """The index of the given label.
 
         Args:
@@ -68,10 +68,10 @@ class DataSet():
             ValueError: If the label cannot be found in the labels.
         """
 
-        index = self.labels.index(label)
+        index = self.labels.index(label_name)
 
         if index == -1:
-            raise ValueError('{} is no valid label.'.format(label))
+            raise ValueError('{} is no valid label name.'.format(label_name))
 
         return index
 
@@ -92,7 +92,7 @@ class DataSet():
         if 0 <= index < self.num_labels:
             return self.labels[index]
 
-        raise ValueError('{} is no valid index.'.format(index))
+        raise ValueError('{} is no valid label index.'.format(index))
 
     @property
     @abc.abstractmethod
