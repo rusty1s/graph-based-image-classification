@@ -112,9 +112,3 @@ class Cifar10(DataSet):
             image = tf.cast(data, tf.float32)
 
         return Record(image, [HEIGHT, WIDTH, DEPTH], label)
-
-
-if __name__ == '__main__':
-    tf.app.flags.DEFINE_string('data_dir', DATA_DIR,
-                               """Path to the CIFAR-10 data directory.""")
-    Cifar10(data_dir=tf.app.flags.FLAGS.data_dir)
