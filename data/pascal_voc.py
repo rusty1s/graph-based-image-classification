@@ -2,6 +2,7 @@ import os
 import sys
 
 import tensorflow as tf
+import numpy as np
 from skimage.io import imread
 from skimage.transform import resize
 from xml.dom.minidom import parse
@@ -139,7 +140,7 @@ class PascalVOC(DataSet):
 
             print(' '.join([
                 'Successfully extracted {} objects'.format(num_objects),
-                'from {} images'.format(num_image_names),
+                'from {} images'.format(i),
                 '({} bypassed).'.format(num_objects_bypassed),
             ]))
 
@@ -157,6 +158,13 @@ class PascalVOC(DataSet):
 
         # Iterate over all objects in the image.
         for obj in annotation.getElementsByTagName('object'):
+
+            # Bypass the objects that are either truncated or occluded.
+            if int(_text_of_first_tag(obj, 'truncated')) > 0 or\
+               int(_text_of_first_tag(obj, 'occluded')) > 0:
+                num_objects_bypassed += 1
+                continue
+
             cropped_image = self._crop_and_rescale_image(image, obj)
 
             if cropped_image is None:
@@ -171,6 +179,7 @@ class PascalVOC(DataSet):
                 label_index = self.label_index(label_name)
 
                 # Save the cropped image as a TFRecord example.
+                cropped_image = cropped_image.astype(np.float32)
                 example = tfrecord_example(cropped_image, label_index)
                 writer.write(example.SerializeToString())
 
@@ -246,7 +255,7 @@ class PascalVOC(DataSet):
         # shape.
         shape = [max(int(scale * image.shape[0]), HEIGHT),
                  max(int(scale * image.shape[1]), WIDTH)]
-        image = resize(image, shape)
+        image = resize(image, shape, preserve_range=True)
 
         # Finally crop the image again based on its center.
         crop_top = (image.shape[0] - HEIGHT) // 2

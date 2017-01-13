@@ -15,8 +15,8 @@ def tfrecord_example(data, label):
     """
 
     return tf.train.Example(features=tf.train.Features(feature={
-        'label': _int64_feature(label),
         'data': _bytes_feature(data),
+        'label': _int64_feature(label),
     }))
 
 
@@ -37,8 +37,8 @@ def read_tfrecord(filename_queue, shape):
     features = tf.parse_single_example(
         serialized_example,
         features={
-            'label': tf.FixedLenFeature([], tf.int64),
             'data': tf.FixedLenFeature([], tf.string),
+            'label': tf.FixedLenFeature([], tf.int64),
         })
 
     data = tf.decode_raw(features['data'], tf.float32)
@@ -55,6 +55,6 @@ def _int64_feature(value):
 
 
 def _bytes_feature(value):
-    """Creates an bytes feature from the passed value."""
+    """Creates a bytes feature from the passed value."""
     return tf.train.Feature(
         bytes_list=tf.train.BytesList(value=[value.tostring()]))

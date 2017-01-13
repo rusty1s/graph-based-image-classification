@@ -13,7 +13,7 @@ class DataSet():
             data_dir: The path to the directory where the dataset is stored.
         """
 
-        self._data_dir = dat_dir
+        self._data_dir = data_dir
 
     @property
     def data_dir(self):
@@ -105,21 +105,13 @@ class DataSet():
     @property
     @abc.abstractmethod
     def num_examples_per_epoch_for_train(self):
-        """The number of examples per epoch for training the dataset.
-
-        Return:
-            A number.
-        """
+        """The number of examples per epoch for training the dataset."""
         pass
 
     @property
     @abc.abstractmethod
     def num_examples_per_epoch_for_eval(self):
-        """The number of examples per epoch for evaluating the dataset.
-
-        Return:
-            A number.
-        """
+        """The number of examples per epoch for evaluating the dataset."""
         pass
 
     @abc.abstractmethod

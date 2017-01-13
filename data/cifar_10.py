@@ -39,7 +39,8 @@ class Cifar10(DataSet):
             stored.
         """
 
-        super().__init__(data_dir, 'cifar-10-batches-bin')
+        super().__init__(os.path.join(data_dir, 'cifar-10-batches-bin'))
+        super().__init__(data_dir)
 
         maybe_download_and_extract(DATA_URL, data_dir)
 
@@ -47,13 +48,15 @@ class Cifar10(DataSet):
     def train_filenames(self):
         """The filenames of the training batches from the CIFAR-10 dataset."""
         return tf.train.match_filenames_once(
-            os.path.join('{}'.format(self.data_dir), 'data_batch_*.bin'))
+            os.path.join(self.data_dir, 'cifar-10-batches-bin',
+                         'data_batch_*.bin'))
 
     @property
     def eval_filenames(self):
         """The filenames of the evaluation batches from the CIFAR-10
         dataset."""
-        return [os.path.join(self.data_dir, 'test_batch.bin')]
+        return [os.path.join(self.data_dir, 'cifar-10-batches-bin',
+                             'test_batch.bin')]
 
     @property
     def labels(self):
@@ -109,6 +112,6 @@ class Cifar10(DataSet):
             image = tf.transpose(image, [1, 2, 0])
 
             # Convert from uint8 to float32.
-            image = tf.cast(data, tf.float32)
+            image = tf.cast(image, tf.float32)
 
         return Record(image, [HEIGHT, WIDTH, DEPTH], label)
