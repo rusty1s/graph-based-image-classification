@@ -1,4 +1,5 @@
 class Record(object):
+    """A record object."""
 
     def __init__(self, data, shape, label):
         """Creates a record representing an example of a dataset.

@@ -13,6 +13,7 @@ from .tfrecord import (tfrecord_example, read_tfrecord)
 
 DATA_URL = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/'\
            'VOCtrainval_11-May-2012.tar'
+DATA_DIR = '/tmp/pascal_voc_data'
 
 # The final shape of all images of the PascalVOC dataset.
 HEIGHT = 224
@@ -30,9 +31,11 @@ EVAL_INFO_FILENAME = 'eval_info.txt'
 
 
 class PascalVOC(DataSet):
-    def __init__(self, data_dir='/tmp/pascal_voc_data'):
+    """PascalVOC dataset."""
 
-        self._data_dir = data_dir
+    def __init__(self, data_dir=DATA_DIR):
+
+        super().__init__(data_dir)
 
         maybe_download_and_extract(DATA_URL, data_dir)
         self._save_as_tfrecord()
@@ -42,10 +45,6 @@ class PascalVOC(DataSet):
 
         with open(os.path.join(data_dir, EVAL_INFO_FILENAME), 'r') as f:
             self._num_examples_per_epoch_for_eval = int(f.readline())
-
-    @property
-    def data_dir(self):
-        return self._data_dir
 
     @property
     def train_filenames(self):

@@ -8,6 +8,7 @@ from .download import maybe_download_and_extract
 
 
 DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
+DATA_DIR = '/tmp/cifar_10_data'
 
 # Dimensions of the images in the CIFAR-10 dataset.
 # See http://www.cs.toronto.edu/~kriz/cifar.html for a description of the input
@@ -28,23 +29,19 @@ NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 
 
 class Cifar10(DataSet):
+    """CIFAR-10 dataset."""
 
-    def __init__(self, data_dir='/tmp/cifar_10_data'):
+    def __init__(self, data_dir=DATA_DIR):
         """Creates a CIFAR-10 dataset.
 
         Args:
             data_dir: The path to the directory where the CIFAR-10 dataset is
-            downloaded and extracted to.
+            stored.
         """
 
+        super().__init__(data_dir, 'cifar-10-batches-bin')
+
         maybe_download_and_extract(DATA_URL, data_dir)
-
-        self._data_dir = os.path.join(data_dir, 'cifar-10-batches-bin')
-
-    @property
-    def data_dir(self):
-        """The path to the directory where the CIFAR-10 dataset is stored."""
-        return self._data_dir
 
     @property
     def train_filenames(self):
@@ -115,3 +112,9 @@ class Cifar10(DataSet):
             image = tf.cast(data, tf.float32)
 
         return Record(image, [HEIGHT, WIDTH, DEPTH], label)
+
+
+if __name__ == '__main__':
+    tf.app.flags.DEFINE_string('data_dir', DATA_DIR,
+                               """Path to the CIFAR-10 data directory.""")
+    Cifar10(data_dir=tf.app.flags.FLAGS.data_dir)

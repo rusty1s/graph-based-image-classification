@@ -6,15 +6,23 @@ import six
 class DataSet():
     """Abstract class for defining a dataset interface."""
 
+    def __init__(self, data_dir):
+        """Creates a dataset.
+
+        Args:
+            data_dir: The path to the directory where the dataset is stored.
+        """
+
+        self._data_dir = dat_dir
+
     @property
-    @abc.abstractmethod
     def data_dir(self):
         """The path to the directory where the dataset is stored.
 
         Returns:
             A string with the path to the dataset.
         """
-        pass
+        return self._data_dir
 
     @property
     @abc.abstractmethod
