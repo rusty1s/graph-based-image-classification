@@ -9,14 +9,14 @@ MIN_FRACTION_OF_EXAMPLES_IN_QUEUE = 0.4
 NUM_THREADS = 16
 
 
-def inputs(dataset, distort_inputs=True, batch_size=BATCH_SIZE,
+def inputs(dataset, batch_size=BATCH_SIZE, distort_inputs=True,
            num_epochs=None, shuffle=True, eval_data=False):
     """Constructs inputs from a dataset.
 
     Args:
         dataset: Instance of the dataset to use.
-        distort_inputs: Boolean whether to distort the inputs (optional).
         batch_size: Number of data per batch (optional).
+        distort_inputs: Boolean whether to distort the inputs (optional).
         num_epochs: Number indicating the maximal number of epochs iterations
           before raising an OutOfRange error (optional).
         shuffle: Boolean indiciating if one wants to shuffle the inputs
@@ -25,7 +25,7 @@ def inputs(dataset, distort_inputs=True, batch_size=BATCH_SIZE,
           set (optional).
 
     Returns:
-        data_batch: 4D tensor of [batch_size, height, width, depth] size.
+        data_batch: A tensor of [batch_size, ...] with the dataset data.
         label_batch: 1D tensor of [batch_size] size.
     """
 
