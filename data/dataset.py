@@ -148,7 +148,7 @@ class DataSet():
         pass
 
     def save_images(self):
-        """Saves images for training and evaluation into an images directory
-        into the datasets data directory."""
+        """Saves images for training and evaluation to an images directory into
+        the datasets data directory."""
 
         save_images(self, self._show_progress)

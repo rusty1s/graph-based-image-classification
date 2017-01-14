@@ -9,8 +9,8 @@ from .inputs import inputs
 
 
 def save_images(dataset, show_progress=True):
-    """Saves images for training and evaluation into an images directory into
-    the datasets data directory.
+    """Saves images for training and evaluation to an images directory into the
+    datasets data directory.
 
     Args:
         dataset: The dataset.
