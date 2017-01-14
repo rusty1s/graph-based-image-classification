@@ -313,15 +313,17 @@ def _text_of_first_tag(dom, tag):
         A string.
 
     Raises:
-        ValueError: If dom object doesn't contain the specified tag or the tag
-          doesn't have a text.
+        ValueError: If dom object doesn't contain the specified tag or if the
+          first tag doesn't have a text.
     """
 
     tags = dom.getElementsByTagName(tag)
 
+    # Tag not found.
     if len(tags) == 0 or tags[0].firstChild is None:
         raise ValueError('No tag {} found'.format(tag))
 
+    # No text in first tag.
     if tags[0].firstChild is None:
         raise ValueError('No text in tag {} found'.format(tag))
 
