@@ -1,5 +1,7 @@
-import numpy as np
 from skimage.transform import resize
+from skimage.io import (imread, imsave)
+from xml.dom.minidom import parse
+import numpy as np
 
 
 def crop_shape_from_box(image, shape, box):
@@ -80,3 +82,18 @@ def rescale_and_crop(image, shape):
     crop_right = crop_left + shape[1]
 
     return image[crop_top:crop_bottom, crop_left:crop_right]
+
+
+image = imread('airplane.jpg')
+anno = parse('airplane_anno.xml')
+
+for obj in anno.getElementsByTagName('object'):
+    print(obj.getElementsByTagName('name')[0].firstChild.nodeValue)
+
+    bb_top = int(obj.getElementsByTagName('ymin')[0].firstChild.nodeValue)
+    bb_right = int(obj.getElementsByTagName('xmax')[0].firstChild.nodeValue)
+    bb_bottom = int(obj.getElementsByTagName('ymax')[0].firstChild.nodeValue)
+    bb_left = int(obj.getElementsByTagName('xmin')[0].firstChild.nodeValue)
+
+image = crop_shape_from_box(image, [224, 224], [bb_top, bb_right, bb_bottom, bb_left])
+imsave('/home/vagrant/shared/airplane.jpg', image)
