@@ -3,8 +3,8 @@ import os
 import tensorflow as tf
 
 from .dataset import DataSet
-from .record import Record
-from .download import maybe_download_and_extract
+from .helper.record import Record
+from .helper.download import maybe_download_and_extract
 
 
 DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
@@ -31,22 +31,23 @@ NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 class Cifar10(DataSet):
     """CIFAR-10 dataset."""
 
-    def __init__(self, data_dir=DATA_DIR):
+    def __init__(self, data_dir=DATA_DIR, show_progress=True):
         """Creates a CIFAR-10 dataset.
 
         Args:
             data_dir: The path to the directory where the CIFAR-10 dataset is
             stored.
+            show_progress: Show a pretty progress bar for dataset computations.
         """
 
-        super().__init__(os.path.join(data_dir, 'cifar-10-batches-bin'))
-        super().__init__(data_dir)
+        super().__init__(data_dir, show_progress)
 
-        maybe_download_and_extract(DATA_URL, data_dir)
+        maybe_download_and_extract(DATA_URL, data_dir, show_progress)
 
     @property
     def train_filenames(self):
         """The filenames of the training batches from the CIFAR-10 dataset."""
+
         return tf.train.match_filenames_once(
             os.path.join(self.data_dir, 'cifar-10-batches-bin',
                          'data_batch_*.bin'))
@@ -55,12 +56,14 @@ class Cifar10(DataSet):
     def eval_filenames(self):
         """The filenames of the evaluation batches from the CIFAR-10
         dataset."""
+
         return [os.path.join(self.data_dir, 'cifar-10-batches-bin',
                              'test_batch.bin')]
 
     @property
     def labels(self):
         """The ordered labels of the CIFAR-10 dataset."""
+
         return ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog',
                 'horse', 'ship', 'truck']
 
@@ -68,12 +71,14 @@ class Cifar10(DataSet):
     def num_examples_per_epoch_for_train(self):
         """The number of examples per epoch for training the CIFAR-10 dataset.
         """
+
         return NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN
 
     @property
     def num_examples_per_epoch_for_eval(self):
         """The number of examples per epoch for evaluating the CIFAR-10
         dataset."""
+
         return NUM_EXAMPLES_PER_EPOCH_FOR_EVAL
 
     def read(self, filename_queue):

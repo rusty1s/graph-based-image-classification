@@ -51,7 +51,7 @@ def inputs(dataset, batch_size=BATCH_SIZE, distort_inputs=True,
             filenames, num_epochs, shuffle)
 
     # Read examples from files in the filename queue.
-    record = read(filename_queue)
+    record = dataset.read(filename_queue)
 
     # Distort the data.
     if distort_inputs:

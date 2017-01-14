@@ -1,7 +1,6 @@
 import os
 import sys
 import tarfile
-
 from six.moves import urllib
 
 
@@ -11,6 +10,7 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
     Args:
         url: The url to download from.
         data_dir: The path to download to.
+        show_progress: Show a pretty progress bar.
 
     Returns:
         The path to the extracted directory.

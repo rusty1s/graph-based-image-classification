@@ -1,19 +1,24 @@
 import abc
 import six
 
+from .helper.save_images import save_images
+
 
 @six.add_metaclass(abc.ABCMeta)
 class DataSet():
     """Abstract class for defining a dataset interface."""
 
-    def __init__(self, data_dir):
+    def __init__(self, data_dir, show_progress=True):
         """Creates a dataset.
 
         Args:
             data_dir: The path to the directory where the dataset is stored.
+            show_progress: Show a pretty progress bar for dataset computations
+              (optional).
         """
 
         self._data_dir = data_dir
+        self._show_progress = show_progress
 
     @property
     def data_dir(self):
@@ -22,6 +27,7 @@ class DataSet():
         Returns:
             A string with the path to the dataset.
         """
+
         return self._data_dir
 
     @property
@@ -30,8 +36,9 @@ class DataSet():
         """The filenames of the training batches from the dataset.
 
         Returns:
-             A list of filenames.
+             A list of absolute filenames.
         """
+
         pass
 
     @property
@@ -40,8 +47,9 @@ class DataSet():
         """The filenames of the evaluating batches from the dataset.
 
         Returns:
-             A list of filenames.
+             A list of absolute filenames.
         """
+
         pass
 
     @property
@@ -52,6 +60,7 @@ class DataSet():
         Returns:
             A list of labels.
         """
+
         pass
 
     @property
@@ -61,13 +70,14 @@ class DataSet():
         Return:
             A number.
         """
+
         return len(self.labels)
 
     def label_index(self, label_name):
-        """The index of the given label.
+        """The index of the given label name.
 
         Args:
-            label: The label.
+            label: The label name.
 
         Returns:
             A number.
@@ -84,10 +94,10 @@ class DataSet():
         return index
 
     def label_name(self, index):
-        """The label name of the given index.
+        """The label name of the given label index.
 
         Args:
-            index: The index:
+            index: The label index:
 
         Returns:
             A string describing the label.
@@ -105,13 +115,23 @@ class DataSet():
     @property
     @abc.abstractmethod
     def num_examples_per_epoch_for_train(self):
-        """The number of examples per epoch for training the dataset."""
+        """The number of examples per epoch for training the dataset.
+
+        Returns:
+            A number.
+        """
+
         pass
 
     @property
     @abc.abstractmethod
     def num_examples_per_epoch_for_eval(self):
-        """The number of examples per epoch for evaluating the dataset."""
+        """The number of examples per epoch for evaluating the dataset.
+
+        Returns:
+            A number.
+        """
+
         pass
 
     @abc.abstractmethod
@@ -124,4 +144,11 @@ class DataSet():
         Returns:
             A record object.
         """
+
         pass
+
+    def save_images(self):
+        """Saves images for training and evaluation into an images directory
+        into the datasets data directory."""
+
+        save_images(self, self._show_progress)

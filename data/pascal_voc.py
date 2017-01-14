@@ -1,15 +1,16 @@
 import os
 import sys
 
-import tensorflow as tf
-import numpy as np
+from six.moves import xrange
 from skimage.io import imread
-from skimage.transform import resize
 from xml.dom.minidom import parse
 
+import tensorflow as tf
+
 from .dataset import DataSet
-from .download import maybe_download_and_extract
-from .tfrecord import (tfrecord_example, read_tfrecord)
+from .helper.download import maybe_download_and_extract
+from .helper.tfrecord import (read_tfrecord, write_to_tfrecord)
+from .helper.transform_image import crop_shape_from_box
 
 
 DATA_URL = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/'\
@@ -32,31 +33,54 @@ EVAL_INFO_FILENAME = 'eval_info.txt'
 
 
 class PascalVOC(DataSet):
-    """PascalVOC dataset."""
+    """PascalVOC image classification dataset."""
 
-    def __init__(self, data_dir=DATA_DIR):
+    def __init__(self, data_dir=DATA_DIR, show_progress=True):
+        """Creates a PascalVOC image classification dataset.
 
-        super().__init__(data_dir)
+        Args:
+            data_dir: The path to the directory where the PascalVOC dataset is
+            stored.
+            show_progress: Show a pretty progress bar for dataset computations.
+        """
 
-        maybe_download_and_extract(DATA_URL, data_dir)
-        self._save_as_tfrecord()
+        super().__init__(data_dir, show_progress)
 
-        with open(os.path.join(data_dir, TRAIN_INFO_FILENAME), 'r') as f:
-            self._num_examples_per_epoch_for_train = int(f.readline())
+        # Download and extract dataset and write it to a tfrecord file.
+        maybe_download_and_extract(DATA_URL, data_dir, show_progress)
+        self._write_to_tfrecord()
 
-        with open(os.path.join(data_dir, EVAL_INFO_FILENAME), 'r') as f:
-            self._num_examples_per_epoch_for_eval = int(f.readline())
+        # PascalVOC does have a unique image size, but in the image
+        # classification case we save multiple images for multiple objects for
+        # one image. So we read the estimated number of examples per epoch from
+        # an info file from disk.
+        self._num_examples_per_epoch_for_train =\
+            self._read_num_examples_per_epoch(
+                os.path.join(data_dir, TRAIN_INFO_FILENAME))
+
+        self._num_examples_per_epoch_for_eval =\
+            self._read_num_examples_per_epoch(
+                os.path.join(data_dir, EVAL_INFO_FILENAME))
 
     @property
     def train_filenames(self):
+        """The filenames of the training batches from the PascalVOC dataset."""
+
+        # All the training data is stored in a single TFRecord.
         return [os.path.join(self.data_dir, TRAIN_FILENAME)]
 
     @property
     def eval_filenames(self):
+        """The filenames of the evaluation batches from the PascalVOC
+        dataset."""
+
+        # All the evaluation data is stored in a single TFRecord.
         return [os.path.join(self.data_dir, EVAL_FILENAME)]
 
     @property
     def labels(self):
+        """The ordered labels of the PascalVOC dataset."""
+
         return ['person', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
                 'aeroplane', 'bicycle', 'boat', 'bus', 'car', 'motorbike',
                 'train', 'bottle', 'chair', 'diningtable', 'pottedplant',
@@ -64,16 +88,35 @@ class PascalVOC(DataSet):
 
     @property
     def num_examples_per_epoch_for_train(self):
+        """The number of examples per epoch for training the PascalVOC dataset.
+        """
+
         return self._num_examples_per_epoch_for_train
 
     @property
     def num_examples_per_epoch_for_eval(self):
+        """The number of examples per epoch for evaluating the PascalVOC
+        dataset."""
+
         return self._num_examples_per_epoch_for_eval
 
     def read(self, filename_queue):
+        """Reads and parses examples from PascalVOC data files.
+
+        Args:
+            filename_queue: A queue of strings with the filenames to read from.
+
+        Returns:
+            A record object.
+        """
+
+        # Use the global reader operation for TFRecords.
         return read_tfrecord(filename_queue, [HEIGHT, WIDTH, 3])
 
-    def _save_as_tfrecord(self):
+    def _write_to_tfrecord(self):
+        """Converts and writes the training and evaluation image sets to
+        tfrecord files."""
+
         extracted_dir = os.path.join(self.data_dir, 'VOCdevkit', 'VOC2012')
 
         # Collect all relevant directories.
@@ -81,23 +124,35 @@ class PascalVOC(DataSet):
         image_dir = os.path.join(extracted_dir, 'JPEGImages')
         annotation_dir = os.path.join(extracted_dir, 'Annotations')
 
-        # Save the training data.
-        self._save_image_set_as_tfrecord(
+        # Write the training data.
+        self._write_image_set_to_tfrecord(
             os.path.join(image_sets_dir, 'train.txt'), image_dir,
             annotation_dir, os.path.join(self.data_dir, TRAIN_FILENAME),
             os.path.join(self.data_dir, TRAIN_INFO_FILENAME))
 
-        # Save the evaluation data.
-        self._save_image_set_as_tfrecord(
+        # Write the evaluation data.
+        self._write_image_set_to_tfrecord(
             os.path.join(image_sets_dir, 'val.txt'), image_dir, annotation_dir,
             os.path.join(self.data_dir, EVAL_FILENAME),
             os.path.join(self.data_dir, EVAL_INFO_FILENAME))
 
-    def _save_image_set_as_tfrecord(self, image_set_filename, image_dir,
-                                    annotation_dir, tfrecord_filename,
-                                    info_filename, show_progress=True):
+    def _write_image_set_to_tfrecord(self, image_set_filename, image_dir,
+                                     annotation_dir, tfrecord_filename,
+                                     info_filename):
+        """Converts and writes an image set to a tfrecord file.
 
-        if os.path.exists(tfrecord_filename):
+        Args:
+            image_set_filename: The filename containing the image names in the
+              set, seperated in each line.
+            image_dir: The directory containing the images.
+            annotation_dir: The directory containing the annotations for all
+              images.
+            tfrecord_filename: The filename of the tfrecord file to save to.
+            info_filename: The info filename to save the num examples per epoch
+              information of the image set.
+        """
+
+        if tf.gfile.Exists(tfrecord_filename):
             return
 
         try:
@@ -105,37 +160,48 @@ class PascalVOC(DataSet):
 
             # Read the lines of the image set filename which correspond to the
             # image names.
-            f = open(image_set_filename)
-            image_names = f.readlines()
+
+            with open(image_set_filename, 'r') as f:
+                image_names = f.readlines()
 
             # Save statistics in variables.
             num_image_names = len(image_names)
             num_objects = 0
             num_objects_bypassed = 0
 
-            # Iterate over all images and save them as a TFRecord to the
+            # Iterate over all images and write them as a tfrecord to the
             # defined writer.
-            for i, image_name in enumerate(image_names):
-                image_name = image_name.strip('\n')
-                statistic = self._save_image_by_writer(
-                    writer, image_name, image_dir, annotation_dir, i,
-                    num_image_names, tfrecord_filename, show_progress)
+            for i in xrange(num_image_names):
+                image_name = image_names[i].strip('\n')
+                annotation_filename = os.path.join(annotation_dir,
+                                                   '{}.xml'.format(image_name))
+                image_filename = os.path.join(image_dir,
+                                              '{}.jpg'.format(image_name))
+
+                statistic = self._write_image_to_tfrecord(
+                    writer, image_filename, annotation_filename)
 
                 # Update the statistic.
                 num_objects += statistic['num_objects']
                 num_objects_bypassed += statistic['num_objects_bypassed']
+
+                if self._show_progress:
+                    percent = 100.0 * i / num_image_names
+
+                    sys.stdout.write(
+                        '\r>> Extracting objects to {} {:.1f}%'
+                        .format(tfrecord_filename, percent))
+                    sys.stdout.flush()
 
         except KeyboardInterrupt:
             pass
 
         finally:
             writer.close()
-            f.close()
 
-            with open(info_filename, 'w') as f:
-                f.write(str(num_objects))
+            self._write_num_examples_per_epoch(info_filename, num_objects)
 
-            if show_progress:
+            if self._show_progress:
                 print('')
 
             print(' '.join([
@@ -144,127 +210,107 @@ class PascalVOC(DataSet):
                 '({} bypassed).'.format(num_objects_bypassed),
             ]))
 
-    def _save_image_by_writer(self, writer, image_name, image_dir,
-                              annotation_dir, current_index, count,
-                              tfrecord_filename, show_progress):
+    def _write_image_to_tfrecord(self, writer, image_filename,
+                                 annotation_filename):
+        """Converts and expands an image to a tfrecord file.
+
+        Args:
+            writer: A TFRecordReader.
+            image_filename: The filename of the image.
+            annotation_filename: The filename to the annotaiton of the image.
+
+        Returns:
+            A stastic object containing the number of objects extracted from
+            the image and the number of objects bypassed.
+        """
 
         # Parse the xml annotation file and read the image into memory.
-        annotation = parse(os.path.join(annotation_dir,
-                                        '{}.xml'.format(image_name)))
-        image = imread(os.path.join(image_dir, '{}.jpg'.format(image_name)))
+        image = imread(image_filename)
+        annotation = parse(annotation_filename)
 
         num_objects = 0
         num_objects_bypassed = 0
 
         # Iterate over all objects in the image.
         for obj in annotation.getElementsByTagName('object'):
-
             # Bypass the objects that are either truncated or occluded.
             if int(_text_of_first_tag(obj, 'truncated')) > 0 or\
                int(_text_of_first_tag(obj, 'occluded')) > 0:
                 num_objects_bypassed += 1
                 continue
 
-            cropped_image = self._crop_and_rescale_image(image, obj)
+            # Extract the bounding box from the annotation object.
+            bb_top = int(_text_of_first_tag(obj, 'ymin'))
+            bb_right = int(_text_of_first_tag(obj, 'xmax'))
+            bb_bottom = int(_text_of_first_tag(obj, 'ymax'))
+            bb_left = int(_text_of_first_tag(obj, 'xmin'))
 
-            if cropped_image is None:
-                # Bypass the image if the bounding box is too small.
+            # Check whether the bounding box is too small. If so, we discard
+            # the object because it's irrelevant for classification tasks.
+            if bb_bottom - bb_top < MIN_OBJECT_HEIGHT or\
+               bb_right - bb_left < MIN_OBJECT_WIDTH:
                 num_objects_bypassed += 1
                 continue
-            else:
-                num_objects += 1
 
-                # Extract the label index from the annotation.
-                label_name = _text_of_first_tag(obj, 'name')
-                label_index = self.label_index(label_name)
+            # The object on the image is valid for image classification.
+            num_objects += 1
 
-                # Save the cropped image as a TFRecord example.
-                cropped_image = cropped_image.astype(np.float32)
-                example = tfrecord_example(cropped_image, label_index)
-                writer.write(example.SerializeToString())
+            # Finally crop it.
+            cropped_image = crop_shape_from_box(
+                image, [HEIGHT, WIDTH], [bb_top, bb_right, bb_bottom, bb_left])
 
-        if show_progress:
-            sys.stdout.write(
-                '\r>> Extracting objects to {} {:.1f}%'
-                .format(tfrecord_filename, 100.0 * current_index / count))
-            sys.stdout.flush()
+            # Extract the label index from the annotation.
+            label_name = _text_of_first_tag(obj, 'name')
+            label_index = self.label_index(label_name)
+
+            # Write the cropped image as a TFRecord example.
+            write_to_tfrecord(writer, cropped_image, label_index)
 
         return {
             'num_objects': num_objects,
             'num_objects_bypassed': num_objects_bypassed,
         }
 
-    def _crop_and_rescale_image(self, image, obj):
-        # Extract the bounding box from the annotation object.
-        bb_top = int(_text_of_first_tag(obj, 'ymin'))
-        bb_height = int(_text_of_first_tag(obj, 'ymax')) - bb_top
-        bb_left = int(_text_of_first_tag(obj, 'xmin'))
-        bb_width = int(_text_of_first_tag(obj, 'xmax')) - bb_left
+    def _write_num_examples_per_epoch(self, filename, num_examples_per_epoch):
+        """Writes the number of examples per epoch to a filename.
 
-        # Check whether the bounding box is too small. If so, we discard the
-        # object because it's irrelevant for classification tasks.
-        if bb_height < MIN_OBJECT_HEIGHT or bb_width < MIN_OBJECT_WIDTH:
-            return None
+        Args:
+            filename: A tensor of type string.
+            num_examples_per_epoch: An integer.
+        """
 
-        # Crop the bounding box or the maximal defined resolution of the image,
-        # whichever resolution is greater, so that we always crop the full
-        # bounding box of the object into the image.
-        height = max(bb_height, HEIGHT)
-        width = max(bb_width, WIDTH)
+        with open(filename, 'w') as f:
+            f.write(str(num_examples_per_epoch))
 
-        # Crop the image based on the center of the bounding box.
-        crop_top = max(bb_top + (bb_height - height) // 2, 0)
-        crop_left = max(bb_left + (bb_width - width) // 2, 0)
+    def _read_num_examples_per_epoch(self, filename):
+        """Reads the number of examples per epoch of a filename.
 
-        # We need to adjust the variables if the object is too far at the right
-        # or the bottom of the image, so that we can get the maximal cropping
-        # defined by the height and width.
-        crop_top = min(crop_top, max(image.shape[0] - height, 0))
-        crop_left = min(crop_left, max(image.shape[1] - width, 0))
+        Args:
+            filename: A tensor of type string.
 
-        # Calculate the opposite sides of the cropping in case the image is
-        # smaller than the defined cropping.
-        crop_bottom = min(crop_top + height, image.shape[0])
-        crop_right = min(crop_left + width, image.shape[1])
+        Returns:
+            An integer.
 
-        # Finally crop the image.
-        image = image[crop_top:crop_bottom, crop_left:crop_right]
+        Raises:
+            ValueError: If the filename doesn't exist.
+        """
 
-        # Rescale the image if needed and return.
-        return self._rescale(image)
+        if not tf.gfile.Exists(filename):
+            raise ValueError('{} does not exist.'.format(filename))
 
-    def _rescale(self, image):
-        # The passed image can be greater or smaller than the wished fixed
-        # resolution. We need to either scale the image up or down and crop it
-        # again if this is the case.
-        if image.shape[0] == HEIGHT and image.shape[1] == WIDTH:
-            # Nothing to do here.
-            return image
-
-        if image.shape[0] < HEIGHT or image.shape[1] < WIDTH:
-            # Scale up.
-            scale = max(1.0 * HEIGHT / image.shape[0],
-                        1.0 * WIDTH / image.shape[1])
-
-        else:
-            # Scale down.
-            scale = min(1.0 * image.shape[0] / HEIGHT,
-                        1.0 * image.shape[1] / WIDTH)
-
-        # Calculate the shape after resizing and resize the image based on this
-        # shape.
-        shape = [max(int(scale * image.shape[0]), HEIGHT),
-                 max(int(scale * image.shape[1]), WIDTH)]
-        image = resize(image, shape, preserve_range=True)
-
-        # Finally crop the image again based on its center.
-        crop_top = (image.shape[0] - HEIGHT) // 2
-        crop_bottom = crop_top + HEIGHT
-        crop_left = (image.shape[1] - WIDTH) // 2
-        crop_right = crop_left + WIDTH
-
-        return image[crop_top:crop_bottom, crop_left:crop_right]
+        with open(filename, 'r') as f:
+            return int(f.read())
 
 
 def _text_of_first_tag(dom, tag):
+    """Returns the text inside the first tag of the dom object.
+
+    Args:
+        dom: The dom object.
+        tag: The tag name.
+
+    Returns:
+        A string.
+    """
+
     return dom.getElementsByTagName(tag)[0].firstChild.nodeValue

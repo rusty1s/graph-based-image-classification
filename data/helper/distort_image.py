@@ -63,4 +63,13 @@ def distort_image_for_eval(record, new_height, new_width):
 
 
 def _crop_shape(shape):
+    """Calculates a new, smaller shape after cropping.
+
+    Args:
+        shape: A shape.
+
+    Returns:
+        A shape.
+    """
+
     return [int(CROP_RATIO * shape[0]), int(CROP_RATIO * shape[1]), shape[2]]
