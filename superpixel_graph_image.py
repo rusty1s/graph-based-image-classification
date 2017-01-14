@@ -46,7 +46,6 @@ def main():
         adjacent = tf.cast(adjacent, tf.int32)
         print(sess.run(adjacent))
 
-
         io.imsave('/home/vagrant/shared/org.png', data.astype(np.int32))
         io.imsave('/home/vagrant/shared/test.png', image)
         # print(image)

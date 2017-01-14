@@ -28,9 +28,11 @@ class SuperpixelGrapher(Grapher):
             rows = tf.where(rows)
             rows = tf.reshape(rows, [-1])
             top = tf.strided_slice(rows, [0], [1], [1])
-            bottom = tf.strided_slice(tf.reverse(rows, [True]), [0], [1], [1]) + 1
+            bottom = tf.strided_slice(
+                tf.reverse(rows, [True]), [0], [1], [1]) + 1
             left = tf.strided_slice(cols, [0], [1], [1])
-            right = tf.strided_slice(tf.reverse(cols, [True]), [0], [1], [1]) + 1
+            right = tf.strided_slice(
+                tf.reverse(cols, [True]), [0], [1], [1]) + 1
             return top, right, bottom, left
 
         def _extract(value):

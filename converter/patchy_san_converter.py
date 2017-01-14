@@ -40,16 +40,17 @@ class PatchySan(Converter):
 
         # Test speed.
         result = tf.strided_slice(nodes, [0], [self._num_nodes], [1])
-        result = tf.map_fn(lambda x: tf.random_normal([self._neighborhood_size, 8]), result)
+        result = tf.map_fn(lambda x: tf.random_normal(
+            [self._neighborhood_size, 8]), result)
         return result
 
-        # TODO
         sequence = labelings[self._node_labeling](adjacent)
         sequence = tf.cast(sequence, tf.float32)
         result = tf.strided_slice(sequence, [0], [self._num_nodes], [1])
-        result = tf.map_fn(lambda x: tf.random_normal([self._neighborhood_size, 8]), result)
+        result = tf.map_fn(lambda x: tf.random_normal(
+            [self._neighborhood_size, 8]), result)
         return result
-        # sequence = node_sequence(sequence, self._num_nodes, self._node_stride)
+        # sequence =node_sequence(sequence, self._num_nodes, self._node_stride)
 
         # neighborhoods = neighborhoods_assembly(
         #     sequence, adjacent, self._neighborhood_size,

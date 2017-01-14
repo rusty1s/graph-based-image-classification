@@ -6,9 +6,6 @@ def neighborhoods_assembly(sequence, adjacent, size, labeling):
     def _neighborhoods_assembly(sequence, adjacent, size, labeling):
         pass
 
-
-    # graph = nx.Graph(adjacent)
-
     def _assemble(node):
         return tf.zeros([size], dtype=tf.int32)
 

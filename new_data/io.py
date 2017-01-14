@@ -1,3 +1,5 @@
+
+
 def write(num_examples_per_epoch, input_filenames, output_filename, read,
           preprocess=None, epochs=EPOCHS, batch_size=BATCH_SIZE,
           eval_data=False, dataset_name='', show_progress=True):

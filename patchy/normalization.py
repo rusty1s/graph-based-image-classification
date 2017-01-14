@@ -29,8 +29,6 @@ def normalize(graph, neighborhood, node, labeling, size):
     for length, nodes in result.items():
         result[length] = [v for v in order if v in nodes]
 
-    # TODO: Canonicaltion
-
     # Flatten the dictionary to one array.
     result = list(result.items())
     result = sorted(result, key=lambda i: i[0])

@@ -7,7 +7,8 @@ from data import Cifar10DataSet
 
 if __name__ == '__main__':
     dataset = Cifar10DataSet(data_dir='/tmp/cifar10_data')
-    data_batch, label_batch = inputs(dataset, batch_size=1, train=False, eval_data=True)
+    data_batch, label_batch = inputs(dataset, batch_size=1, train=False,
+                                     eval_data=True)
     # filename_queue = tf.train.string_input_producer([dataset.eval_filenames])
     # record = dataset.read(filename_queue)
     # print(record.data)

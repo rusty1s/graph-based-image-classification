@@ -29,15 +29,15 @@ class PatchySanDataSet(DataSet):
             tf.gfile.DeleteRecursively(data_dir)
         tf.gfile.MakeDirs(data_dir)
 
-        # Write evaluation dataset.
-        # write(dataset.num_examples_per_epoch_for_train, dataset.train_filenames,
-        #       self.train_filenames[0], dataset.read,
-        #       preprocess=self.train_convert, epochs=1, eval_data=False,
-        #       dataset_name=self.name)
-        # write(dataset.num_examples_per_epoch_for_eval, dataset.eval_filenames,
-        #       self.eval_filenames[0], dataset.read,
-        #       preprocess=self.eval_convert, epochs=1, eval_data=True,
-        #       dataset_name=self.name)
+    # Write evaluation dataset.
+    # write(dataset.num_examples_per_epoch_for_train, dataset.train_filenames,
+    #       self.train_filenames[0], dataset.read,
+    #       preprocess=self.train_convert, epochs=1, eval_data=False,
+    #       dataset_name=self.name)
+    # write(dataset.num_examples_per_epoch_for_eval, dataset.eval_filenames,
+    #       self.eval_filenames[0], dataset.read,
+    #       preprocess=self.eval_convert, epochs=1, eval_data=True,
+    #       dataset_name=self.name)
 
     @property
     def name(self):
@@ -111,16 +111,16 @@ class PatchySanDataSet(DataSet):
         return Record(25, 10, 8, record.label, conv)
         # nodes, adjacent = self._grapher.create_graph(record.data)
 
-        # sorted_node_indices = labelings['betweenness_centrality'](adjacent)
-        # sorted_node_indices = tf.strided_slice(sorted_node_indices, [0], [100], [1])
-        # sorted_node_indices = tf.cast(sorted_node_indices, tf.float32)
-        # sorted_node_indices = tf.reshape(sorted_node_indices, [1, 1, 100])
-        # return Record(1, 1, 100, record.label, sorted_node_indices)
+    # sorted_node_indices = labelings['betweenness_centrality'](adjacent)
+    # sorted_node_indices = tf.strided_slice(sorted_node_indices, [0], [100], [1])
+    # sorted_node_indices = tf.cast(sorted_node_indices, tf.float32)
+    # sorted_node_indices = tf.reshape(sorted_node_indices, [1, 1, 100])
+    # return Record(1, 1, 100, record.label, sorted_node_indices)
 
-        # adjacent = tf.strided_slice(adjacent, [0, 0], [10, 10], [1, 1])
-        # adjacent = tf.reshape(adjacent, [10, 10, 1])
-        # print(adjacent)
-        # nodes = tf.reshape(nodes, [-1, 1, 8])
-        # nodes = tf.strided_slice(nodes, [0], [100], [1])
+    # adjacent = tf.strided_slice(adjacent, [0, 0], [10, 10], [1, 1])
+    # adjacent = tf.reshape(adjacent, [10, 10, 1])
+    # print(adjacent)
+    # nodes = tf.reshape(nodes, [-1, 1, 8])
+    # nodes = tf.strided_slice(nodes, [0], [100], [1])
 
-        # return Record(10, 10, 1, record.label, adjacent)
+    # return Record(10, 10, 1, record.label, adjacent)
