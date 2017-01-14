@@ -79,6 +79,6 @@ def inputs(dataset, batch_size=BATCH_SIZE, distort_inputs=True,
             batch_size=batch_size,
             num_threads=NUM_THREADS,
             capacity=capacity,
-            allow_smaller_final_batch=True)
+            allow_smaller_final_batch=False if num_epochs is None else True)
 
     return data_batch, tf.reshape(label_batch, [-1])
