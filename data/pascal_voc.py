@@ -2,10 +2,10 @@ import os
 import sys
 
 from six.moves import xrange
-from skimage.io import imread
 from xml.dom.minidom import parse
 
 import tensorflow as tf
+from skimage.io import imread
 
 from .dataset import DataSet
 from .helper.download import maybe_download_and_extract
@@ -311,6 +311,18 @@ def _text_of_first_tag(dom, tag):
 
     Returns:
         A string.
+
+    Raises:
+        ValueError: If dom object doesn't contain the specified tag or the tag
+          doesn't have a text.
     """
+
+    tags = dom.getElementsByTagName(tag)
+
+    if len(tags) == 0 or tags[0].firstChild is None:
+        raise ValueError('No tag {} found'.format(tag))
+
+    if tags[0].firstChild is None:
+        raise ValueError('No text in tag {} found'.format(tag))
 
     return dom.getElementsByTagName(tag)[0].firstChild.nodeValue
