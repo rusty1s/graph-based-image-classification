@@ -1,12 +1,12 @@
 import tensorflow as tf
 
-from data import Cifar10DataSet
+from data import Cifar10
 from data import PatchySanDataSet
 from model import train
 
 
 def main():
-    cifar10 = Cifar10DataSet(data_dir='/tmp/cifar10_data')
+    cifar10 = Cifar10(data_dir='/tmp/cifar10_data')
     patchy = PatchySanDataSet(dataset=cifar10)
 
     train(

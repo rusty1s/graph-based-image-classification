@@ -112,7 +112,8 @@ class PatchySanDataSet(DataSet):
         # nodes, adjacent = self._grapher.create_graph(record.data)
 
     # sorted_node_indices = labelings['betweenness_centrality'](adjacent)
-    # sorted_node_indices = tf.strided_slice(sorted_node_indices, [0], [100], [1])
+    # sorted_node_indices = tf.strided_slice(
+    # sorted_node_indices, [0], [100], [1])
     # sorted_node_indices = tf.cast(sorted_node_indices, tf.float32)
     # sorted_node_indices = tf.reshape(sorted_node_indices, [1, 1, 100])
     # return Record(1, 1, 100, record.label, sorted_node_indices)

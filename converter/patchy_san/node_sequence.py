@@ -10,6 +10,6 @@ def node_sequence(sequence, width, stride):
         padding = tf.ones([width], dtype=tf.int32)
         padding = tf.negative(padding)
         sequence = tf.concat(0, [sequence, padding])
-        sequence = tf.strided_slice(sequence, [0], [widht], [1])
+        sequence = tf.strided_slice(sequence, [0], [width], [1])
 
         return sequence
