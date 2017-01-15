@@ -23,23 +23,23 @@ def _bias_variable(name, shape, constant):
 # {
 #   conv: [
 #      {
-#        output_channels: 64
-#        weights: { stddev, decay }
+#        output_channels: 64,
+#        weights: { stddev, decay },
 #        biases: { constant: 0.1 },
-#        fields: { size: [5, 5], strides: [1, 1] }
-#        max_pool: { size: [3, 3], strides: [2, 2] }
+#        fields: { size: [5, 5], strides: [1, 1] },
+#        max_pool: { size: [3, 3], strides: [2, 2] },
 #     }
 #   ],
 #   local: [
 #      {
 #        output_channels: 1024,
-#        weights: { stddev, decay }
+#        weights: { stddev, decay },
 #        biases: { constant: 0.1 },
 #     }
 #   ],
 #   softmax_linear: {
 #      output_channels: 10,
-#      weights: { stddev, decay }
+#      weights: { stddev, decay },
 #      biases: { constant: 0.1 },
 #   }
 # }

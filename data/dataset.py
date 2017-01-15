@@ -1,8 +1,6 @@
 import abc
 import six
 
-from .helper.save_images import save_images
-
 
 @six.add_metaclass(abc.ABCMeta)
 class DataSet():
