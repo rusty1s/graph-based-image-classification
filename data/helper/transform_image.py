@@ -3,6 +3,19 @@ from skimage.transform import resize
 
 
 def crop_shape_from_box(image, shape, box):
+    """Crops a specified shape from an image which includes the maximal cropped
+    image of the box. Performs rescaling if the the box is larger than the
+    shape.
+
+    Args:
+        image: A numpy array.
+        shape: A [height, width] shape.
+        box: A [top, right, bottom, left] defined box.
+
+    Returns:
+        A cropped image.
+    """
+
     bb_top = box[0]
     bb_height = box[2] - bb_top
     bb_left = box[3]
@@ -56,6 +69,17 @@ def crop_shape_from_box(image, shape, box):
 
 
 def rescale_and_crop(image, shape):
+    """Rescales an image to the specified shape. Performs cropping if the image
+    dimensions do not match the specified shape.
+
+    Args:
+        image: A numpy array.
+        shape: A [height, width] shape.
+
+    Returns:
+        A rescaled and cropped image.
+    """
+
     # The passed image can be greater or smaller than the requested shape.
     # We need to either scale the image up or down and crop it if this is the
     # case.
