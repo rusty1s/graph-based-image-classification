@@ -55,12 +55,13 @@ def _save_images(dataset, images_dir, eval_data, show_progress):
     # Cast to uint8 to easily write the image later on.
     image_batch = tf.cast(image_batch, tf.uint8)
 
-    # Create a tf session to run the graph.
-    sess = tf.Session(config=tf.ConfigProto(log_device_placement=False))
+    # Create a session to run the graph on mulitple threads.
+    sess = tf.Session()
+    coord = tf.train.Coordinator()
+
     sess.run([tf.global_variables_initializer(),
               tf.local_variables_initializer()])
 
-    coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
     if not eval_data:

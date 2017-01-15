@@ -5,6 +5,8 @@ import tensorflow as tf
 from .dataset import DataSet
 from .helper.record import Record
 from .helper.download import maybe_download_and_extract
+from .helper.distort_image import (distort_image_for_train,
+                                   distort_image_for_eval)
 
 
 DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
@@ -82,14 +84,7 @@ class Cifar10(DataSet):
         return NUM_EXAMPLES_PER_EPOCH_FOR_EVAL
 
     def read(self, filename_queue):
-        """Reads and parses examples from CIFAR-10 data files.
-
-        Args:
-            filename_queue: A queue of strings with the filenames to read from.
-
-        Returns:
-            A record object.
-        """
+        """Reads and parses examples from CIFAR-10 data files."""
 
         # Read a record, getting filenames from the filename_queue. No header
         # or footer in the CIFAR-10 format, so we leave header_bytes and
@@ -120,3 +115,13 @@ class Cifar10(DataSet):
             image = tf.cast(image, tf.float32)
 
         return Record(image, [HEIGHT, WIDTH, DEPTH], label)
+
+    def distort_for_train(self, record):
+        """Applies random distortions for training to a CIFAR-10 record."""
+
+        return distort_image_for_train(record)
+
+    def distort_for_eval(self, record):
+        """Applies distortions for evaluation to a CIFAR-10 record."""
+
+        return distort_image_for_eval(record)

@@ -2,27 +2,25 @@ import os
 
 import tensorflow as tf
 
-from .distort_image import (distort_image_for_train, distort_image_for_eval)
-
 BATCH_SIZE = 128
 MIN_FRACTION_OF_EXAMPLES_IN_QUEUE = 0.4
 NUM_THREADS = 16
 
 
-def inputs(dataset, batch_size=BATCH_SIZE, distort_inputs=True,
-           num_epochs=None, shuffle=True, eval_data=False):
+def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=True,
+           num_epochs=None, shuffle=True):
     """Constructs inputs from a dataset.
 
     Args:
         dataset: Instance of the dataset to use.
+        eval_data: Boolean indicating if one should use the train or eval data
+          set. Default: False.
         batch_size: Number of data per batch (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
         num_epochs: Number indicating the maximal number of epochs iterations
           before raising an OutOfRange error (optional).
         shuffle: Boolean indiciating if one wants to shuffle the inputs
           (optional).
-        eval_data: Boolean indicating if one should use the train or eval data
-          set. Default: False.
 
     Returns:
         data_batch: 4D tensor of [batch_size, height, width, depth] size.
@@ -31,9 +29,9 @@ def inputs(dataset, batch_size=BATCH_SIZE, distort_inputs=True,
 
     # When shuffling one wants to also apply a different distortion.
     if shuffle:
-        distort = distort_image_for_train
+        distort = dataset.distort_for_train
     else:
-        distort = distort_image_for_eval
+        distort = dataset.distort_for_eval
 
     # Choose the right dataset.
     if not eval_data:

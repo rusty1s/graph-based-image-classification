@@ -39,7 +39,7 @@ def distort_image_for_train(record):
     return Record(image, crop_shape, record.label)
 
 
-def distort_image_for_eval(record, new_height, new_width):
+def distort_image_for_eval(record):
     """Applies distortions for evaluation to the image of a record.
 
     Args:

@@ -11,6 +11,8 @@ from .dataset import DataSet
 from .helper.download import maybe_download_and_extract
 from .helper.tfrecord import (read_tfrecord, write_to_tfrecord)
 from .helper.transform_image import crop_shape_from_box
+from .helper.distort_image import (distort_image_for_train,
+                                   distort_image_for_eval)
 
 
 DATA_URL = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/'\
@@ -101,17 +103,20 @@ class PascalVOC(DataSet):
         return self._num_examples_per_epoch_for_eval
 
     def read(self, filename_queue):
-        """Reads and parses examples from PascalVOC data files.
-
-        Args:
-            filename_queue: A queue of strings with the filenames to read from.
-
-        Returns:
-            A record object.
-        """
+        """Reads and parses examples from PascalVOC data files."""
 
         # Use the global reader operation for TFRecords.
         return read_tfrecord(filename_queue, [HEIGHT, WIDTH, 3])
+
+    def distort_for_train(self, record):
+        """Applies random distortions for training to a PascalVOC record."""
+
+        return distort_image_for_train(record)
+
+    def distort_for_eval(self, record):
+        """Applies distortions for evaluation to a PascalVOC record."""
+
+        return distort_image_for_eval(record)
 
     def _write_to_tfrecord(self):
         """Converts and writes the training and evaluation image sets to

@@ -147,8 +147,30 @@ class DataSet():
 
         pass
 
-    def save_images(self):
-        """Saves images for training and evaluation to an images directory into
-        the datasets data directory."""
+    @abc.abstractmethod
+    def distort_for_train(self, record):
+        """Applies random distortions for training to a record.
 
-        save_images(self, self._show_progress)
+        Args:
+            record: The record before applying distortions.
+
+        Returns:
+            A new record object of the passed record after applying
+            distortions.
+        """
+
+        pass
+
+    @abc.abstractmethod
+    def distort_for_eval(self, record):
+        """Applies distortions for evaluation to a record.
+
+        Args:
+            record: The record before applying distortions.
+
+        Returns:
+            A new record object of the passed record after applying
+            distortions.
+        """
+
+        pass
