@@ -8,12 +8,12 @@ matrix:
   include:
     - python: 2.7
       env:
-        - TENSORFLOW="0.11.0"
+        - TENSORFLOW="0.12.0"
         - NAUTY="26r7"
         - PYNAUTY="0.6.0"
     - python: 3.4
       env:
-        - TENSORFLOW="0.11.0"
+        - TENSORFLOW="0.12.0"
         - NAUTY="26r7"
         - PYNAUTY="0.6.0"
     - python: 3.5
