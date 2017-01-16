@@ -17,7 +17,7 @@ def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
           set.
         batch_size: Number of data per batch (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
-        num_epochs: Number indicating the maximal number of epochs iterations
+        num_epochs: Number indicating the maximal number of epoch iterations
           before raising an OutOfRange error (optional).
         shuffle: Boolean indiciating if one wants to shuffle the inputs
           (optional).

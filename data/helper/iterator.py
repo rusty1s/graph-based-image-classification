@@ -8,7 +8,7 @@ BATCH_SIZE = 128
 
 def iterator(dataset, eval_data, batch_size=BATCH_SIZE,
              distort_inputs=False, num_epochs=1, shuffle=False):
-    """Returns an iterate function which iterates over a dataset in batches.
+    """Returns a function which iterates over a dataset in batches.
 
     Args:
         dataset: The dataset.
@@ -16,8 +16,8 @@ def iterator(dataset, eval_data, batch_size=BATCH_SIZE,
           set.
         batch_size: Number of data per batch (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
-        num_epochs: Number indicating the maximal number of epochs iterations
-          before raising an OutOfRange error (optional).
+        num_epochs: Number indicating the maximal number of epoch iterations
+          (optional).
         shuffle: Boolean indiciating if one wants to shuffle the inputs
           (optional).
 
