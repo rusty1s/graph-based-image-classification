@@ -10,7 +10,7 @@ from data import iterator
 
 FLAGS = tf.app.flags.FLAGS
 
-tf.app.flags.DEFINE_string('dataset', 'cifar-10',
+tf.app.flags.DEFINE_string('dataset', 'cifar_10',
                            """The dataset to load.""")
 tf.app.flags.DEFINE_string('data_dir', None,
                            """Path to the data directory.""")
