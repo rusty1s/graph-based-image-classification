@@ -8,7 +8,7 @@ from skimage.io import imsave
 from data import datasets
 from data import iterator
 from superpixel.algorithm import slic_generators
-from superpixel import to_superpixel_image
+from superpixel import extract
 
 
 FLAGS = tf.app.flags.FLAGS
@@ -30,6 +30,10 @@ tf.app.flags.DEFINE_integer('max_iterations', 10,
 tf.app.flags.DEFINE_float('sigma', 0.0,
                           """Width of gaussian smoothing kernel for pre-
                           processing.""")
+
+
+def to_superpixel_image(image, segmentation):
+    return image
 
 
 def save_superpixel_images(dataset, algorithm, eval_data):
