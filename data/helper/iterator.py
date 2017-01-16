@@ -1,65 +1,100 @@
-def iterator(dataset, eval_data, distort_inputs=False, num_epochs=None,
-             shuffle=False):
+import tensorflow as tf
 
-    def _iterate(each, done):
-        # Read the inputs in batches.
-        data_batch, label_batch = inputs(
-            dataset, distort_inputs=distort_inputs, num_epochs=num_epochs,
-            shuffle=shuffle, eval_data=eval_data)
+from .inputs import inputs
 
-        # Create a session to run the graph on mulitple threads.
-        sess = tf.Session()
-        coord = tf.train.Coordinator()
 
-        sess.run([tf.global_variables_initializer(),
-                  tf.local_variables_initializer()])
+BATCH_SIZE = 128
 
-        threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-        if not eval_data and num_epochs is not None:
-            num_images = dataset.num_examples_per_epoch_for_train * num_epochs
-        if eval_data and num_epochs is not None:
-            num_images = dataset.num_examples_per_epoch_for_eval * num_epochs
+def iterator(dataset, eval_data, batch_size=BATCH_SIZE,
+             distort_inputs=False, num_epochs=1, shuffle=False):
+    """Returns an iterate function which iterates over a dataset in batches.
 
-        try:
-            count = 0
+    Args:
+        dataset: The dataset.
+        eval_data: Boolean indicating if one should use the train or eval data
+          set.
+        batch_size: Number of data per batch (optional).
+        distort_inputs: Boolean whether to distort the inputs (optional).
+        num_epochs: Number indicating the maximal number of epochs iterations
+          before raising an OutOfRange error (optional).
+        shuffle: Boolean indiciating if one wants to shuffle the inputs
+          (optional).
 
-        while(True):
-            images, labels = sess.run([image_batch, label_batch])
+    Returns:
+        A function that iterates over the dataset.
+    """
 
-            for i in xrange(images.shape[0]):
-                label_name = dataset.label_name(labels[i])
-                image = images[i]
+    def _iterate(each, before=None, done=None):
+        """Iterates over a dataset defined by the iterator.
 
-                # Save the image in the label named subdirectory and name it
-                # incrementally.
-                image_names[label_name] += 1
-                image_name = '{}.png'.format(image_names[label_name])
-                image_path = os.path.join(images_dir, label_name, image_name)
+        Args:
+            each: Function that is called for every passed batch.
+                output_batch: The output_batch computed by the session.
+                index: The currently passed number of records.
+                last_index: The maximal number of records to iterate. Can be
+                  None.
+            before: Function that is called before running the iterator. Its
+              return value is passed as the operation to run (optional). If
+              None, the data_batch and label_batch gets passed to the session.
+                data_batch: The data batch tensor.
+                label_batch: The label batch tensor.
+            done: Function that is called after running the iterator
+              (optional).
+                index: The passed number of records.
+                last_index: The maximal number of records to iterate. Can be
+                  None.
+        """
 
-                imsave(image_path, image)
+        index = 0
 
-                count += 1
+        if not eval_data:
+            num_examples_per_epoch = dataset.num_examples_per_epoch_for_train
+        else:
+            num_examples_per_epoch = dataset.num_examples_per_epoch_for_eval
 
-                if show_progress:
-                    sys.stdout.write(
-                        '\r>> Saving images to {} {:.1f}%'
-                        .format(images_dir, 100.0 * count / num_images))
-                    sys.stdout.flush()
+        if num_epochs is not None:
+            last_index = num_epochs * num_examples_per_epoch
+        else:
+            last_index = None
 
-    except (tf.errors.OutOfRangeError, KeyboardInterrupt):
-        pass
+        with tf.Graph().as_default():
+            data_batch, label_batch = inputs(dataset, eval_data=eval_data,
+                                             batch_size=batch_size,
+                                             distort_inputs=distort_inputs,
+                                             num_epochs=num_epochs,
+                                             shuffle=shuffle)
 
-    finally:
-        coord.request_stop()
-        coord.join(threads)
+            # Customize input batch with the before callback.
+            if before is None:
+                input_batch = [data_batch, label_batch]
+            else:
+                input_batch = before(data_batch, label_batch)
 
-        sess.close()
+            try:
+                # Run a controlled tensorflow session.
+                with tf.train.MonitoredTrainingSession(
+                        save_checkpoint_secs=None,
+                        save_summaries_steps=None,
+                        ) as monitored_session:
+                    while not monitored_session.should_stop():
+                        index += batch_size
 
-        if show_progress:
-            print('')
+                        # Index can't be greater than the last index.
+                        if last_index is not None:
+                            index = min(index, last_index)
 
-        print('Successfully saved {} images to {}.'.format(count, images_dir))
-        pass
+                        output_batch = monitored_session.run(input_batch)
+
+                        # Call the callback for each computed output batch.
+                        each(output_batch, index, last_index)
+
+            except KeyboardInterrupt:
+                pass
+
+            finally:
+                # Call the done callback.
+                if done is not None:
+                    done(index, last_index)
 
     return _iterate

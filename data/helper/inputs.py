@@ -7,14 +7,14 @@ MIN_FRACTION_OF_EXAMPLES_IN_QUEUE = 0.4
 NUM_THREADS = 16
 
 
-def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=True,
-           num_epochs=None, shuffle=True):
+def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
+           num_epochs=None, shuffle=False):
     """Constructs inputs from a dataset.
 
     Args:
         dataset: Instance of the dataset to use.
         eval_data: Boolean indicating if one should use the train or eval data
-          set. Default: False.
+          set.
         batch_size: Number of data per batch (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
         num_epochs: Number indicating the maximal number of epochs iterations
