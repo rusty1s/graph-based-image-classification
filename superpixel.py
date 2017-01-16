@@ -17,12 +17,15 @@ def main(argv=None):
         return [image, slic(image)]
 
     def _each(output, index, last_index):
-        print(output[1])
-        pass
+        if index == 1:
+            print(output[0])
+        else:
+            print(index / last_index)
 
         # print(output_batch, index, last_index)
 
-    iterate = iterator(pascal, eval_data=False, batch_size=1, num_epochs=1, distort_inputs=True)
+    iterate = iterator(pascal, eval_data=False, batch_size=1,
+                       distort_inputs=True)
     iterate(_each, _before)
 
 
