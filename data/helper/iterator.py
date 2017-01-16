@@ -58,6 +58,7 @@ def iterator(dataset, eval_data, batch_size=BATCH_SIZE,
         else:
             last_index = None
 
+        # Build up a new graph.
         with tf.Graph().as_default():
             data_batch, label_batch = inputs(dataset, eval_data=eval_data,
                                              batch_size=batch_size,
