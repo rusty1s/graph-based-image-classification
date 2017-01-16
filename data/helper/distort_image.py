@@ -23,7 +23,7 @@ def distort_image_for_train(record):
     with tf.name_scope('distort_image_for_train', values=[image, crop_shape]):
 
         # Randomly crop a [height, width] section of the image.
-        image = tf.random_crop(image, crop_shape)
+        image = tf.random_crop(image, crop_shape[0], crop_shape[1])
 
         # Randomly flip the image horizontally.
         image = tf.image.random_flip_left_right(image)
@@ -55,7 +55,8 @@ def distort_image_for_eval(record):
     with tf.name_scope('distort_image_for_eval', values=[image, crop_shape]):
 
         # Crop the central [new_height, new_width] of the image.
-        image = tf.image.resize_image_with_crop_or_pad(image, crop_shape)
+        image = tf.image.resize_image_with_crop_or_pad(
+            image, crop_shape[0], crop_shape[1])
 
         image = tf.image.per_image_standardization(image)
 

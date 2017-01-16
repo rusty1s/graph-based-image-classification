@@ -47,13 +47,18 @@ def save_images(dataset, eval_data):
     iterate = iterator(dataset, eval_data, batch_size=1)
 
     def _before(image_batch, label_batch):
+        # Remove the first dimension, because we only consider batch sizes of
+        # one.
+        image = tf.squeeze(image_batch, squeeze_dims=[0])
+        label = tf.squeeze(label_batch, squeeze_dims=[0])
+
         # Cast image to uint8, so we can save it easily.
-        return [tf.cast(image_batch, tf.uint8), label_batch]
+        return [tf.cast(image, tf.uint8), label]
 
     def _each(output, index, last_index):
-        # Get the image and the  label name from the output of the session.
-        image = output[0][0]
-        label_name = dataset.label_name(output[1][0])
+        # Get the image and the label name from the output of the session.
+        image = output[0]
+        label_name = dataset.label_name(output[1])
 
         # Save the image in the label named subdirectory and name it
         # incrementally.
