@@ -28,7 +28,7 @@ def test_non_initialised_superpixel():
     assert_true(superpixel.absolute_center, (0, 0))
     assert_true(superpixel.rounded_absolute_center, (0, 0))
     assert_equals(superpixel.relative_center_in_bounding_box, (0, 0))
-    assert_equal(superpixel.mean, (0.0, 0.0, 0.0))
+    assert_equal(superpixel.mean, [0.0, 0.0, 0.0])
 
 
 def test_initialised_superpixel():
@@ -64,4 +64,4 @@ def test_initialised_superpixel():
     assert_equals(superpixel.absolute_center, (10.75, 20.25))
     assert_equals(superpixel.rounded_absolute_center, (11, 20))
     assert_equals(superpixel.relative_center_in_bounding_box, (0.75/3, 0.25/2))
-    assert_equals(superpixel.mean, (37.5, 52.5, 67.5))
+    assert_equals(superpixel.mean, [67.5, 52.5, 37.5])

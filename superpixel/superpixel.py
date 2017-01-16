@@ -26,7 +26,7 @@ class Superpixel(object):
         # The set of spatial neighbors of the superpixel saved by their id.
         self.neighbors = set() if neighbors is None else neighbors
 
-        # The sliced image of the superpixel in the shape of its bounding box.
+        # The cropped image of the superpixel in the shape of its bounding box.
         self.image = image
 
         # The mask of the superpixel with the shape of its bounding box. A `0`
@@ -34,16 +34,16 @@ class Superpixel(object):
         self.mask = mask
 
     @property
-    def width(self):
-        """The width of the bounding box of the superpixel."""
-
-        return self.mask.shape[1]
-
-    @property
     def height(self):
         """The height of the bounding box of the superpixel."""
 
         return self.mask.shape[0]
+
+    @property
+    def width(self):
+        """The width of the bounding box of the superpixel."""
+
+        return self.mask.shape[1]
 
     @property
     def count(self):
@@ -97,4 +97,6 @@ class Superpixel(object):
         """The mean color of the superpixel."""
 
         # Calculate mean color and remove the alpha channel.
-        return cv2.mean(self.image, self.mask)[:-1]
+        mean = cv2.mean(self.image, self.mask)[:-1]
+
+        return [mean[2], mean[1], mean[0]]

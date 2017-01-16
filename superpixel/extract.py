@@ -3,21 +3,21 @@ import numpy as np
 from .superpixel import Superpixel
 
 
-def extract(image, superpixel_representation):
+def extract(image, segmentation):
     """Returns an array of all the superpixels found in scan-line order of the
     superpixel representation with the superpixel values as identifiers."""
 
-    height, width = superpixel_representation.shape
+    height, width = segmentation.shape
 
     # Create the working dictionary of none initialized superpixels (except
     # their identifier and false bounding box coordinates).
-    values = np.unique(superpixel_representation)
+    values = np.unique(segmentation)
     superpixels = {
         i: Superpixel(id=i, left=float('inf'), top=float('inf'))
         for i in values
     }
 
-    bounding = {
+    bb = {
         i: {
             'right': float('-inf'),
             'bottom': float('-inf'),
@@ -30,7 +30,7 @@ def extract(image, superpixel_representation):
 
     # Iterate over each pixel once and collect as much information about
     # the individual superpixels as we can.
-    for y, row in enumerate(superpixel_representation):
+    for y, row in enumerate(segmentation):
         for x, value in enumerate(row):
             s = superpixels[value]
 
@@ -44,14 +44,14 @@ def extract(image, superpixel_representation):
             s.left = min(s.left, x)
             s.top = min(s.top, y)
 
-            current_bounding = bounding[value]
-            current_bounding['right'] = max(current_bounding['right'], x)
-            current_bounding['bottom'] = max(current_bounding['bottom'], y)
+            current_bb = bb[value]
+            current_bb['right'] = max(current_bb['right'], x)
+            current_bb['bottom'] = max(current_bb['bottom'], y)
 
             # Calculate and update neighbors.
             slice_x = __get_1x1_slice(x, width)
             slice_y = __get_1x1_slice(y, height)
-            slice_1x1 = superpixel_representation[slice_y, slice_x]
+            slice_1x1 = segmentation[slice_y, slice_x]
             s.neighbors.update(slice_1x1.flatten())
 
     # Iterate over each superpixel and collect additional information.
@@ -60,14 +60,14 @@ def extract(image, superpixel_representation):
         s.neighbors.discard(s.id)
 
         # Slice the image to the bounding box.
-        current_bounding = bounding[s.id]
-        slice_x = slice(s.left, current_bounding['right'] + 1)
-        slice_y = slice(s.top, current_bounding['bottom'] + 1)
+        current_bb = bb[s.id]
+        slice_x = slice(s.left, current_bb['right'] + 1)
+        slice_y = slice(s.top, current_bb['bottom'] + 1)
 
         s.image = image[slice_y, slice_x]
 
         # Compute the mask.
-        s.mask = __compute_mask(superpixel_representation[slice_y, slice_x],
+        s.mask = __compute_mask(segmentation[slice_y, slice_x],
                                 s.id)
 
     # Return the dictionary values as a list. Sort them ascending by the

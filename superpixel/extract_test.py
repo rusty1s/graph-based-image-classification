@@ -12,7 +12,7 @@ image = np.array([
         [120, 130, 140, 150],
     ])
 
-superpixel_representation = np.array([
+segmentation = np.array([
         [1, 1, 2, 1],
         [1, 1, 1, 1],
         [3, 3, 3, 1],
@@ -21,13 +21,13 @@ superpixel_representation = np.array([
 
 
 def test_extract():
-    superpixels = extract(image, superpixel_representation)
+    superpixels = extract(image, segmentation)
 
     assert_equals(len(superpixels), 4)
 
 
 def test_superpixel_1():
-    superpixel = extract(image, superpixel_representation)[0]
+    superpixel = extract(image, segmentation)[0]
 
     assert_equals(superpixel.id, 1)
     assert_equals(superpixel.order, 0)
@@ -52,13 +52,13 @@ def test_superpixel_1():
     assert_equals(superpixel.rounded_absolute_center, (2, 1))
     assert_equals(superpixel.relative_center_in_bounding_box,
                   (1.625/4, 0.75/3))
-    assert_equals(superpixel.mean, (46.25, 0.0, 0.0))
+    assert_equals(superpixel.mean, [0.0, 0.0, 46.25])
 
     assert_equals(superpixel.neighbors, set([2, 3, 4]))
 
 
 def test_superpixel_2():
-    superpixel = extract(image, superpixel_representation)[1]
+    superpixel = extract(image, segmentation)[1]
 
     assert_equals(superpixel.id, 2)
     assert_equals(superpixel.order, 1)
@@ -80,13 +80,13 @@ def test_superpixel_2():
     assert_equals(superpixel.absolute_center, (2, 0))
     assert_equals(superpixel.rounded_absolute_center, (2, 0))
     assert_equals(superpixel.relative_center_in_bounding_box, (0, 0))
-    assert_equals(superpixel.mean, (20.0, 0.0, 0.0))
+    assert_equals(superpixel.mean, [0.0, 0.0, 20.0])
 
     assert_equals(superpixel.neighbors, set([1]))
 
 
 def test_superpixel_3():
-    superpixel = extract(image, superpixel_representation)[2]
+    superpixel = extract(image, segmentation)[2]
 
     assert_equals(superpixel.id, 3)
     assert_equals(superpixel.order, 2)
@@ -109,13 +109,13 @@ def test_superpixel_3():
     assert_equals(superpixel.absolute_center, (0.75, 2.25))
     assert_equals(superpixel.rounded_absolute_center, (1, 2))
     assert_equals(superpixel.relative_center_in_bounding_box, (0.75/3, 0.25/2))
-    assert_equals(superpixel.mean, (97.5, 0.0, 0.0))
+    assert_equals(superpixel.mean, [0.0, 0.0, 97.5])
 
     assert_equals(superpixel.neighbors, set([1, 4]))
 
 
 def test_superpixel_4():
-    superpixel = extract(image, superpixel_representation)[3]
+    superpixel = extract(image, segmentation)[3]
 
     assert_equals(superpixel.id, 4)
     assert_equals(superpixel.order, 3)
@@ -137,6 +137,6 @@ def test_superpixel_4():
     assert_equals(superpixel.absolute_center, (2, 3))
     assert_equals(superpixel.rounded_absolute_center, (2, 3))
     assert_equals(superpixel.relative_center_in_bounding_box, (1.0/3, 0))
-    assert_equals(superpixel.mean, (140.0, 0.0, 0.0))
+    assert_equals(superpixel.mean, [0.0, 0.0, 140.0])
 
     assert_equals(superpixel.neighbors, set([1, 3]))
