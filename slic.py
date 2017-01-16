@@ -3,12 +3,13 @@ import sys
 
 import tensorflow as tf
 from skimage.io import imsave
+from skimage.segmentation import mark_boundaries
+from skimage.future import graph
 
 
 from data import datasets
 from data import iterator
 from superpixel.algorithm import slic_generators
-from superpixel import extract
 
 
 FLAGS = tf.app.flags.FLAGS
@@ -19,7 +20,7 @@ tf.app.flags.DEFINE_string('data_dir', None,
                            """Path to the data directory.""")
 tf.app.flags.DEFINE_string('algorithm', 'slic',
                            """The slic superpixel algorithm.""")
-tf.app.flags.DEFINE_integer('num_superpixels', 100,
+tf.app.flags.DEFINE_integer('num_superpixels', 400,
                             """The number of superpixels.""")
 tf.app.flags.DEFINE_float('compactness', 1.0,
                           """Balances color proximity and space proximity.
@@ -30,10 +31,8 @@ tf.app.flags.DEFINE_integer('max_iterations', 10,
 tf.app.flags.DEFINE_float('sigma', 0.0,
                           """Width of gaussian smoothing kernel for pre-
                           processing.""")
-
-
-def to_superpixel_image(image, segmentation):
-    return image
+tf.app.flags.DEFINE_boolean('draw_graph', False,
+                            """Draws an additional region adjacency graphs.""")
 
 
 def save_superpixel_images(dataset, algorithm, eval_data):
@@ -57,17 +56,24 @@ def save_superpixel_images(dataset, algorithm, eval_data):
         # one.
         image = tf.squeeze(image_batch, squeeze_dims=[0])
         label = tf.squeeze(label_batch, squeeze_dims=[0])
-
         segmentation = algorithm(image)
-        image = to_superpixel_image(image, segmentation)
 
         # Cast image to uint8, so we can save it easily.
-        return [tf.cast(image, tf.uint8), label]
+        return [tf.cast(image, tf.uint8), segmentation, label]
 
     def _each(output, index, last_index):
         # Get the image and the label name from the output of the session.
         image = output[0]
-        label_name = dataset.label_name(output[1])
+        segmentation = output[1]
+        label_name = dataset.label_name(output[2])
+
+        # Draw boundaries.
+        output_image = mark_boundaries(image, segmentation, (0, 0, 0))
+
+        # Draw region adjacency graph.
+        if FLAGS.draw_graph:
+            rag = graph.rag_mean_color(image, segmentation)
+            output_image = graph.draw_rag(segmentation, rag, output_image)
 
         # Save the image in the label named subdirectory and name it
         # incrementally.
@@ -75,7 +81,7 @@ def save_superpixel_images(dataset, algorithm, eval_data):
         image_name = '{}.png'.format(image_names[label_name])
         image_path = os.path.join(images_dir, label_name, image_name)
 
-        imsave(image_path, image)
+        imsave(image_path, output_image)
 
         sys.stdout.write(
             '\r>> Saving images to {} {:.1f}%'

@@ -1,6 +1,6 @@
 {
   "batch_size": 128,
-  "last_step": 2000,
+  "last_step": 20000,
   "structure": {
     "conv": [
       {
