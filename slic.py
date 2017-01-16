@@ -1,5 +1,6 @@
 import os
 import sys
+import warnings
 
 import tensorflow as tf
 from skimage.io import imsave
@@ -81,7 +82,9 @@ def save_superpixel_images(dataset, algorithm, eval_data):
         image_name = '{}.png'.format(image_names[label_name])
         image_path = os.path.join(images_dir, label_name, image_name)
 
-        imsave(image_path, output_image)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            imsave(image_path, output_image)
 
         sys.stdout.write(
             '\r>> Saving images to {} {:.1f}%'
