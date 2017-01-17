@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .mean_color import mean_color_adjacency
+from .adjacency import mean_color_adjacency
 
 
 class MeanColorAdjacencyTest(tf.test.TestCase):
