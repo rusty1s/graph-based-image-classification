@@ -15,9 +15,8 @@ def _slic(image, num_superpixels=NUM_SUPERPIXELS, compactness=COMPACTNESS,
     image = tf.cast(image, tf.uint8)
 
     def _slic_image(image):
-        segmentation = skimage_slic(
-            image, n_segments=num_superpixels, compactness=compactness,
-            max_iter=max_iterations, sigma=sigma, slic_zero=slic_zero)
+        segmentation = skimage_slic(image, num_superpixels, compactness,
+                                    max_iterations, sigma, slic_zero=slic_zero)
 
         # py_func expects a float as out type.
         return segmentation.astype(np.float32)
