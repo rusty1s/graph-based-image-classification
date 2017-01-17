@@ -11,7 +11,8 @@ from data import iterator
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string('dataset', 'cifar_10',
-                           """The dataset.""")
+                           """The dataset. See dataset/__init__.py for a list
+                           of all available datasets.""")
 tf.app.flags.DEFINE_string('data_dir', None,
                            """Path to the data directory.""")
 

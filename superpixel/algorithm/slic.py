@@ -3,13 +3,16 @@ import numpy as np
 from skimage.segmentation import slic as skimage_slic
 
 
-COMPACTNESS = 1.0
+NUM_SUPERPIXELS = 400
+COMPACTNESS = 30.0
 MAX_ITERATIONS = 10
 SIGMA = 0.0
 
 
-def _slic(image, slic_zero, num_superpixels, compactness=COMPACTNESS,
-          max_iterations=MAX_ITERATIONS, sigma=SIGMA):
+def _slic(image, num_superpixels=NUM_SUPERPIXELS, compactness=COMPACTNESS,
+          max_iterations=MAX_ITERATIONS, sigma=SIGMA, slic_zero=False):
+
+    image = tf.cast(image, tf.uint8)
 
     def _slic_image(image):
         segmentation = skimage_slic(
@@ -19,25 +22,27 @@ def _slic(image, slic_zero, num_superpixels, compactness=COMPACTNESS,
         # py_func expects a float as out type.
         return segmentation.astype(np.float32)
 
-    image = tf.cast(image, tf.uint8)
     segmentation = tf.py_func(_slic_image, [image], tf.float32, stateful=False,
                               name='slico' if slic_zero else 'slic')
+
     return tf.cast(segmentation, tf.int32)
 
 
-def slic(image, num_superpixels, compactness=COMPACTNESS,
+def slic(image, num_superpixels=NUM_SUPERPIXELS, compactness=COMPACTNESS,
          max_iterations=MAX_ITERATIONS, sigma=SIGMA):
-    return _slic(
-        image, False, num_superpixels, compactness, max_iterations, sigma)
+
+    return _slic(image, num_superpixels, compactness, max_iterations, sigma,
+                 slic_zero=False)
 
 
-def slico(image, num_superpixels, compactness=COMPACTNESS,
+def slico(image, num_superpixels=NUM_SUPERPIXELS, compactness=COMPACTNESS,
           max_iterations=MAX_ITERATIONS, sigma=SIGMA):
-    return _slic(
-        image, True, num_superpixels, compactness, max_iterations, sigma)
+
+    return _slic(image, num_superpixels, compactness, max_iterations, sigma,
+                 slic_zero=True)
 
 
-def slic_generator(num_superpixels, compactness=COMPACTNESS,
+def slic_generator(num_superpixels=NUM_SUPERPIXELS, compactness=COMPACTNESS,
                    max_iterations=MAX_ITERATIONS, sigma=SIGMA):
 
     def _generator(image):
@@ -46,7 +51,7 @@ def slic_generator(num_superpixels, compactness=COMPACTNESS,
     return _generator
 
 
-def slico_generator(num_superpixels, compactness=COMPACTNESS,
+def slico_generator(num_superpixels=NUM_SUPERPIXELS, compactness=COMPACTNESS,
                     max_iterations=MAX_ITERATIONS, sigma=SIGMA):
 
     def _generator(image):

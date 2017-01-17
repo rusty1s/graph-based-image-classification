@@ -10,33 +10,35 @@ from skimage.future import graph
 
 from data import datasets
 from data import iterator
-from superpixel.algorithm import slic_generators
+from superpixel.algorithm import generators
 
 
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string('dataset', 'cifar_10',
-                           """The dataset.""")
+                           """The dataset. See dataset/__init__.py for a list
+                           of all available datasets.""")
 tf.app.flags.DEFINE_string('data_dir', None,
                            """Path to the data directory.""")
 tf.app.flags.DEFINE_string('algorithm', 'slic',
-                           """The slic superpixel algorithm.""")
-tf.app.flags.DEFINE_integer('num_superpixels', 400,
-                            """The number of superpixels.""")
-tf.app.flags.DEFINE_float('compactness', 1.0,
-                          """Balances color proximity and space proximity.
-                          A higher value gives more weight to space proximity
-                          making superpixel shapes more square/cubic.""")
-tf.app.flags.DEFINE_integer('max_iterations', 10,
-                            """Maximum number of iterations of k-means.""")
-tf.app.flags.DEFINE_float('sigma', 0.0,
-                          """Width of gaussian smoothing kernel for pre-
-                          processing.""")
+                           """The superpixel algorithm. See
+                           superpixel/algorithm/__init__.py for a list of all
+                           available superpixel algorithms.""")
 tf.app.flags.DEFINE_boolean('draw_graph', False,
                             """Draws an additional region adjacency graphs.""")
 
 
 def save_superpixel_images(dataset, algorithm, eval_data):
+    """Saves images with computed superpixel boundaries for either training or
+    evaluation to an images directory into the datasets data directory.
+
+    Args:
+        dataset: The dataset.
+        algorithm: The superpixel algorithm.
+        eval_data: Boolean indicating if one should use the train or eval data
+          set.
+    """
+
     dirname = 'eval' if eval_data else 'train'
     images_dir = os.path.join(dataset.data_dir, FLAGS.algorithm, dirname)
 
@@ -82,6 +84,7 @@ def save_superpixel_images(dataset, algorithm, eval_data):
         image_name = '{}.png'.format(image_names[label_name])
         image_path = os.path.join(images_dir, label_name, image_name)
 
+        # Disable precision lose warning when saving.
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             imsave(image_path, output_image)
@@ -105,8 +108,8 @@ def main(argv=None):
     if FLAGS.dataset not in datasets:
         raise ValueError('{} is no valid dataset.'.format(FLAGS.dataset))
 
-    if FLAGS.algorithm not in slic_generators:
-        raise ValueError('{} is no valid slic superpixel algorithm.'
+    if FLAGS.algorithm not in generators:
+        raise ValueError('{} is no valid superpixel algorithm.'
                          .format(FLAGS.algorithm))
 
     if FLAGS.data_dir:
@@ -114,11 +117,7 @@ def main(argv=None):
     else:
         dataset = datasets[FLAGS.dataset]()
 
-    algorithm = slic_generators[FLAGS.algorithm](
-        FLAGS.num_superpixels,
-        FLAGS.compactness,
-        FLAGS.max_iterations,
-        FLAGS.sigma)
+    algorithm = generators[FLAGS.algorithm]()
 
     # Save images for training and evaluation.
     save_superpixel_images(dataset, algorithm, eval_data=False)
