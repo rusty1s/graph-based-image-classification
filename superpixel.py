@@ -3,9 +3,12 @@ import sys
 import warnings
 
 import tensorflow as tf
+import numpy as np
 from skimage.io import imsave
 from skimage.segmentation import mark_boundaries
 from skimage.future import graph
+from skimage.measure import regionprops
+from skimage import draw
 
 
 from data import datasets
@@ -52,7 +55,7 @@ def save_superpixel_images(dataset, algorithm, eval_data):
 
     image_names = {label: 0 for label in dataset.labels}
 
-    iterate = iterator(dataset, eval_data=False, batch_size=1)
+    iterate = iterator(dataset, eval_data, batch_size=1)
 
     def _before(image_batch, label_batch):
         # Remove the first dimension, because we only consider batch sizes of
@@ -76,7 +79,34 @@ def save_superpixel_images(dataset, algorithm, eval_data):
         # Draw region adjacency graph.
         if FLAGS.draw_graph:
             rag = graph.rag_mean_color(image, segmentation)
-            output_image = graph.draw_rag(segmentation, rag, output_image)
+
+            # Offset is 1 so that regionprops does not ignore 0.
+            offset = 1
+            map_array = np.arange(segmentation.max() + 1)
+            for n, d in rag.nodes_iter(data=True):
+                for label in d['labels']:
+                    map_array[label] = offset
+                offset += 1
+
+            rag_labels = map_array[segmentation]
+            regions = regionprops(rag_labels)
+
+            # Save the centroids in the node properties.
+            for (n, data), region in zip(rag.nodes_iter(data=True), regions):
+                data['centroid'] = region['centroid']
+
+            # Iterate over all edges and draw them.
+            for n1, n2, data in rag.edges_iter(data=True):
+                y1, x1 = map(int, rag.node[n1]['centroid'])
+                y2, x2 = map(int, rag.node[n2]['centroid'])
+                line = draw.line(y1, x1, y2, x2)
+                output_image[line] = [0, 1, 0]
+
+                y1 = image.shape[0] - 2 if y1 >= image.shape[0] - 1 else y1
+                x1 = image.shape[1] - 2 if x1 >= image.shape[1] - 1 else x1
+
+                circle = draw.circle(y1, x1, 2)
+                output_image[circle] = [1, 1, 0]
 
         # Save the image in the label named subdirectory and name it
         # incrementally.
