@@ -104,6 +104,8 @@ def save_superpixel_images(dataset, algorithm, eval_data):
 
                 y1 = image.shape[0] - 2 if y1 >= image.shape[0] - 1 else y1
                 x1 = image.shape[1] - 2 if x1 >= image.shape[1] - 1 else x1
+                y1 = 1 if y1 < 1 else y1
+                x1 = 1 if x1 < 1 else x1
 
                 circle = draw.circle(y1, x1, 2)
                 output_image[circle] = [1, 1, 0]
