@@ -16,28 +16,28 @@ def crop_shape_from_box(image, shape, box):
         A cropped image.
     """
 
-    bb_top = box[0]
-    bb_height = box[2] - bb_top
-    bb_left = box[3]
-    bb_width = box[1] - bb_left
-    bb_center_y = bb_top + bb_height // 2
-    bb_center_x = bb_left + bb_width // 2
+    bbox_top = box[0]
+    bbox_height = box[2] - bbox_top
+    bbox_left = box[3]
+    bbox_width = box[1] - bbox_left
+    bbox_center_y = bbox_top + bbox_height // 2
+    bbox_center_x = bbox_left + bbox_width // 2
 
-    if shape[0] < bb_height or shape[1] < bb_width:
+    if shape[0] < bbox_height or shape[1] < bbox_width:
         # We have a bounding box that is on at least one side greater than the
         # requested image shape. We need to crop the image, so that the
         # complete bounding box of the image is visible after cropping.
 
         # Find the side with the greater ratio between bounding size and shape
         # size.
-        ratio_y = bb_height / shape[0]
-        ratio_x = bb_width / shape[1]
+        ratio_y = bbox_height / shape[0]
+        ratio_x = bbox_width / shape[1]
 
         if ratio_y < ratio_x:
-            width = bb_width
+            width = bbox_width
             height = min(image.shape[0], int(ratio_x * shape[0]))
         else:
-            height = bb_height
+            height = bbox_height
             width = min(image.shape[1], int(ratio_y * shape[1]))
 
     else:
@@ -47,8 +47,8 @@ def crop_shape_from_box(image, shape, box):
         width = shape[1]
 
     # Crop the image based on the center of the bounding box.
-    crop_top = max(bb_center_y - height // 2, 0)
-    crop_left = max(bb_center_x - width // 2, 0)
+    crop_top = max(bbox_center_y - height // 2, 0)
+    crop_left = max(bbox_center_x - width // 2, 0)
 
     # We need to adjust the variables if the object is too far at the right
     # or the bottom of the image, so that we can get the maximal cropping

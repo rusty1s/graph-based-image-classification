@@ -6,29 +6,6 @@ from skimage.measure import regionprops
 # NACHLESEN:
 # Equivalent diameter WAS IST DAS?
 # Euler number BRAUCHE ICH NICHT DA KEINE LOECHER???
-# moments
-# moments_central
-# moments_hu
-# moments_normalized
-# orientation
-# perimeter
-# weighted_local_centroid
-# weighted_moments
-# weighted_moments_central
-# weighted_moments_hu
-# weighted_moments_normalized
-# filled_area (unwichtig, da keine Loecher)
-
-# fliegt raus:
-# convex_image
-# bbox
-# centroid
-# coords
-# filled_image
-# image
-# label
-# intensity_image
-# weighted_centroid
 
 
 def segmentation_features(segmentation):
@@ -48,6 +25,11 @@ def segmentation_features(segmentation):
             print('major_axis_length', prop['major_axis_length'])
             print('minor_axis_length', prop['minor_axis_length'])
             print('solidity', prop['solidity'])
+            print('filled_area', prop['filled_area'])
+            print('perimeter', prop['perimeter'])
+
+            # print('moments', prop['moments']) liefert M00 bis M33
+            # print('central moments', prop['moments_central'])
 
         return np.zeros((0, 0), dtype=np.float32)
         # return tf.zeros([2, 2], dtype=tf.float32)
