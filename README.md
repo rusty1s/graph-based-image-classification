@@ -84,6 +84,8 @@ Run the test suite:
 * `superpixel.algorithm`: Superpixel algorithms.
 * `superpixel`: Extracts superpixel features and spatial neighborhood
   information based on a given superpixel segmentation.
+* `networks`: Contains all network structures that were used for training and
+  evaluation.
 
 [build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
 [build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
