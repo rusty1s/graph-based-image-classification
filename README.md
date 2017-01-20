@@ -73,6 +73,18 @@ Run the test suite:
 ./bin/test.sh
 ```
 
+## Package structure
+
+* `bin`: Shell scripts to test and install.
+* `ci`: TravisCI install script.
+* `data`: Contains the datasets and helper methods to access and write
+  datasets.
+* `model`: Wrapper for learning CNNs based on a simple JSON network structure
+  file.
+* `superpixel.algorithm`: Superpixel algorithms.
+* `superpixel`: Extracts superpixel features and spatial neighborhood
+  information based on a given superpixel segmentation.
+
 [build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
 [build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
 [coverage-image]: https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg
