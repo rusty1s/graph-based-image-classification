@@ -9,10 +9,10 @@ from skimage.io import imread
 
 from .dataset import DataSet
 from .helper.download import maybe_download_and_extract
-from .helper.tfrecord import (read_tfrecord, write_to_tfrecord)
+from .helper.tfrecord import read_tfrecord, write_to_tfrecord
 from .helper.transform_image import crop_shape_from_box
-from .helper.distort_image import (distort_image_for_train,
-                                   distort_image_for_eval)
+from .helper.distort_image import distort_image_for_train,\
+                                  distort_image_for_eval
 
 
 DATA_URL = 'http://host.robots.ox.ac.uk/pascal/VOC/voc2012/'\

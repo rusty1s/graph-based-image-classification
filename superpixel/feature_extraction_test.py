@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .features import features
+from .feature_extraction import feature_extraction
 
 
 class FeaturesTest(tf.test.TestCase):
@@ -21,4 +21,4 @@ class FeaturesTest(tf.test.TestCase):
         ], dtype=tf.int32)
 
         with self.test_session() as sess:
-            print(features(segmentation, image).eval())
+            print(feature_extraction(segmentation, image).eval())

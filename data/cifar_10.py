@@ -5,8 +5,8 @@ import tensorflow as tf
 from .dataset import DataSet
 from .helper.record import Record
 from .helper.download import maybe_download_and_extract
-from .helper.distort_image import (distort_image_for_train,
-                                   distort_image_for_eval)
+from .helper.distort_image import distort_image_for_train,\
+                                  distort_image_for_eval
 
 
 DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
