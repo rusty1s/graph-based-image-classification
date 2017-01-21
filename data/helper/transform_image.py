@@ -10,7 +10,7 @@ def crop_shape_from_box(image, shape, box):
     Args:
         image: A numpy array.
         shape: A [height, width] shape.
-        box: A [top, right, bottom, left] defined box.
+        box: A [top, left, bottom, right] defined box.
 
     Returns:
         A cropped image.
@@ -18,8 +18,8 @@ def crop_shape_from_box(image, shape, box):
 
     bbox_top = box[0]
     bbox_height = box[2] - bbox_top
-    bbox_left = box[3]
-    bbox_width = box[1] - bbox_left
+    bbox_left = box[1]
+    bbox_width = box[3] - bbox_left
     bbox_center_y = bbox_top + bbox_height // 2
     bbox_center_x = bbox_left + bbox_width // 2
 

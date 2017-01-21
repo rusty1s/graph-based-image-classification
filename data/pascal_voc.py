@@ -262,7 +262,7 @@ class PascalVOC(DataSet):
 
             # Finally crop it.
             cropped_image = crop_shape_from_box(
-                image, [HEIGHT, WIDTH], [bb_top, bb_right, bb_bottom, bb_left])
+                image, [HEIGHT, WIDTH], [bb_top, bb_left, bb_bottom, bb_right])
 
             # Extract the label index from the annotation.
             label_name = _text_of_first_tag(obj, 'name')
