@@ -10,7 +10,7 @@ NUM_THREADS = 16
 
 
 def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
-           standardization=False, num_epochs=None, shuffle=False):
+           scale_inputs=False, num_epochs=None, shuffle=False):
     """Constructs inputs from a dataset.
 
     Args:
@@ -19,7 +19,7 @@ def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
           set.
         batch_size: Number of data per batch (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
-        standardization: Boolean indicating if one should linearly scales the
+        scale_inputs: Boolean indicating if one should linearly scales the
           records data to have zero mean and unit norm (optional).
         num_epochs: Number indicating the maximal number of epoch iterations
           before raising an OutOfRange error (optional).
@@ -57,8 +57,8 @@ def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
 
     # Distort the data.
     if distort_inputs:
-        record = distort(record, standardization)
-    elif standardization:
+        record = distort(record, scale_inputs)
+    elif scale_inputs:
         data = tf.per_image_standardization(record.data)
         record = Record(data, record.shape, record.label)
 

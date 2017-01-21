@@ -36,7 +36,7 @@ def cal_loss(logits, labels):
     return tf.add_n(tf.get_collection('losses'), name='total_loss')
 
 
-def cal_acc(logits, labels):
+def cal_accuracy(logits, labels):
     corr_prediction = tf.equal(tf.argmax(logits, 1), labels)
     accuracy = tf.reduce_mean(tf.cast(corr_prediction, tf.float32))
 

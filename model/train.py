@@ -4,7 +4,7 @@ import tensorflow as tf
 
 from data import inputs
 from .inference import inference
-from .model import train_step, cal_loss, cal_acc
+from .model import train_step, cal_loss, cal_accuracy
 from .hooks import hooks
 
 
@@ -16,7 +16,7 @@ EPSILON = 1.0
 BETA_1 = 0.9
 BETA_2 = 0.999
 DISTORT_INPUTS = True
-STANDARDIZATION = True
+SCALE_INPUTS = True
 DISPLAY_STEP = 10
 SAVE_CHECKPOINT_SECS = 30
 SAVE_SUMMARIES_STEPS = 100
@@ -25,7 +25,7 @@ SAVE_SUMMARIES_STEPS = 100
 def train(dataset, structure, train_dir=TRAIN_DIR, batch_size=BATCH_SIZE,
           last_step=LAST_STEP,  learning_rate=LEARNING_RATE, epsilon=EPSILON,
           beta1=BETA_1, beta2=BETA_2, distort_inputs=DISTORT_INPUTS,
-          standardization=STANDARDIZATION, display_step=DISPLAY_STEP,
+          scale_inputs=SCALE_INPUTS, display_step=DISPLAY_STEP,
           save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
           save_summaries_steps=SAVE_SUMMARIES_STEPS):
 
@@ -37,11 +37,11 @@ def train(dataset, structure, train_dir=TRAIN_DIR, batch_size=BATCH_SIZE,
         global_step = tf.contrib.framework.get_or_create_global_step()
 
         data, labels = inputs(dataset, batch_size, distort_inputs,
-                              standardization, shuffle=True)
+                              scale_inputs, shuffle=True)
 
         logits = inference(data, structure)
         loss = cal_loss(logits, labels)
-        acc = cal_acc(logits, labels)
+        acc = cal_accuracy(logits, labels)
 
         train_op = train_step(
             loss, global_step, learning_rate, beta1, beta2, epsilon)
@@ -72,8 +72,7 @@ def json_train(dataset, json):
         json['beta1'] if 'beta1' in json else BETA_1,
         json['beta2'] if 'beta2' in json else BETA_2,
         json['distort_inputs'] if 'distort_inputs' in json else DISTORT_INPUTS,
-        json['standardization'] if 'standardization' in json
-        else STANDARDIZATION,
+        json['scale_inputs'] if 'scale_inputs' in json else SCALE_INPUTS,
         json['display_step'] if 'display_step' in json else DISPLAY_STEP,
         json['save_checkpoint_secs'] if 'save_checkpoint_secs' in json
         else SAVE_CHECKPOINT_SECS,

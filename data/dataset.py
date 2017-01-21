@@ -168,51 +168,50 @@ class DataSet():
 
         pass
 
-    def distort_for_train(self, record, standardization):
+    def distort_for_train(self, record, scale):
         """Applies random distortions for training to a record.
 
         Args:
             record: The record before applying distortions.
-            standardization: Boolean indicating if one should linearly scales
-              the records data to have zero mean and unit norm.
+            scale: Boolean indicating if one should linearly scales the
+              records data to have zero mean and unit norm.
 
         Returns:
             A new record object of the passed record after applying
             distortions.
         """
 
-        return _distort(record, standardization)
+        return _distort(record, scale)
 
-    def distort_for_eval(self, record, standardization):
+    def distort_for_eval(self, record, scale):
         """Applies distortions for evaluation to a record.
 
         Args:
             record: The record before applying distortions.
-            standardization: Boolean indicating if one should linearly scales
-              the records data to have zero mean and unit norm.
+            scale: Boolean indicating if one should linearly scales the
+              records data to have zero mean and unit norm.
 
         Returns:
             A new record object of the passed record after applying
             distortions.
         """
 
-        return _distort(record, standardization)
+        return _distort(record, scale)
 
 
-def _distort(record, standardization):
+def _distort(record, scale):
     """Lineary scales the records data to have zero mean and unit norm.
 
     Args:
         record: The record before applying distortions.
-        standardization: Boolean indicating if one should apply
-          standardization.
+        scale: Boolean indicating if one should apply standardization.
 
     Returns:
         A new record object of the passed record after applying
         distortions.
     """
 
-    if standardization:
+    if scale:
         data = tf.image.per_image_standardization(record.data)
         return Record(data, record.shape, record.label)
     else:

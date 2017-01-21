@@ -19,11 +19,11 @@ class SlicGrid(DataSet):
 
         iterate_train = iterator(
             dataset, eval_data=False, batch_size=1, distort_inputs=True,
-            standardization=False, num_epochs=max_num_epochs, shuffle=True)
+            scale_inputs=False, num_epochs=max_num_epochs, shuffle=True)
 
         iterate_eval = iterator(
             dataset, eval_data=True, batch_size=1, distort_inputs=True,
-            standardization=False, num_epochs=1, shuffle=False)
+            scale_inputs=False, num_epochs=1, shuffle=False)
 
         def _before(image_batch, label_batch):
             # Remove the first dimension, because we only consider batch sizes

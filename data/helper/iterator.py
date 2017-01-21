@@ -7,7 +7,7 @@ BATCH_SIZE = 128
 
 
 def iterator(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
-             standardization=False, num_epochs=1, shuffle=False):
+             scale_inputs=False, num_epochs=1, shuffle=False):
 
     """Returns a function which iterates over a dataset in batches.
 
@@ -17,7 +17,7 @@ def iterator(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
           set.
         batch_size: Number of data per batch (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
-        standardization: Boolean indicating if one should linearly scales the
+        scale_inputs: Boolean indicating if one should linearly scales the
           records data to have zero mean and unit norm (optional).
         num_epochs: Number indicating the maximal number of epoch iterations
           (optional).
@@ -66,7 +66,7 @@ def iterator(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
             data_batch, label_batch = inputs(dataset, eval_data=eval_data,
                                              batch_size=batch_size,
                                              distort_inputs=distort_inputs,
-                                             standardization=standardization,
+                                             scale_inputs=scale_inputs,
                                              num_epochs=num_epochs,
                                              shuffle=shuffle)
 
