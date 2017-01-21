@@ -9,8 +9,8 @@ MAX_ITER = 10
 SIGMA = 0.0
 
 
-def slic(image, num_superpixels=None, compactness=None, max_iterations=None,
-         sigma=None):
+def slico(image, num_superpixels=None, compactness=None, max_iterations=None,
+          sigma=None):
 
     num_superpixels = NUM if num_superpixels is None else num_superpixels
     compactness = COMPACTNESS if compactness is None else compactness
@@ -19,30 +19,31 @@ def slic(image, num_superpixels=None, compactness=None, max_iterations=None,
 
     image = tf.cast(image, tf.uint8)
 
-    def _slic(image):
+    def _slico(image):
         segmentation = skimage_slic(image, num_superpixels, compactness,
-                                    max_iterations, sigma, slic_zero=False)
+                                    max_iterations, sigma, slic_zero=True)
 
         # py_func expects a float as out type.
         return segmentation.astype(np.float32)
 
     segmentation = tf.py_func(
-        _slic, [image], tf.float32, stateful=False, name='slic')
+        _slico, [image], tf.float32, stateful=False, name='slico')
 
     return tf.cast(segmentation, tf.int32)
 
 
-def slic_generator(num_superpixels=None, compactness=None, max_iterations=None,
-                   sigma=None):
+def slico_generator(num_superpixels=None, compactness=None,
+                    max_iterations=None, sigma=None):
 
     def _generator(image):
-        return slic(image, num_superpixels, compactness, max_iterations, sigma)
+        return slico(image, num_superpixels, compactness, max_iterations,
+                     sigma)
 
     return _generator
 
 
-def slic_json_generator(json):
-    return slic_generator(
+def slico_json_generator(json):
+    return slico_generator(
         json['num_superpixels'] if 'num_superpixels' in json else None,
         json['compactness'] if 'compactness' in json else None,
         json['max_iterations'] if 'max_iterations' in json else None,
