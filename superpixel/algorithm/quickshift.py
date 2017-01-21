@@ -27,7 +27,7 @@ def quickshift(image, ratio=None, kernel_size=None, max_distance=None,
         return segmentation.astype(np.float32)
 
     segmentation = tf.py_func(
-        _quickshift, [image], tf.float32, stateful=False, name='quickshift')
+        _quickshift, [image], tf.float32, stateful=True, name='quickshift')
 
     return tf.cast(segmentation, tf.int32)
 

@@ -1,11 +1,11 @@
 import tensorflow as tf
 
-from .slic import slic
+from .felzenszwalb import felzenszwalb
 
 
-class SlicTest(tf.test.TestCase):
+class FelzenszwalbTest(tf.test.TestCase):
 
-    def test_slic(self):
+    def test_felzenszwalb(self):
         image = tf.constant([
             [[255, 255, 255], [255, 255, 255], [0, 0, 0], [0, 0, 0]],
             [[255, 255, 255], [255, 255, 255], [0, 0, 0], [0, 0, 0]],
@@ -14,12 +14,12 @@ class SlicTest(tf.test.TestCase):
         ])
 
         expected = [
-            [0, 0, 1, 1],
-            [0, 0, 1, 1],
-            [2, 2, 3, 3],
-            [2, 2, 3, 3],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
         ]
 
         with self.test_session() as sess:
-            segmentation = slic(image, 4)
+            segmentation = felzenszwalb(image)
             self.assertAllEqual(segmentation.eval(), expected)

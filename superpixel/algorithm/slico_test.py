@@ -1,11 +1,11 @@
 import tensorflow as tf
 
-from .slic import slic
+from .slico import slico
 
 
-class SlicTest(tf.test.TestCase):
+class SlicoTest(tf.test.TestCase):
 
-    def test_slic(self):
+    def test_slico(self):
         image = tf.constant([
             [[255, 255, 255], [255, 255, 255], [0, 0, 0], [0, 0, 0]],
             [[255, 255, 255], [255, 255, 255], [0, 0, 0], [0, 0, 0]],
@@ -21,5 +21,5 @@ class SlicTest(tf.test.TestCase):
         ]
 
         with self.test_session() as sess:
-            segmentation = slic(image, 4)
+            segmentation = slico(image, 4)
             self.assertAllEqual(segmentation.eval(), expected)
