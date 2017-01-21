@@ -46,14 +46,18 @@ def train(dataset, structure, train_dir=TRAIN_DIR, batch_size=BATCH_SIZE,
         train_op = train_step(
             loss, global_step, learning_rate, beta1, beta2, epsilon)
 
-        with tf.train.MonitoredTrainingSession(
-                checkpoint_dir=train_dir,
-                save_checkpoint_secs=save_checkpoint_secs,
-                save_summaries_steps=save_summaries_steps,
-                hooks=hooks(display_step, last_step, batch_size, loss, acc)
-                ) as monitored_session:
-            while not monitored_session.should_stop():
-                monitored_session.run(train_op)
+        try:
+            with tf.train.MonitoredTrainingSession(
+                    checkpoint_dir=train_dir,
+                    save_checkpoint_secs=save_checkpoint_secs,
+                    save_summaries_steps=save_summaries_steps,
+                    hooks=hooks(display_step, last_step, batch_size, loss, acc)
+                    ) as monitored_session:
+                while not monitored_session.should_stop():
+                    monitored_session.run(train_op)
+
+        except KeyboardInterrupt:
+            pass
 
 
 def json_train(dataset, json):
