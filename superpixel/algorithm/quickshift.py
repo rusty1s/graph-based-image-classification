@@ -9,13 +9,8 @@ MAX_DISTANCE = 10
 SIGMA = 0
 
 
-def quickshift(image, ratio=None, kernel_size=None, max_distance=None,
-               sigma=None):
-
-    ratio = RATIO if ratio is None else ratio
-    kernel_size = KERNEL_SIZE if kernel_size is None else kernel_size
-    max_distance = MAX_DISTANCE if max_distance is None else max_distance
-    sigma = SIGMA if sigma is None else sigma
+def quickshift(image, ratio=RATIO, kernel_size=KERNEL_SIZE,
+               max_distance=MAX_DISTANCE, sigma=SIGMA):
 
     image = tf.cast(image, tf.uint8)
 
@@ -32,8 +27,8 @@ def quickshift(image, ratio=None, kernel_size=None, max_distance=None,
     return tf.cast(segmentation, tf.int32)
 
 
-def quickshift_generator(ratio=None, kernel_size=None, max_distance=None,
-                         sigma=None):
+def quickshift_generator(ratio=RATIO, kernel_size=KERNEL_SIZE,
+                         max_distance=MAX_DISTANCE, sigma=SIGMA):
 
     def _generator(image):
         return quickshift(image, ratio, kernel_size, max_distance, sigma)
@@ -43,7 +38,7 @@ def quickshift_generator(ratio=None, kernel_size=None, max_distance=None,
 
 def quickshift_json_generator(json):
     return quickshift_generator(
-        json['ratio'] if 'ratio' in json else None,
-        json['kernel_size'] if 'kernel_size' in json else None,
-        json['max_distance'] if 'max_distance' in json else None,
-        json['sigma'] if 'sigma' in json else None)
+        json['ratio'] if 'ratio' in json else RATIO,
+        json['kernel_size'] if 'kernel_size' in json else KERNEL_SIZE,
+        json['max_distance'] if 'max_distance' in json else MAX_DISTANCE,
+        json['sigma'] if 'sigma' in json else SIGMA)

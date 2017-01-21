@@ -6,11 +6,14 @@ import tensorflow as tf
 from .helper.record import Record
 
 
+SHOW_PROGRESS = True
+
+
 @six.add_metaclass(abc.ABCMeta)
 class DataSet():
     """Abstract class for defining a dataset interface."""
 
-    def __init__(self, data_dir, show_progress=None):
+    def __init__(self, data_dir, show_progress=SHOW_PROGRESS):
         """Creates a dataset.
 
         Args:
@@ -20,7 +23,7 @@ class DataSet():
         """
 
         self._data_dir = data_dir
-        self._show_progress = True if show_progress is None else show_progress
+        self._show_progress = show_progress
 
     @classmethod
     def create(cls, json):
@@ -35,7 +38,8 @@ class DataSet():
 
         return cls(
             json['data_dir'] if 'data_dir' in json else None,
-            json['show_progress'] if 'show_progress' in json else None)
+            json['show_progress'] if 'show_progress' in json
+            else SHOW_PROGRESS)
 
     @property
     def data_dir(self):

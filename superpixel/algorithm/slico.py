@@ -3,19 +3,14 @@ import numpy as np
 from skimage.segmentation import slic as skimage_slic
 
 
-NUM = 400
+NUM_SUPERPIXELS = 400
 COMPACTNESS = 30.0
-MAX_ITER = 10
+MAX_ITERATIONS = 10
 SIGMA = 0.0
 
 
-def slico(image, num_superpixels=None, compactness=None, max_iterations=None,
-          sigma=None):
-
-    num_superpixels = NUM if num_superpixels is None else num_superpixels
-    compactness = COMPACTNESS if compactness is None else compactness
-    max_iterations = MAX_ITER if max_iterations is None else max_iterations
-    sigma = SIGMA if sigma is None else sigma
+def slico(image, num_superpixels=NUM_SUPERPIXELS, compactness=COMPACTNESS,
+          max_iterations=MAX_ITERATIONS, sigma=SIGMA):
 
     image = tf.cast(image, tf.uint8)
 
@@ -32,8 +27,8 @@ def slico(image, num_superpixels=None, compactness=None, max_iterations=None,
     return tf.cast(segmentation, tf.int32)
 
 
-def slico_generator(num_superpixels=None, compactness=None,
-                    max_iterations=None, sigma=None):
+def slico_generator(num_superpixels=NUM_SUPERPIXELS, compactness=COMPACTNESS,
+                    max_iterations=MAX_ITERATIONS, sigma=SIGMA):
 
     def _generator(image):
         return slico(image, num_superpixels, compactness, max_iterations,
@@ -44,7 +39,8 @@ def slico_generator(num_superpixels=None, compactness=None,
 
 def slico_json_generator(json):
     return slico_generator(
-        json['num_superpixels'] if 'num_superpixels' in json else None,
-        json['compactness'] if 'compactness' in json else None,
-        json['max_iterations'] if 'max_iterations' in json else None,
-        json['sigma'] if 'sigma' in json else None)
+        json['num_superpixels'] if 'num_superpixels' in json
+        else NUM_SUPERPIXELS,
+        json['compactness'] if 'compactness' in json else COMPACTNESS,
+        json['max_iterations'] if 'max_iterations' in json else MAX_ITERATIONS,
+        json['sigma'] if 'sigma' in json else SIGMA)

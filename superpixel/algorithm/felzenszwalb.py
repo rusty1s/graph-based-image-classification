@@ -8,11 +8,7 @@ SIGMA = 0.8
 MIN_SIZE = 20
 
 
-def felzenszwalb(image, scale=None, sigma=None, min_size=None):
-
-    scale = SCALE if scale is None else scale
-    sigma = SIGMA if sigma is None else sigma
-    min_size = MIN_SIZE if min_size is None else min_size
+def felzenszwalb(image, scale=SCALE, sigma=SIGMA, min_size=MIN_SIZE):
 
     image = tf.cast(image, tf.uint8)
 
@@ -28,7 +24,7 @@ def felzenszwalb(image, scale=None, sigma=None, min_size=None):
     return tf.cast(segmentation, tf.int32)
 
 
-def felzenszwalb_generator(scale=None, sigma=None, min_size=None):
+def felzenszwalb_generator(scale=SCALE, sigma=SIGMA, min_size=MIN_SIZE):
 
     def _generator(image):
         return felzenszwalb(image, scale, sigma, min_size)
@@ -38,6 +34,6 @@ def felzenszwalb_generator(scale=None, sigma=None, min_size=None):
 
 def felzenszwalb_json_generator(json):
     return felzenszwalb_generator(
-        json['scale'] if 'scale' in json else None,
-        json['sigma'] if 'sigma' in json else None,
-        json['min_size'] if 'min_size' in json else None)
+        json['scale'] if 'scale' in json else SCALE,
+        json['sigma'] if 'sigma' in json else SIGMA,
+        json['min_size'] if 'min_size' in json else MIN_SIZE)

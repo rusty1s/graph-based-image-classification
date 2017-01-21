@@ -1,11 +1,11 @@
 import tensorflow as tf
 
 
-def train_step(loss, step, learning_rate=0.1, epsilon=1.0):
+def train_step(loss, step, learning_rate, beta1, beta2, epsilon):
     loss_averages_op = _add_loss_summaries(loss)
 
     with tf.control_dependencies([loss_averages_op]):
-        opt = tf.train.AdamOptimizer(learning_rate, epsilon=epsilon)
+        opt = tf.train.AdamOptimizer(learning_rate, beta1, beta2, epsilon)
         grads = opt.compute_gradients(loss)
 
     apply_gradient_op = opt.apply_gradients(grads, global_step=step)
