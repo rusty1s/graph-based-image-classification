@@ -2,13 +2,15 @@ import os
 
 import tensorflow as tf
 
+from .record import Record
+
 BATCH_SIZE = 128
 MIN_FRACTION_OF_EXAMPLES_IN_QUEUE = 0.4
 NUM_THREADS = 16
 
 
 def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
-           num_epochs=None, shuffle=False):
+           standardization=False, num_epochs=None, shuffle=False):
     """Constructs inputs from a dataset.
 
     Args:
@@ -17,6 +19,8 @@ def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
           set.
         batch_size: Number of data per batch (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
+        standardization: Boolean indicating if one should linearly scales the
+          records data to have zero mean and unit norm (optional).
         num_epochs: Number indicating the maximal number of epoch iterations
           before raising an OutOfRange error (optional).
         shuffle: Boolean indiciating if one wants to shuffle the inputs
@@ -53,7 +57,10 @@ def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
 
     # Distort the data.
     if distort_inputs:
-        record = distort(record)
+        record = distort(record, standardization)
+    elif standardization:
+        data = tf.per_image_standardization(record.data)
+        record = Record(data, record.shape, record.label)
 
     min_queue_examples = int(num_examples_per_epoch *
                              MIN_FRACTION_OF_EXAMPLES_IN_QUEUE)

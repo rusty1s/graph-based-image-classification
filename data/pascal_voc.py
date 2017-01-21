@@ -37,7 +37,7 @@ EVAL_INFO_FILENAME = 'eval_info.txt'
 class PascalVOC(DataSet):
     """PascalVOC image classification dataset."""
 
-    def __init__(self, data_dir=DATA_DIR, show_progress=True):
+    def __init__(self, data_dir=None, show_progress=None):
         """Creates a PascalVOC image classification dataset.
 
         Args:
@@ -45,6 +45,8 @@ class PascalVOC(DataSet):
             stored.
             show_progress: Show a pretty progress bar for dataset computations.
         """
+
+        data_dir = DATA_DIR if data_dir is None else data_dir
 
         super().__init__(data_dir, show_progress)
 
@@ -108,15 +110,17 @@ class PascalVOC(DataSet):
         # Use the global reader operation for TFRecords.
         return read_tfrecord(filename_queue, [HEIGHT, WIDTH, 3])
 
-    def distort_for_train(self, record):
+    def distort_for_train(self, record, standardization):
         """Applies random distortions for training to a PascalVOC record."""
 
-        return distort_image_for_train(record)
+        record = distort_image_for_train(record)
+        return super().distort_for_train(record, standardization)
 
-    def distort_for_eval(self, record):
+    def distort_for_eval(self, record, standardization):
         """Applies distortions for evaluation to a PascalVOC record."""
 
-        return distort_image_for_eval(record)
+        record = distort_image_for_eval(record)
+        return super().distort_for_eval(record, standardization)
 
     def _write_to_tfrecord(self):
         """Converts and writes the training and evaluation image sets to

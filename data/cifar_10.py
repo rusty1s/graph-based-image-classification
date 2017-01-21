@@ -33,7 +33,7 @@ NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 class Cifar10(DataSet):
     """CIFAR-10 dataset."""
 
-    def __init__(self, data_dir=DATA_DIR, show_progress=True):
+    def __init__(self, data_dir=None, show_progress=None):
         """Creates a CIFAR-10 dataset.
 
         Args:
@@ -41,6 +41,8 @@ class Cifar10(DataSet):
             stored.
             show_progress: Show a pretty progress bar for dataset computations.
         """
+
+        data_dir = DATA_DIR if data_dir is None else data_dir
 
         super().__init__(data_dir, show_progress)
 
@@ -116,12 +118,14 @@ class Cifar10(DataSet):
 
         return Record(image, [HEIGHT, WIDTH, DEPTH], label)
 
-    def distort_for_train(self, record):
+    def distort_for_train(self, record, standardization):
         """Applies random distortions for training to a CIFAR-10 record."""
 
-        return distort_image_for_train(record)
+        record = distort_image_for_train(record)
+        return super().distort_for_train(record, standardization)
 
-    def distort_for_eval(self, record):
+    def distort_for_eval(self, record, standardization):
         """Applies distortions for evaluation to a CIFAR-10 record."""
 
-        return distort_image_for_eval(record)
+        record = distort_image_for_eval(record)
+        return super().distort_for_eval(record, standardization)

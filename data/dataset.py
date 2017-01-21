@@ -1,12 +1,16 @@
 import abc
 import six
 
+import tensorflow as tf
+
+from .helper.record import Record
+
 
 @six.add_metaclass(abc.ABCMeta)
 class DataSet():
     """Abstract class for defining a dataset interface."""
 
-    def __init__(self, data_dir, show_progress=True):
+    def __init__(self, data_dir, show_progress=None):
         """Creates a dataset.
 
         Args:
@@ -16,7 +20,22 @@ class DataSet():
         """
 
         self._data_dir = data_dir
-        self._show_progress = show_progress
+        self._show_progress = True if show_progress is None else show_progress
+
+    @classmethod
+    def create(cls, json):
+        """Creates a dataset via a json file.
+
+        Args:
+            json: The json object.
+
+        Returns:
+            The dataset.
+        """
+
+        return cls(
+            json['data_dir'] if 'data_dir' in json else None,
+            json['show_progress'] if 'show_progress' in json else None)
 
     @property
     def data_dir(self):
@@ -145,30 +164,52 @@ class DataSet():
 
         pass
 
-    @abc.abstractmethod
-    def distort_for_train(self, record):
+    def distort_for_train(self, record, standardization):
         """Applies random distortions for training to a record.
 
         Args:
             record: The record before applying distortions.
+            standardization: Boolean indicating if one should linearly scales
+              the records data to have zero mean and unit norm.
 
         Returns:
             A new record object of the passed record after applying
             distortions.
         """
 
-        pass
+        return _distort(record, standardization)
 
-    @abc.abstractmethod
-    def distort_for_eval(self, record):
+    def distort_for_eval(self, record, standardization):
         """Applies distortions for evaluation to a record.
 
         Args:
             record: The record before applying distortions.
+            standardization: Boolean indicating if one should linearly scales
+              the records data to have zero mean and unit norm.
 
         Returns:
             A new record object of the passed record after applying
             distortions.
         """
 
-        pass
+        return _distort(record, standardization)
+
+
+def _distort(record, standardization):
+    """Lineary scales the records data to have zero mean and unit norm.
+
+    Args:
+        record: The record before applying distortions.
+        standardization: Boolean indicating if one should apply
+          standardization.
+
+    Returns:
+        A new record object of the passed record after applying
+        distortions.
+    """
+
+    if standardization:
+        data = tf.image.per_image_standardization(record.data)
+        return Record(data, record.shape, record.label)
+    else:
+        return record
