@@ -8,7 +8,7 @@ from .model import train_step, cal_loss, cal_accuracy
 from .hooks import hooks
 
 
-TRAIN_DIR = '/tmp/train'
+CHECKPOINT_DIR = '/tmp/train'
 BATCH_SIZE = 128
 LAST_STEP = 20000
 LEARNING_RATE = 0.1
@@ -17,21 +17,23 @@ BETA_1 = 0.9
 BETA_2 = 0.999
 DISTORT_INPUTS = True
 SCALE_INPUTS = True
+
 DISPLAY_STEP = 10
 SAVE_CHECKPOINT_SECS = 30
 SAVE_SUMMARIES_STEPS = 100
 
 
-def train(dataset, structure, train_dir=TRAIN_DIR, batch_size=BATCH_SIZE,
-          last_step=LAST_STEP,  learning_rate=LEARNING_RATE, epsilon=EPSILON,
-          beta1=BETA_1, beta2=BETA_2, distort_inputs=DISTORT_INPUTS,
+def train(dataset, structure, checkpoint_dir=CHECKPOINT_DIR,
+          batch_size=BATCH_SIZE, last_step=LAST_STEP,
+          learning_rate=LEARNING_RATE, epsilon=EPSILON, beta1=BETA_1,
+          beta2=BETA_2, distort_inputs=DISTORT_INPUTS,
           scale_inputs=SCALE_INPUTS, display_step=DISPLAY_STEP,
           save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
           save_summaries_steps=SAVE_SUMMARIES_STEPS):
 
-    if tf.gfile.Exists(train_dir):
-        tf.gfile.DeleteRecursively(train_dir)
-    tf.gfile.MakeDirs(train_dir)
+    if tf.gfile.Exists(checkpoint_dir):
+        tf.gfile.DeleteRecursively(checkpoint_dir)
+    tf.gfile.MakeDirs(checkpoint_dir)
 
     with tf.Graph().as_default():
         global_step = tf.contrib.framework.get_or_create_global_step()
@@ -48,7 +50,7 @@ def train(dataset, structure, train_dir=TRAIN_DIR, batch_size=BATCH_SIZE,
 
         try:
             with tf.train.MonitoredTrainingSession(
-                    checkpoint_dir=train_dir,
+                    checkpoint_dir=checkpoint_dir,
                     save_checkpoint_secs=save_checkpoint_secs,
                     save_summaries_steps=save_summaries_steps,
                     hooks=hooks(display_step, last_step, batch_size, loss, acc)
@@ -60,11 +62,14 @@ def train(dataset, structure, train_dir=TRAIN_DIR, batch_size=BATCH_SIZE,
             pass
 
 
-def json_train(dataset, json):
+def json_train(dataset, json, display_step=DISPLAY_STEP,
+               save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
+               save_summaries_steps=SAVE_SUMMARIES_STEPS):
+
     train(
         dataset,
         json['structure'],
-        json['train_dir'] if 'train_dir' in json else TRAIN_DIR,
+        json['checkpoint_dir'] if 'checkpoint_dir' in json else CHECKPOINT_DIR,
         json['batch_size'] if 'batch_size' in json else BATCH_SIZE,
         json['last_step'] if 'last_step' in json else LAST_STEP,
         json['learning_rate'] if 'learning_rate' in json else LEARNING_RATE,
@@ -73,8 +78,4 @@ def json_train(dataset, json):
         json['beta2'] if 'beta2' in json else BETA_2,
         json['distort_inputs'] if 'distort_inputs' in json else DISTORT_INPUTS,
         json['scale_inputs'] if 'scale_inputs' in json else SCALE_INPUTS,
-        json['display_step'] if 'display_step' in json else DISPLAY_STEP,
-        json['save_checkpoint_secs'] if 'save_checkpoint_secs' in json
-        else SAVE_CHECKPOINT_SECS,
-        json['save_summaries_steps'] if 'save_summaries_steps' in json
-        else SAVE_SUMMARIES_STEPS)
+        display_step, save_checkpoint_secs, save_summaries_steps)
