@@ -161,7 +161,7 @@ def feature_extraction(segmentation, image):
     with tf.name_scope('intensity_image', values=[image]):
         intensity_image = tf.image.rgb_to_hsv(image)
         intensity_image = tf.strided_slice(
-            intensitiy_image,
+            intensity_image,
             [0, 0, 2],
             [tf.shape(image)[0], tf.shape(image)[1], 3],
             [1, 1, 1])

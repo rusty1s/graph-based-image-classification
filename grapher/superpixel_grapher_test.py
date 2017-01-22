@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from superpixel.algorithm import slico_generator
+from segmentation.algorithm import slico_generator
 
 from .superpixel_grapher import SuperpixelGrapher
 
@@ -29,7 +29,7 @@ class SuperpixelGrapherTest(tf.test.TestCase):
             [3, 0, 0, 0],
         ]
 
-        slico = slico_generator(num_superpixels=4)
+        slico = slico_generator(num_segments=4)
         grapher = SuperpixelGrapher(slico)
 
         with self.test_session() as sess:

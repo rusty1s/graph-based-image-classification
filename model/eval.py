@@ -17,7 +17,7 @@ DISPLAY_STEP = 10
 
 
 def evaluate(dataset, checkpoint_dir=CHECKPOINT_DIR, eval_dir=EVAL_DIR,
-             eval_data=EVIL_DATA, eval_interval_secs=EVAL_INTERVAL_SECS,
+             eval_data=EVAL_DATA, eval_interval_secs=EVAL_INTERVAL_SECS,
              run_once=RUN_ONCE):
 
     if not tf.gfile.Exists(checkpoint_dir):
@@ -29,7 +29,7 @@ def evaluate(dataset, checkpoint_dir=CHECKPOINT_DIR, eval_dir=EVAL_DIR,
     tf.gfile.MakeDirs(eval_dir)
 
 
-def evaluate_json(dataset, json, eval_data=EVAL_DATA,
+def json_evaluate(dataset, json, eval_data=EVAL_DATA,
                   eval_interval_secs=EVAL_INTERVAL_SECS, run_once=RUN_ONCE):
 
     evaluate(
