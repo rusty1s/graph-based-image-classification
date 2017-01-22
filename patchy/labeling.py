@@ -1,26 +1,46 @@
+import tensorflow as tf
 import networkx as nx
+import numpy as np
 
 
-def betweenness_centrality(graph):
-    """Computes the shortest-path betweenness centrality for nodes. Betweenness
-    centrality of a node `v` is the sum of the fraction of all-pairs shortest
-    paths that pass through `v`. Returns a list of all nodes in `graph` in
-    descendant order corresponding to their betweenness centrality values."""
-
-    # Returns a dictionary of nodes with betweeness centrality as the value.
-    result = nx.betweenness_centrality(graph, normalized=False)
-    result = list(result.items())
-    result = sorted(result, key=lambda v: v[1], reverse=True)
-
-    return [v[0] for v in result]
+def identity(adjacency, labels=None):
+    return _labels_default(labels, adjacency)
 
 
-def order(graph):
-    """If the graph nodes have an attribute called `order`, it is used to
-    calculate the order of the graph."""
+def betweenness_centrality(adjacency, labels=None):
+    def _betweeness_centrality(adjacency, labels):
+        graph = nx.from_numpy_matrix(adjacency)
 
-    result = nx.get_node_attributes(graph, 'order')
-    result = list(result.items())
-    result = sorted(result, key=lambda v: v[1])
+        
+    # result = nx.betweenness_centrality(graph, normalized=False)
+    # result = list(result.items())
+    # result = sorted(result, key=lambda v: v[1], reverse=True)
 
-    return [v[0] for v in result]
+    # return [v[0] for v in result]
+        # for n in graph:
+        #     graph.node[n].update({'label': n})
+
+        labeling = nx.betweenness_centrality(graph, normalized=False)
+        labeling = np.array(list(labeling.items()))
+
+
+        print(np.sort(labeling, axis=0))
+
+
+        return np.zeros((2, 2), dtype=np.float32)
+
+    labels = _labels_default(labels, adjacency)
+    return tf.py_func(
+        _betweeness_centrality, [adjacency, labels], tf.float32,
+        stateful=False, name='betweenness_centrality')
+
+
+def weight_to_first_label(adjacency, labels=None):
+    pass
+
+
+def _labels_default(labels, adjacency):
+    if labels is None:
+        return tf.range(0, tf.shape(adjacency)[0], dtype=tf.int32)
+    else:
+        return labels
