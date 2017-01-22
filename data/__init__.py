@@ -8,5 +8,6 @@ from .helper.inputs import inputs
 from .helper.iterator import iterator
 from .helper.tfrecord import read_tfrecord, write_to_tfrecord
 
+
 datasets = {'cifar_10': Cifar10,
             'pascal_voc': PascalVOC}
