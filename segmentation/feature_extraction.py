@@ -11,11 +11,22 @@ NUM_FEATURES = 83
 
 # TODO Oriented Bounding Box missing
 def feature_extraction(segmentation, image):
+    """Extracts a fixed number of features for every segment label in the
+    segmentation.
+
+    Args:
+        segmentation: The segmentation.
+        image: The corresponding original image.
+
+    Returns:
+        Array with shape [num_segments, num_features].
+    """
+
     def _feature_extraction(segmentation, intensity_image, image):
         props = regionprops(segmentation, intensity_image)
 
-        # Create the output feature vector with shape [num_segments,
-        # num_features].
+        # Create the output feature vector with shape
+        # [num_segments, num_features].
         features = np.zeros((len(props), NUM_FEATURES), dtype=np.float32)
 
         for i, prop in enumerate(props):
