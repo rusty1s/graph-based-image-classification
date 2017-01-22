@@ -13,7 +13,7 @@ from skimage import draw
 
 from data import datasets
 from data import iterator
-from superpixel.algorithm import generators
+from segmentation.algorithm import generators
 
 
 FLAGS = tf.app.flags.FLAGS
@@ -24,20 +24,20 @@ tf.app.flags.DEFINE_string('dataset', 'cifar_10',
 tf.app.flags.DEFINE_string('data_dir', None,
                            """Path to the data directory.""")
 tf.app.flags.DEFINE_string('algorithm', 'slic',
-                           """The superpixel algorithm. See
-                           superpixel/algorithm/__init__.py for a list of all
-                           available superpixel algorithms.""")
+                           """The segmentation algorithm. See
+                           segmentation/algorithm/__init__.py for a list of all
+                           available segmentation algorithms.""")
 tf.app.flags.DEFINE_boolean('draw_graph', False,
                             """Draws an additional region adjacency graph.""")
 
 
-def save_superpixel_images(dataset, algorithm, eval_data):
-    """Saves images with computed superpixel boundaries for either training or
+def save_segemented_images(dataset, algorithm, eval_data):
+    """Saves images with computed segment boundaries for either training or
     evaluation to an images directory into the datasets data directory.
 
     Args:
         dataset: The dataset.
-        algorithm: The superpixel algorithm.
+        algorithm: The segmentation algorithm.
         eval_data: Boolean indicating if one should use the train or eval data
           set.
     """
@@ -137,7 +137,7 @@ def main(argv=None):
         raise ValueError('{} is no valid dataset.'.format(FLAGS.dataset))
 
     if FLAGS.algorithm not in generators:
-        raise ValueError('{} is no valid superpixel algorithm.'
+        raise ValueError('{} is no valid segmentation algorithm.'
                          .format(FLAGS.algorithm))
 
     if FLAGS.data_dir:
@@ -148,8 +148,8 @@ def main(argv=None):
     algorithm = generators[FLAGS.algorithm]()
 
     # Save images for training and evaluation.
-    save_superpixel_images(dataset, algorithm, eval_data=False)
-    save_superpixel_images(dataset, algorithm, eval_data=True)
+    save_segmented_images(dataset, algorithm, eval_data=False)
+    save_segmented_images(dataset, algorithm, eval_data=True)
 
 
 if __name__ == '__main__':

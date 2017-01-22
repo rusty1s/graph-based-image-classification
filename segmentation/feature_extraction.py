@@ -5,7 +5,7 @@ import numpy as np
 from skimage.measure import regionprops
 
 
-# Static number of features to generate for one superpixel.
+# Static number of features to generate for one segment.
 NUM_FEATURES = 83
 
 
@@ -14,7 +14,7 @@ def feature_extraction(segmentation, image):
     def _feature_extraction(segmentation, intensity_image, image):
         props = regionprops(segmentation, intensity_image)
 
-        # Create the output feature vector with shape [num_superpixels,
+        # Create the output feature vector with shape [num_segments,
         # num_features].
         features = np.zeros((len(props), NUM_FEATURES), dtype=np.float32)
 
