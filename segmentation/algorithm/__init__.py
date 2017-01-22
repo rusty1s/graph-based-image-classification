@@ -6,21 +6,17 @@ from .felzenszwalb import felzenszwalb, felzenszwalb_generator,\
                           felzenszwalb_json_generator
 
 
-algorithms = {
-    'slic': slic,
-    'slico': slico,
-    'quickshift': quickshift,
-    'felzenszwalb': felzenszwalb,
-}
+algorithms = {'slic': slic,
+              'slico': slico,
+              'quickshift': quickshift,
+              'felzenszwalb': felzenszwalb}
 
-generators = {
-    'slic': slic_generator,
-    'slico': slico_generator,
-    'felzenszwalb': felzenszwalb_generator,
-}
+generators = {'slic': slic_generator,
+              'slico': slico_generator,
+              'quickshift': quickshift_generator,
+              'felzenszwalb': felzenszwalb_generator}
 
-json_generators = {
-    'slic': slic_json_generator,
-    'slico': slico_json_generator,
-    'felzenszwalb': felzenszwalb_json_generator,
-}
+json_generators = {'slic': slic_json_generator,
+                   'slico': slico_json_generator,
+                   'quickshift': quickshift_json_generator,
+                   'felzenszwalb': felzenszwalb_json_generator}

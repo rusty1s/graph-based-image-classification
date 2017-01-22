@@ -7,7 +7,23 @@ from skimage.future.graph import RAG
 CONNECTIVITY = 2
 
 
-def adjacency(segmentation, connectivity=CONNECTIVITY):
+def adjacency_unweighted(segmentation, connectivity=CONNECTIVITY):
+    """Computes the adjacency matrix of the Region Adjacency Graph.
+
+    Given an segmentation, this method constructs the constructs the
+    corresponding Region Adjacency Graphh (RAG). Each node in the RAG
+    represents a set of pixels with the same label in `segmentation`. An edge
+    between two nodes exist if the nodes are spatial connected.
+
+    Args:
+        segmentation: The segmentation.
+        connectivity: Integer. Pixels with a squared distance less than
+          `connectivity` from each other are considered adjacent (optional).
+
+    Returns:
+        An adjacent matrix with shape [num_segments, num_segments].
+    """
+
     def _adjacency(segmentation):
         graph = RAG(segmentation, connectivity=connectivity)
         return nx.to_numpy_matrix(graph, dtype=np.float32)
@@ -18,6 +34,25 @@ def adjacency(segmentation, connectivity=CONNECTIVITY):
 
 
 def adjacency_euclid_distance(segmentation, connectivity=CONNECTIVITY):
+    """Computes the adjacency matrix of the Region Adjacency Graph using the
+    euclidian distance between the centroids of the adjacent segments.
+
+    Given an segmentation, this method constructs the constructs the
+    corresponding Region Adjacency Graphh (RAG). Each node in the RAG
+    represents a set of pixels with the same label in `segmentation`. An edge
+    between two nodes exist if the nodes are spatial connected. The weight
+    between two adjacent regions represents represents how nearby tow segments
+    are.
+
+    Args:
+        segmentation: The segmentation.
+        connectivity: Integer. Pixels with a squared distance less than
+          `connectivity` from each other are considered adjacent (optional).
+
+    Returns:
+        An adjacent matrix with shape [num_segments, num_segments].
+    """
+
     def _adjacency_euclid_distance(segmentation):
         graph = RAG(segmentation, connectivity=connectivity)
 

@@ -1,12 +1,12 @@
 import tensorflow as tf
 import numpy as np
 
-from .adjacency import adjacency, adjacency_euclid_distance
+from .adjacency import adjacency_unweighted, adjacency_euclid_distance
 
 
 class AdjacencyTest(tf.test.TestCase):
 
-    def test_adjacency(self):
+    def test_adjacency_unweighted(self):
         segmentation = tf.constant([
             [0, 0, 1, 1],
             [0, 0, 0, 1],
@@ -22,7 +22,7 @@ class AdjacencyTest(tf.test.TestCase):
         ]
 
         with self.test_session() as sess:
-            adjacency_matrix = adjacency(segmentation)
+            adjacency_matrix = adjacency_unweighted(segmentation)
             self.assertAllEqual(adjacency_matrix.eval(), expected)
 
     def test_adjacency_euclid_distance(self):
