@@ -14,8 +14,8 @@ def iterator(dataset, eval_data, batch_size=1, scale_inputs=1.0,
         eval_data: Boolean indicating if one should use the train or eval data
           set.
         batch_size: Number of data per batch (optional).
-        scale_inputs: Float defining the scaling for resizing the records data
-          (optional).
+        scale_inputs: Float defining the scaling to use for resizing the
+          records data (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
         zero_mean_inputs: Boolean indicating if one should linearly scales the
           records data to have zero mean and unit norm (optional).

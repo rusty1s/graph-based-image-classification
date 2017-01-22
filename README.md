@@ -87,6 +87,11 @@ Run the test suite:
 * `networks`: Contains all network structures that were used for training and
   evaluation.
 
+## ToDos
+
+* PascalVOC TFRecords generation cleaner (maybe with Tensorflow)
+* Transform data helper methods
+
 [build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
 [build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
 [coverage-image]: https://img.shields.io/codecov/c/github/rusty1s/graph-based-image-classification.svg

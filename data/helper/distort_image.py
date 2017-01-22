@@ -11,10 +11,10 @@ def distort_image_for_train(record):
     """Applies random distortions for training to the image of a record.
 
     Args:
-        record: The record before applying distortions.
+        record: The record.
 
     Returns:
-        A new record object of the passed record after applying distortions.
+        A new record object after applying distortions.
     """
 
     image = record.data
@@ -41,10 +41,10 @@ def distort_image_for_eval(record):
     """Applies distortions for evaluation to the image of a record.
 
     Args:
-        record: The record before applying distortions.
+        record: The record.
 
     Returns:
-        A new record object of the passed record after applying distortions.
+        A new record object after applying distortions.
     """
 
     image = record.data
