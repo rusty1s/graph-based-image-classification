@@ -35,7 +35,7 @@ def adjacency_unweighted(segmentation, connectivity=CONNECTIVITY):
 
 def adjacency_euclid_distance(segmentation, connectivity=CONNECTIVITY):
     """Computes the adjacency matrix of the Region Adjacency Graph using the
-    euclidian distance between the centroids of the adjacent segments.
+    euclidian distance between the centroids of adjacent segments.
 
     Given an segmentation, this method constructs the constructs the
     corresponding Region Adjacency Graphh (RAG). Each node in the RAG
