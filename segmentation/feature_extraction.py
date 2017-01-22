@@ -19,7 +19,7 @@ def feature_extraction(segmentation, image):
         image: The corresponding original image.
 
     Returns:
-        Array with shape [num_segments, num_features].
+        Numpy array with shape [num_segments, num_features].
     """
 
     def _feature_extraction(segmentation, intensity_image, image):
