@@ -21,4 +21,5 @@ class FeaturesTest(tf.test.TestCase):
         ], dtype=tf.int32)
 
         with self.test_session() as sess:
-            print(feature_extraction(segmentation, image).eval())
+            pass
+            # print(feature_extraction(segmentation, image).eval())
