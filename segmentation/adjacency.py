@@ -33,7 +33,7 @@ def adjacency_unweighted(segmentation, connectivity=CONNECTIVITY):
         name='adjacency')
 
 
-def adjacency_euclid_distance(segmentation, connectivity=CONNECTIVITY):
+def adjacency_euclidean_distance(segmentation, connectivity=CONNECTIVITY):
     """Computes the adjacency matrix of the Region Adjacency Graph using the
     euclidian distance between the centroids of adjacent segments.
 
@@ -53,7 +53,7 @@ def adjacency_euclid_distance(segmentation, connectivity=CONNECTIVITY):
         An adjacent matrix with shape [num_segments, num_segments].
     """
 
-    def _adjacency_euclid_distance(segmentation):
+    def _adjacency_euclidean_distance(segmentation):
         graph = RAG(segmentation, connectivity=connectivity)
 
         for n in graph:
@@ -76,5 +76,5 @@ def adjacency_euclid_distance(segmentation, connectivity=CONNECTIVITY):
         return nx.to_numpy_matrix(graph, dtype=np.float32)
 
     return tf.py_func(
-        _adjacency_euclid_distance, [segmentation], tf.float32,
+        _adjacency_euclidean_distance, [segmentation], tf.float32,
         stateful=False, name='adjacency_euclid_distance')

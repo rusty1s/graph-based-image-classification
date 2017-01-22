@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-from .adjacency import adjacency_unweighted, adjacency_euclid_distance
+from .adjacency import adjacency_unweighted, adjacency_euclidean_distance
 
 
 class AdjacencyTest(tf.test.TestCase):
@@ -25,7 +25,7 @@ class AdjacencyTest(tf.test.TestCase):
             adjacency_matrix = adjacency_unweighted(segmentation)
             self.assertAllEqual(adjacency_matrix.eval(), expected)
 
-    def test_adjacency_euclid_distance(self):
+    def test_adjacency_euclidean_distance(self):
         segmentation = tf.constant([
             [0, 0, 1, 1],
             [0, 0, 0, 1],
@@ -40,16 +40,16 @@ class AdjacencyTest(tf.test.TestCase):
             [(3+2+3)/3, (3+2+3)/3],
         ], dtype=np.float32)
 
-        def _euclid(centroid, index1, index2):
+        def _distance(centroid, index1, index2):
             return np.linalg.norm(centroid[index1] - centroid[index2])
 
         expected = [
-            [0, _euclid(c, 0, 1), _euclid(c, 0, 2), _euclid(c, 0, 3)],
-            [_euclid(c, 1, 0), 0, 0, _euclid(c, 1, 3)],
-            [_euclid(c, 2, 0), 0, 0, _euclid(c, 2, 3)],
-            [_euclid(c, 3, 0), _euclid(c, 3, 1), _euclid(c, 3, 2), 0],
+            [0, _distance(c, 0, 1), _distance(c, 0, 2), _distance(c, 0, 3)],
+            [_distance(c, 1, 0), 0, 0, _distance(c, 1, 3)],
+            [_distance(c, 2, 0), 0, 0, _distance(c, 2, 3)],
+            [_distance(c, 3, 0), _distance(c, 3, 1), _distance(c, 3, 2), 0],
         ]
 
         with self.test_session() as sess:
-            adjacency_matrix = adjacency_euclid_distance(segmentation)
+            adjacency_matrix = adjacency_euclidean_distance(segmentation)
             self.assertAllEqual(adjacency_matrix.eval(), expected)
