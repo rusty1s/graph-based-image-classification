@@ -15,10 +15,10 @@ def iterator(dataset, eval_data, batch_size=1, scale_inputs=1.0,
           set.
         batch_size: Number of data per batch (optional).
         scale_inputs: Float defining the scaling to use for resizing the
-          records data (optional).
+          record's data (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
         zero_mean_inputs: Boolean indicating if one should linearly scales the
-          records data to have zero mean and unit norm (optional).
+          record's data to have zero mean and unit norm (optional).
         num_epochs: Number indicating the maximal number of epoch iterations
           (optional).
         shuffle: Boolean indiciating if one wants to shuffle the inputs
@@ -74,7 +74,7 @@ def iterator(dataset, eval_data, batch_size=1, scale_inputs=1.0,
             if batch_size == 1:
                 # Remove the first dimension, because we only consider batch
                 # sizes of one.
-                data_batch = tf.squeeze(data_batch, squeeze_dims=[0])
+                eata_batch = tf.squeeze(data_batch, squeeze_dims=[0])
                 label_batch = tf.squeeze(label_batch, squeeze_dims=[0])
 
             # Customize input batch with the optional before callback.

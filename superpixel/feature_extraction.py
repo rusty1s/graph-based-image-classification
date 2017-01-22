@@ -5,6 +5,7 @@ import numpy as np
 from skimage.measure import regionprops
 
 
+# Static number of features to generate for one superpixel.
 NUM_FEATURES = 83
 
 

@@ -27,9 +27,9 @@ WIDTH = 224
 MIN_OBJECT_HEIGHT = 50
 MIN_OBJECT_WIDTH = 50
 
+# Filenames where the TFRecord information of the PascalVOC dataset is stored.
 TRAIN_FILENAME = 'train.tfrecords'
 TRAIN_INFO_FILENAME = 'train_info.txt'
-
 EVAL_FILENAME = 'eval.tfrecords'
 EVAL_INFO_FILENAME = 'eval_info.txt'
 

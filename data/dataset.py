@@ -27,7 +27,7 @@ class DataSet():
 
     @classmethod
     def create(cls, json):
-        """Creates a dataset via a json file.
+        """Creates a dataset based on a json object.
 
         Args:
             json: The json object.

@@ -19,10 +19,10 @@ def inputs(dataset, eval_data, batch_size=128, scale_inputs=1.0,
           set.
         batch_size: Number of data per batch (optional).
         scale_inputs: Float defining the scaling to use for resizing the
-          records data (optional).
+          record's data (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
         zero_mean_inputs: Boolean indicating if one should linearly scales the
-          records data to have zero mean and unit norm (optional).
+          record's data to have zero mean and unit norm (optional).
         num_epochs: Number indicating the maximal number of epoch iterations
           before raising an OutOfRange error (optional).
         shuffle: Boolean indiciating if one wants to shuffle the inputs
@@ -94,7 +94,7 @@ def inputs(dataset, eval_data, batch_size=128, scale_inputs=1.0,
 
 
 def _resize(record, scale):
-    """Resizes the records data using area interpolation.
+    """Resizes the record's data using area interpolation.
 
     Args:
         record: The record.
@@ -117,7 +117,7 @@ def _resize(record, scale):
 
 
 def _zero_mean(record):
-    """Linearly scales the records data to have zero mean and unit norm.
+    """Linearly scales the record's data to have zero mean and unit norm.
 
     Args:
         record: The record.
