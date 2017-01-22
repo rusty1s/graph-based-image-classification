@@ -18,22 +18,17 @@ class SlicGrid(DataSet):
         self._dataset = dataset
 
         iterate_train = iterator(
-            dataset, eval_data=False, distort_inputs=True,
+            dataset, eval_data=False, scale_inputs=0.5, distort_inputs=True,
             num_epochs=max_num_epochs, shuffle=True)
 
-        iterate_eval = iterator(
-            dataset, eval_data=True, distort_inputs=True,
-            num_epochs=1, shuffle=False)
-
         def _before(image, label):
-            segmentation = slic_algorithm(image)
-            return segmentation
-            # return [tf.cast(image, tf.uint8), label]
+            return image
 
         def _each(output, index, last_index):
+            print(output.shape)
             # Get the image and the label name from the output of the session.
-            image = output
-            print(np.unique(image).size)
+            # image = output
+            # print(np.unique(image).size)
 
             # a = image.flatten()
             # indexes = np.unique(a, return_index=True)[1]

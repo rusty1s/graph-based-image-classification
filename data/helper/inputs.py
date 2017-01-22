@@ -104,8 +104,8 @@ def _resize(record, scale):
         A new record object after applying resizing.
     """
 
-    new_height = int(scale * shape[0])
-    new_width = int(scale * shape[1])
+    new_height = int(scale * record.shape[0])
+    new_width = int(scale * record.shape[1])
 
     with tf.name_scope('resize', values=[record.data, new_height, new_width]):
         data_batch = tf.expand_dims(record.data, axis=0)

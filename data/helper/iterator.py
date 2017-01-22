@@ -74,7 +74,7 @@ def iterator(dataset, eval_data, batch_size=1, scale_inputs=1.0,
             if batch_size == 1:
                 # Remove the first dimension, because we only consider batch
                 # sizes of one.
-                data_batch = tf.squeeze(image_batch, squeeze_dims=[0])
+                data_batch = tf.squeeze(data_batch, squeeze_dims=[0])
                 label_batch = tf.squeeze(label_batch, squeeze_dims=[0])
 
             # Customize input batch with the optional before callback.
