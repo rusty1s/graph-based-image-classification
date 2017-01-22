@@ -3,11 +3,9 @@ import tensorflow as tf
 from .inputs import inputs
 
 
-BATCH_SIZE = 128
-
-
-def iterator(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
-             scale_inputs=False, num_epochs=1, shuffle=False):
+def iterator(dataset, eval_data, batch_size=1, scale_inputs=1.0,
+             distort_inputs=False, zero_mean_inputs=False, num_epochs=1,
+             shuffle=False):
 
     """Returns a function which iterates over a dataset in batches.
 
@@ -16,8 +14,10 @@ def iterator(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
         eval_data: Boolean indicating if one should use the train or eval data
           set.
         batch_size: Number of data per batch (optional).
+        scale_inputs: Float defining the scaling for resizing the records data
+          (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
-        scale_inputs: Boolean indicating if one should linearly scales the
+        zero_mean_inputs: Boolean indicating if one should linearly scales the
           records data to have zero mean and unit norm (optional).
         num_epochs: Number indicating the maximal number of epoch iterations
           (optional).
@@ -65,12 +65,19 @@ def iterator(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
         with tf.Graph().as_default():
             data_batch, label_batch = inputs(dataset, eval_data=eval_data,
                                              batch_size=batch_size,
-                                             distort_inputs=distort_inputs,
                                              scale_inputs=scale_inputs,
+                                             distort_inputs=distort_inputs,
+                                             zero_mean_inputs=zero_mean_inputs,
                                              num_epochs=num_epochs,
                                              shuffle=shuffle)
 
-            # Customize input batch with the before callback.
+            if batch_size == 1:
+                # Remove the first dimension, because we only consider batch
+                # sizes of one.
+                data_batch = tf.squeeze(image_batch, squeeze_dims=[0])
+                label_batch = tf.squeeze(label_batch, squeeze_dims=[0])
+
+            # Customize input batch with the optional before callback.
             if before is None:
                 input_batch = [data_batch, label_batch]
             else:
@@ -98,7 +105,7 @@ def iterator(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
                 pass
 
             finally:
-                # Call the done callback.
+                # Call the optional done callback.
                 if done is not None:
                     done(index, last_index)
 

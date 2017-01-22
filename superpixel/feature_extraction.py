@@ -152,15 +152,16 @@ def feature_extraction(segmentation, image):
     segmentation = segmentation + tf.ones_like(segmentation)
 
     # Convert to HSV Colorspace.
-    with tf.name_scope('rgb_to_hsv', values=[image]):
+    with tf.name_scope('image_to_float', values=[image]):
         image = tf.cast(image, dtype=tf.uint8)
         image = tf.image.convert_image_dtype(image, dtype=tf.float32)
-        image = tf.image.rgb_to_hsv(image)
 
     # Get the intensity image with shape [height, width] of the image.
     with tf.name_scope('intensity_image', values=[image]):
+        intensity_image = tf.image.rgb_to_hsv(image)
         intensity_image = tf.strided_slice(
-            image, [0, 0, 2],
+            intensitiy_image,
+            [0, 0, 2],
             [tf.shape(image)[0], tf.shape(image)[1], 3],
             [1, 1, 1])
         intensity_image = tf.squeeze(intensity_image)

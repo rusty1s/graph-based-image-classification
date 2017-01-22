@@ -55,13 +55,9 @@ def save_superpixel_images(dataset, algorithm, eval_data):
 
     image_names = {label: 0 for label in dataset.labels}
 
-    iterate = iterator(dataset, eval_data, batch_size=1)
+    iterate = iterator(dataset, eval_data)
 
-    def _before(image_batch, label_batch):
-        # Remove the first dimension, because we only consider batch sizes of
-        # one.
-        image = tf.squeeze(image_batch, squeeze_dims=[0])
-        label = tf.squeeze(label_batch, squeeze_dims=[0])
+    def _before(image, label):
         segmentation = algorithm(image)
 
         # Cast image to uint8, so we can save it easily.

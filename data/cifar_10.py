@@ -118,14 +118,12 @@ class Cifar10(DataSet):
 
         return Record(image, [HEIGHT, WIDTH, DEPTH], label)
 
-    def distort_for_train(self, record, scale):
+    def distort_for_train(self, record):
         """Applies random distortions for training to a CIFAR-10 record."""
 
-        record = distort_image_for_train(record)
-        return super().distort_for_train(record, scale)
+        return distort_image_for_train(record)
 
-    def distort_for_eval(self, record, scale):
+    def distort_for_eval(self, record):
         """Applies distortions for evaluation to a CIFAR-10 record."""
 
-        record = distort_image_for_eval(record)
-        return super().distort_for_eval(record, scale)
+        return distort_image_for_eval(record)

@@ -3,10 +3,17 @@ import tensorflow as tf
 
 CHECKPOINT_DIR = '/tmp/train'
 EVAL_DIR = '/tmp/eval'
+BATCH_SIZE = 128
 
 EVAL_DATA = False
 EVAL_INTERVAL_SECS = 60 * 5
 RUN_ONCE = False
+
+SCALE_INPUTS = 1.0
+DISTORT_INPUTS = True
+ZERO_MEAN_INPUTS = True
+
+DISPLAY_STEP = 10
 
 
 def evaluate(dataset, checkpoint_dir=CHECKPOINT_DIR, eval_dir=EVAL_DIR,

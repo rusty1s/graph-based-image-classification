@@ -18,23 +18,16 @@ class SlicGrid(DataSet):
         self._dataset = dataset
 
         iterate_train = iterator(
-            dataset, eval_data=False, batch_size=1, distort_inputs=True,
-            scale_inputs=False, num_epochs=max_num_epochs, shuffle=True)
+            dataset, eval_data=False, distort_inputs=True,
+            num_epochs=max_num_epochs, shuffle=True)
 
         iterate_eval = iterator(
-            dataset, eval_data=True, batch_size=1, distort_inputs=True,
-            scale_inputs=False, num_epochs=1, shuffle=False)
+            dataset, eval_data=True, distort_inputs=True,
+            num_epochs=1, shuffle=False)
 
-        def _before(image_batch, label_batch):
-            # Remove the first dimension, because we only consider batch sizes
-            # of one.
-            image = tf.squeeze(image_batch, squeeze_dims=[0])
-            label = tf.squeeze(label_batch, squeeze_dims=[0])
-
+        def _before(image, label):
             segmentation = slic_algorithm(image)
             return segmentation
-            # Cast image to uint8, so
-            return [image, label]
             # return [tf.cast(image, tf.uint8), label]
 
         def _each(output, index, last_index):

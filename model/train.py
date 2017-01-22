@@ -11,12 +11,15 @@ from .hooks import hooks
 CHECKPOINT_DIR = '/tmp/train'
 BATCH_SIZE = 128
 LAST_STEP = 20000
+
 LEARNING_RATE = 0.1
 EPSILON = 1.0
 BETA_1 = 0.9
 BETA_2 = 0.999
+
+SCALE_INPUTS = 1.0
 DISTORT_INPUTS = True
-SCALE_INPUTS = True
+ZERO_MEAN_INPUTS = True
 
 DISPLAY_STEP = 10
 SAVE_CHECKPOINT_SECS = 30
@@ -26,9 +29,9 @@ SAVE_SUMMARIES_STEPS = 100
 def train(dataset, structure, checkpoint_dir=CHECKPOINT_DIR,
           batch_size=BATCH_SIZE, last_step=LAST_STEP,
           learning_rate=LEARNING_RATE, epsilon=EPSILON, beta1=BETA_1,
-          beta2=BETA_2, distort_inputs=DISTORT_INPUTS,
-          scale_inputs=SCALE_INPUTS, display_step=DISPLAY_STEP,
-          save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
+          beta2=BETA_2, scale_inputs=SCALE_INPUTS,
+          distort_inputs=DISTORT_INPUTS, zero_mean_inputs=ZERO_MEAN_INPUTS,
+          display_step=DISPLAY_STEP, save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
           save_summaries_steps=SAVE_SUMMARIES_STEPS):
 
     if tf.gfile.Exists(checkpoint_dir):
@@ -38,8 +41,8 @@ def train(dataset, structure, checkpoint_dir=CHECKPOINT_DIR,
     with tf.Graph().as_default():
         global_step = tf.contrib.framework.get_or_create_global_step()
 
-        data, labels = inputs(dataset, batch_size, distort_inputs,
-                              scale_inputs, shuffle=True)
+        data, labels = inputs(dataset, batch_size, scale_inputs,
+                              distort_inputs, zero_mean_inputs, shuffle=True)
 
         logits = inference(data, structure)
         loss = cal_loss(logits, labels)
@@ -76,6 +79,8 @@ def json_train(dataset, json, display_step=DISPLAY_STEP,
         json['epsilon'] if 'epsilon' in json else EPSILON,
         json['beta1'] if 'beta1' in json else BETA_1,
         json['beta2'] if 'beta2' in json else BETA_2,
-        json['distort_inputs'] if 'distort_inputs' in json else DISTORT_INPUTS,
         json['scale_inputs'] if 'scale_inputs' in json else SCALE_INPUTS,
+        json['distort_inputs'] if 'distort_inputs' in json else DISTORT_INPUTS,
+        json['zero_mean_inputs'] if 'zero_mean_inputs' in json
+        else ZERO_MEAN_INPUTS,
         display_step, save_checkpoint_secs, save_summaries_steps)

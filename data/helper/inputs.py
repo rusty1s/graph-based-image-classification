@@ -4,13 +4,13 @@ import tensorflow as tf
 
 from .record import Record
 
-BATCH_SIZE = 128
 MIN_FRACTION_OF_EXAMPLES_IN_QUEUE = 0.4
 NUM_THREADS = 16
 
 
-def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
-           scale_inputs=False, num_epochs=None, shuffle=False):
+def inputs(dataset, eval_data, batch_size=128, scale_inputs=1.0,
+           distort_inputs=False, zero_mean_inputs=False, num_epochs=None,
+           shuffle=False):
     """Constructs inputs from a dataset.
 
     Args:
@@ -18,8 +18,10 @@ def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
         eval_data: Boolean indicating if one should use the train or eval data
           set.
         batch_size: Number of data per batch (optional).
+        scale_inputs: Float defining the scaling for resizing the records data
+          (optional).
         distort_inputs: Boolean whether to distort the inputs (optional).
-        scale_inputs: Boolean indicating if one should linearly scales the
+        zero_mean_inputs: Boolean indicating if one should linearly scales the
           records data to have zero mean and unit norm (optional).
         num_epochs: Number indicating the maximal number of epoch iterations
           before raising an OutOfRange error (optional).
@@ -55,12 +57,14 @@ def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
     # Read examples from files in the filename queue.
     record = dataset.read(filename_queue)
 
-    # Distort the data.
+    if scale_inputs != 1.0:
+        record = _resize(record, scale=scale_inputs)
+
     if distort_inputs:
-        record = distort(record, scale_inputs)
-    elif scale_inputs:
-        data = tf.per_image_standardization(record.data)
-        record = Record(data, record.shape, record.label)
+        record = distort(record)
+
+    if zero_mean_inputs:
+        record = _zero_mean(record)
 
     min_queue_examples = int(num_examples_per_epoch *
                              MIN_FRACTION_OF_EXAMPLES_IN_QUEUE)
@@ -87,3 +91,21 @@ def inputs(dataset, eval_data, batch_size=BATCH_SIZE, distort_inputs=False,
             allow_smaller_final_batch=False if num_epochs is None else True)
 
     return data_batch, tf.reshape(label_batch, [-1])
+
+
+def _resize(record, scale):
+    new_height = int(scale * shape[0])
+    new_width = int(scale * shape[1])
+
+    with tf.name_scope('resize', values=[record.data, new_height, new_width]):
+        data_batch = tf.expand_dims(record.data, axis=0)
+        data_batch = tf.image.resize_area(
+            data_batch, [new_height, new_width], align_corners=True)
+        data = tf.squeeze(data_batch, axis=[0])
+
+    return Record(data, [new_height, new_width, record.shape[2]], record.label)
+
+
+def _zero_mean(record):
+    data = tf.image.per_image_standardization(record.data)
+    return Record(data, record.shape, record.label)

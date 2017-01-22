@@ -110,17 +110,15 @@ class PascalVOC(DataSet):
         # Use the global reader operation for TFRecords.
         return read_tfrecord(filename_queue, [HEIGHT, WIDTH, 3])
 
-    def distort_for_train(self, record, scale):
+    def distort_for_train(self, record):
         """Applies random distortions for training to a PascalVOC record."""
 
-        record = distort_image_for_train(record)
-        return super().distort_for_train(record, scale)
+        return distort_image_for_train(record)
 
-    def distort_for_eval(self, record, scale):
+    def distort_for_eval(self, record):
         """Applies distortions for evaluation to a PascalVOC record."""
 
-        record = distort_image_for_eval(record)
-        return super().distort_for_eval(record, scale)
+        return distort_image_for_eval(record)
 
     def _write_to_tfrecord(self):
         """Converts and writes the training and evaluation image sets to
