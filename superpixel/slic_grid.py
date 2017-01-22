@@ -18,14 +18,14 @@ class SlicGrid(DataSet):
         self._dataset = dataset
 
         iterate_train = iterator(
-            dataset, eval_data=False, scale_inputs=0.5, distort_inputs=True,
+            dataset, eval_data=False, distort_inputs=True,
             num_epochs=max_num_epochs, shuffle=True)
 
         def _before(image, label):
-            return image
+            return slic_algorithm(image)
 
         def _each(output, index, last_index):
-            print(output.shape)
+            print(np.unique(output).shape[0] - 400)
             # Get the image and the label name from the output of the session.
             # image = output
             # print(np.unique(image).size)

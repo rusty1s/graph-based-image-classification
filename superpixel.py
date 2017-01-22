@@ -28,7 +28,7 @@ tf.app.flags.DEFINE_string('algorithm', 'slic',
                            superpixel/algorithm/__init__.py for a list of all
                            available superpixel algorithms.""")
 tf.app.flags.DEFINE_boolean('draw_graph', False,
-                            """Draws an additional region adjacency graphs.""")
+                            """Draws an additional region adjacency graph.""")
 
 
 def save_superpixel_images(dataset, algorithm, eval_data):
