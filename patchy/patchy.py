@@ -85,14 +85,17 @@ class PatchySan(DataSet):
                    num_nodes, node_stride, neighborhood_assembly,
                    neighborhood_size, self._show_progress)
 
-        with open(os.path.join(data_dir, INFO_FILENAME), 'w') as f:
-            json.dump({'max_num_epochs': write_num_epochs,
-                       'node_labeling': node_labeling,
-                       'num_nodes': num_nodes,
-                       'num_node_channels': grapher.num_node_channels,
-                       'node_stride': node_stride,
-                       'neighborhood_assembly': neighborhood_assembly,
-                       'neighborhood_size': neighborhood_size}, f)
+        info_file = os.path.join(data_dir, INFO_FILENAME)
+
+        if not tf.gfile.Exists(info_file) or force_write:
+            with open(info_file, 'w') as f:
+                json.dump({'max_num_epochs': write_num_epochs,
+                           'node_labeling': node_labeling,
+                           'num_nodes': num_nodes,
+                           'num_node_channels': grapher.num_node_channels,
+                           'node_stride': node_stride,
+                           'neighborhood_assembly': neighborhood_assembly,
+                           'neighborhood_size': neighborhood_size}, f)
 
     @property
     def train_filenames(self):
