@@ -40,7 +40,7 @@ def save_images(dataset, eval_data):
 
     image_names = {label: 0 for label in dataset.labels}
 
-    iterate = iterator(dataset, eval_data)
+    iterate = iterator(dataset, eval_data, distort_inputs=True, shuffle=True)
 
     def _before(image, label):
         # Cast image to uint8, so we can save it easily.

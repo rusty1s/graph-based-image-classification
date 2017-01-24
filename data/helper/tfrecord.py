@@ -19,7 +19,7 @@ def read_tfrecord(filename_queue, shapes={}):
     reader = tf.TFRecordReader()
     _, serialized_example = reader.read(filename_queue)
 
-    features = {key: tf.FixedLenFEature([], tf.string) for key in shapes}
+    features = {key: tf.FixedLenFeature([], tf.string) for key in shapes}
     features['label'] = tf.FixedLenFeature([], tf.int64)
 
     example = tf.parse_single_example(serialized_example, features=features)

@@ -22,22 +22,6 @@ class DataSet():
         self._data_dir = data_dir
         self._show_progress = show_progress
 
-    @classmethod
-    def create(cls, json):
-        """Creates a dataset based on a json object.
-
-        Args:
-            json: The json object.
-
-        Returns:
-            The dataset.
-        """
-
-        return cls(
-            json['data_dir'] if 'data_dir' in json else None,
-            json['show_progress'] if 'show_progress' in json
-            else SHOW_PROGRESS)
-
     @property
     def data_dir(self):
         """The path to the directory where the dataset is stored.
