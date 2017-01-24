@@ -30,6 +30,8 @@ EVAL_FILENAME = 'eval.tfrecords'
 EVAL_INFO_FILENAME = 'eval_info.json'
 
 
+
+
 class PatchySan(DataSet):
 
     def __init__(self, dataset, grapher, data_dir=DATA_DIR,
@@ -52,10 +54,10 @@ class PatchySan(DataSet):
         node_labeling = labelings[node_labeling]
         neighborhood_assembly = neighborhood_assemblies[neighborhood_assembly]
 
-        tf.gfile.MakeDirs(DATA_DIR)
+        tf.gfile.MakeDirs(data_dir)
 
-        train_file = os.path.join(DATA_DIR, TRAIN_FILENAME)
-        train_info_file = os.path.join(DATA_DIR, TRAIN_INFO_FILENAME)
+        train_file = os.path.join(data_dir, TRAIN_FILENAME)
+        train_info_file = os.path.join(data_dir, TRAIN_INFO_FILENAME)
 
         if not tf.gfile.Exists(train_file) or force_write:
             _write(dataset, grapher, False, train_file, train_info_file,
@@ -63,8 +65,8 @@ class PatchySan(DataSet):
                    num_nodes, node_stride, neighborhood_assembly,
                    neighborhood_size, self._show_progress)
 
-        eval_file = os.path.join(DATA_DIR, EVAL_FILENAME)
-        eval_info_file = os.path.join(DATA_DIR, EVAL_INFO_FILENAME)
+        eval_file = os.path.join(data_dir, EVAL_FILENAME)
+        eval_info_file = os.path.join(data_dir, EVAL_INFO_FILENAME)
 
         if not tf.gfile.Exists(eval_file) or force_write:
             _write(dataset, grapher, True, eval_file, eval_info_file,
@@ -72,8 +74,8 @@ class PatchySan(DataSet):
                    node_stride, neighborhood_assembly, neighborhood_size,
                    self._show_progress)
 
-        train_eval_file = os.path.join(DATA_DIR, TRAIN_EVAL_FILENAME)
-        train_eval_info_file = os.path.join(DATA_DIR, TRAIN_EVAL_INFO_FILENAME)
+        train_eval_file = os.path.join(data_dir, TRAIN_EVAL_FILENAME)
+        train_eval_info_file = os.path.join(data_dir, TRAIN_EVAL_INFO_FILENAME)
 
         if distort_inputs and (not tf.gfile.Exists(train_eval_file) or
                                force_write):
@@ -82,6 +84,15 @@ class PatchySan(DataSet):
                    train_eval_info_file, 1, True, False, node_labeling,
                    num_nodes, node_stride, neighborhood_assembly,
                    neighborhood_size, self._show_progress)
+
+        with open(os.path.join(data_dir, INFO_FILENAME), 'w') as f:
+            json.dump({'max_num_epochs': write_num_epochs,
+                       'node_labeling': node_labeling,
+                       'num_nodes': num_nodes,
+                       'num_node_channels': grapher.num_node_channels,
+                       'node_stride': node_stride,
+                       'neighborhood_assembly': neighborhood_assembly,
+                       'neighborhood_size': neighborhood_size}, f)
 
     @property
     def train_filenames(self):
