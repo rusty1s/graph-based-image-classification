@@ -1,5 +1,6 @@
 from .feature_extraction import feature_extraction
 from .adjacency import adjacency_unweighted, adjacency_euclidean_distance
+from .grapher import grapher
 
 
 adjacencies = {'unweighted': adjacency_unweighted,
