@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from grapher import Grapher
 
 from .feature_extraction import feature_extraction, NUM_FEATURES
