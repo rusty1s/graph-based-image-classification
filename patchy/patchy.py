@@ -45,6 +45,7 @@ class PatchySan(DataSet):
         self._grapher = grapher
         self._num_nodes
         self._neighborhood_size = neighborhood_size
+        self._distort_inputs = distort_inputs
 
         super().__init__(data_dir, show_progress)
 
@@ -84,15 +85,18 @@ class PatchySan(DataSet):
 
     @property
     def train_filenames(self):
-        pass
+        return [os.path.join(self.data_dir, TRAIN_FILENAME)]
 
     @property
     def eval_filenames(self):
-        pass
+        return [os.path.join(self.data_dir, EVAL_FILENAME)]
 
     @property
     def train_eval_filenames(self):
-        return self.train_filenames(self)
+        if distort_inputs:
+            return [os.path.join(self.data_dir, TRAIN_EVAL_FILENAME)]
+        else:
+            return [os.path.join(self.data_dir, TRAIN_FILENAME)]
 
     @property
     def labels(self):
@@ -100,23 +104,34 @@ class PatchySan(DataSet):
 
     @property
     def num_examples_per_epoch_for_train(self):
-        return self._dataset.num_examples_per_epoch_for_train
+        with open(os.path.join(self._data_dir, TRAIN_INFO_FILENAME), 'r') as f:
+            count = json.load(f)['count']
+            return min(count, self._dataset.num_examples_per_epoch_for_train)
 
     @property
     def num_examples_per_epoch_for_eval(self):
-        return self._dataset.num_examples_per_epoch_for_eval
+        with open(os.path.join(self._data_dir, EVAL_INFO_FILENAME), 'r') as f:
+            count = json.load(f)['count']
+            return min(count, self._dataset.num_examples_per_epoch_for_eval)
 
     @property
     def num_examples_per_epoch_for_train_eval(self):
-        return self._dataset.num_examples_per_epoch_for_train_eval
+        if distort_inputs:
+            filename = os.path.join(self._data_dir, TRAIN_EVAL_INFO_FILENAME)
+            with open(filename, 'r') as f:
+                count = json.load(f)['count']
+                return min(count,
+                           self._dataset.num_examples_per_epoch_for_train_eval)
+        else:
+            return self._dataset.num_examples_per_epoch_for_train
 
     def read(self, filename_queue):
-        # TODO Convert to feature map
         data, label = read_tfrecord(
             filename_queue,
             {'nodes': [-1, self._grapher.num_node_channels],
              'neighborhood': [self._num_nodes, self._neighborhood_size]})
 
+        # TODO Convert to feature map
         return Record(data['neighborhood'],
                       [self._num_nodes, self._neighborhood_size],
                       label)
