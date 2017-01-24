@@ -22,7 +22,8 @@ matrix:
         - NAUTY="26r7"
         - PYNAUTY="0.6.0"
 install:
-  - source ci/install.sh
+  - source bin/conda.sh
+  - source bin/install.sh --python "$TRAVIS_PYTHON_VERSION" --tensorflow "$TENSORFLOW" --nauty "$NAUTY" --pynauty "$PYNAUTY" test
 script:
   - bash bin/test.sh
 after_success:
