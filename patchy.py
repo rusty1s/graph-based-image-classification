@@ -8,12 +8,10 @@ from data import iterator
 
 
 def main(argv=None):
-    pass
-    
-    # pascal = PascalVOC()
-    # grapher = SegmentationGrapher(slic_generator(289), 'euclid_distance')
+    pascal = PascalVOC()
+    grapher = SegmentationGrapher(slic_generator(289), 'euclid_distance')
 
-    # patchy = PatchySan(pascal, grapher, distort_inputs=True, num_nodes=300)
+    patchy = PatchySan(pascal, grapher, distort_inputs=True, num_nodes=300)
 
 
 if __name__ == '__main__':

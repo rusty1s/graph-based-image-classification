@@ -51,8 +51,8 @@ class PatchySan(DataSet):
 
         super().__init__(data_dir, show_progress)
 
-        node_labeling = labelings[node_labeling]
-        neighborhood_assembly = neighborhood_assemblies[neighborhood_assembly]
+        _node_labeling = labelings[node_labeling]
+        _neighborhood_assembly = neighborhood_assemblies[neighborhood_assembly]
 
         tf.gfile.MakeDirs(data_dir)
 
@@ -61,8 +61,8 @@ class PatchySan(DataSet):
 
         if not tf.gfile.Exists(train_file) or force_write:
             _write(dataset, grapher, False, train_file, train_info_file,
-                   write_num_epochs, distort_inputs, True, node_labeling,
-                   num_nodes, node_stride, neighborhood_assembly,
+                   write_num_epochs, distort_inputs, True, _node_labeling,
+                   num_nodes, node_stride, _neighborhood_assembly,
                    neighborhood_size, self._show_progress)
 
         eval_file = os.path.join(data_dir, EVAL_FILENAME)
@@ -70,8 +70,8 @@ class PatchySan(DataSet):
 
         if not tf.gfile.Exists(eval_file) or force_write:
             _write(dataset, grapher, True, eval_file, eval_info_file,
-                   1, distort_inputs, False, node_labeling, num_nodes,
-                   node_stride, neighborhood_assembly, neighborhood_size,
+                   1, distort_inputs, False, _node_labeling, num_nodes,
+                   node_stride, _neighborhood_assembly, neighborhood_size,
                    self._show_progress)
 
         train_eval_file = os.path.join(data_dir, TRAIN_EVAL_FILENAME)
@@ -81,8 +81,8 @@ class PatchySan(DataSet):
                                force_write):
 
             _write(dataset, grapher, False, train_eval_file,
-                   train_eval_info_file, 1, True, False, node_labeling,
-                   num_nodes, node_stride, neighborhood_assembly,
+                   train_eval_info_file, 1, True, False, _node_labeling,
+                   num_nodes, node_stride, _neighborhood_assembly,
                    neighborhood_size, self._show_progress)
 
         info_file = os.path.join(data_dir, INFO_FILENAME)
@@ -90,6 +90,7 @@ class PatchySan(DataSet):
         if not tf.gfile.Exists(info_file) or force_write:
             with open(info_file, 'w') as f:
                 json.dump({'max_num_epochs': write_num_epochs,
+                           'distort_inputs': distort_inputs,
                            'node_labeling': node_labeling,
                            'num_nodes': num_nodes,
                            'num_node_channels': grapher.num_node_channels,
