@@ -24,7 +24,7 @@ DATA_DIR = '/tmp/pascal_voc_data'
 # The final shape of all images of the PascalVOC dataset.
 HEIGHT = 224
 WIDTH = 224
-SHAPE = [HEIGHT, WIDHT, 3]
+SHAPE = [HEIGHT, WIDTH, 3]
 
 # Pass objects whose bounding boxes fall below a given bound.
 MIN_OBJECT_HEIGHT = 50

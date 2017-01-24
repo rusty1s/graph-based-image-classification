@@ -5,7 +5,8 @@ import json
 import tensorflow as tf
 
 from data import DataSet, Record, iterator, read_tfrecord, write_tfrecord
-from patchy import labelings, neighborhood_assemblies
+from .helper.labeling import labelings
+from .helper.neighborhood_assembly import neighborhood_assemblies
 from .helper.node_sequence import node_sequence
 
 

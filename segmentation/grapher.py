@@ -1,7 +1,7 @@
 from grapher import Grapher
 
 from .feature_extraction import feature_extraction, NUM_FEATURES
-from segmentation import adjacencies
+from .adjacency import adjacencies
 
 
 def SegmentationGrapher(Grapher):
