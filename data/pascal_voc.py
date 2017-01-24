@@ -32,15 +32,15 @@ MIN_OBJECT_WIDTH = 50
 
 # Filenames where the TFRecord information of the PascalVOC dataset is stored.
 TRAIN_FILENAME = 'train.tfrecords'
-TRAIN_INFO_FILENAME = 'train_info.txt'
+TRAIN_INFO_FILENAME = 'train_info.json'
 EVAL_FILENAME = 'eval.tfrecords'
-EVAL_INFO_FILENAME = 'eval_info.txt'
+EVAL_INFO_FILENAME = 'eval_info.json'
 
 
 class PascalVOC(DataSet):
     """PascalVOC image classification dataset."""
 
-    def __init__(self, data_dir=None, show_progress=None):
+    def __init__(self, data_dir=DATA_DIR, show_progress=True):
         """Creates a PascalVOC image classification dataset.
 
         Args:
@@ -48,8 +48,6 @@ class PascalVOC(DataSet):
             stored.
             show_progress: Show a pretty progress bar for dataset computations.
         """
-
-        data_dir = DATA_DIR if data_dir is None else data_dir
 
         super().__init__(data_dir, show_progress)
 

@@ -32,16 +32,15 @@ EVAL_INFO_FILENAME = 'eval_info.json'
 
 class PatchySan(DataSet):
 
-    def __init__(self, dataset, grapher, data_dir=None,
+    def __init__(self, dataset, grapher, data_dir=DATA_DIR,
                  force_write=FORCE_WRITE, write_num_epochs=WRITE_NUM_EPOCHS,
                  distort_inputs=DISTORT_INPUTS,
                  node_labeling=NODE_LABELING, num_nodes=NUM_NODES,
                  node_stride=NODE_STRIDE,
                  neighborhood_assembly=NEIGHBORHOOD_ASSEMBLY,
                  neighborhood_size=NEIGHBORHOOD_SIZE,
-                 show_progress=None):
+                 show_progress=True):
 
-        data_dir = DATA_DIR if data_dir is None else data_dir
         self._dataset = dataset
         self._grapher = grapher
         self._num_nodes

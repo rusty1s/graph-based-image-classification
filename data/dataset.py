@@ -6,14 +6,11 @@ import tensorflow as tf
 from .helper.record import Record
 
 
-SHOW_PROGRESS = True
-
-
 @six.add_metaclass(abc.ABCMeta)
 class DataSet():
     """Abstract class for defining a dataset interface."""
 
-    def __init__(self, data_dir, show_progress=SHOW_PROGRESS):
+    def __init__(self, data_dir, show_progress=True):
         """Creates a dataset.
 
         Args:
@@ -167,7 +164,6 @@ class DataSet():
         pass
 
     @property
-    @abc.abstractmethod
     def num_examples_per_epoch_for_train_eval(self):
         """The number of examples per epoch for evaluating the dataset using
         the training data.

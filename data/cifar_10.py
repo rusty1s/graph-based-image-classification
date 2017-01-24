@@ -33,7 +33,7 @@ NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 class Cifar10(DataSet):
     """CIFAR-10 dataset."""
 
-    def __init__(self, data_dir=None, show_progress=None):
+    def __init__(self, data_dir=DATA_DIR, show_progress=True):
         """Creates a CIFAR-10 dataset.
 
         Args:
@@ -41,8 +41,6 @@ class Cifar10(DataSet):
             stored.
             show_progress: Show a pretty progress bar for dataset computations.
         """
-
-        data_dir = DATA_DIR if data_dir is None else data_dir
 
         super().__init__(data_dir, show_progress)
 
