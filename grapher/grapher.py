@@ -10,7 +10,11 @@ class Grapher(object):
     def num_node_channels(self):
         pass
 
+    @property
+    @abc.abstractmethod
+    def num_adjacency_matrices(self):
+        pass
+
     @abc.abstractmethod
     def create_graph(self, data):
-        """Returns nodes and adjacent tensors."""
         pass
