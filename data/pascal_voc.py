@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 
 from six.moves import xrange
 from xml.dom.minidom import parse
@@ -8,6 +9,7 @@ import tensorflow as tf
 from skimage.io import imread
 
 from .dataset import DataSet
+from .helper.record import Record
 from .helper.download import maybe_download_and_extract
 from .helper.tfrecord import read_tfrecord, write_to_tfrecord
 from .helper.transform_image import crop_shape_from_box
@@ -22,6 +24,7 @@ DATA_DIR = '/tmp/pascal_voc_data'
 # The final shape of all images of the PascalVOC dataset.
 HEIGHT = 224
 WIDTH = 224
+SHAPE = [HEIGHT, WIDHT, 3]
 
 # Pass objects whose bounding boxes fall below a given bound.
 MIN_OBJECT_HEIGHT = 50
@@ -54,18 +57,6 @@ class PascalVOC(DataSet):
         maybe_download_and_extract(DATA_URL, data_dir, show_progress)
         self._write_to_tfrecord()
 
-        # PascalVOC does have a unique image size, but in the image
-        # classification case we save multiple images for multiple objects for
-        # one image. So we read the estimated number of examples per epoch from
-        # an info file from disk.
-        self._num_examples_per_epoch_for_train =\
-            self._read_num_examples_per_epoch(
-                os.path.join(data_dir, TRAIN_INFO_FILENAME))
-
-        self._num_examples_per_epoch_for_eval =\
-            self._read_num_examples_per_epoch(
-                os.path.join(data_dir, EVAL_INFO_FILENAME))
-
     @property
     def train_filenames(self):
         """The filenames of the training batches from the PascalVOC dataset."""
@@ -95,20 +86,23 @@ class PascalVOC(DataSet):
         """The number of examples per epoch for training the PascalVOC dataset.
         """
 
-        return self._num_examples_per_epoch_for_train
+        with open(os.path.join(self._data_dir, TRAIN_INFO_FILENAME), 'r') as f:
+            return json.load(f)['num_examples_per_epoch']
 
     @property
     def num_examples_per_epoch_for_eval(self):
         """The number of examples per epoch for evaluating the PascalVOC
         dataset."""
 
-        return self._num_examples_per_epoch_for_eval
+        with open(os.path.join(self._data_dir, EVAL_INFO_FILENAME), 'r') as f:
+            return json.load(f)['num_examples_per_epoch']
 
     def read(self, filename_queue):
         """Reads and parses examples from PascalVOC data files."""
 
         # Use the global reader operation for TFRecords.
-        return read_tfrecord(filename_queue, [HEIGHT, WIDTH, 3])
+        data, label = read_tfrecord(filename_queue, {'data': SHAPE})
+        return Record(data['data'], SHAPE, label)
 
     def distort_for_train(self, record):
         """Applies random distortions for training to a PascalVOC record."""
@@ -287,7 +281,7 @@ class PascalVOC(DataSet):
         """
 
         with open(filename, 'w') as f:
-            f.write(str(num_examples_per_epoch))
+            json.dump({'num_examples_per_epoch': num_examples_per_epoch}, f)
 
     def _read_num_examples_per_epoch(self, filename):
         """Reads the number of examples per epoch of a filename.

@@ -4,12 +4,13 @@ import numpy as np
 from .record import Record
 
 
-def read_tfrecord(filename_queue, shape):
+def read_tfrecord(filename_queue, shapes={}):
     """Reads and parses TFRecord examples from data files.
 
     Args:
         filename_queue: A queue of strings with the filenames to read from.
-        shape: A TensorShape representing the shape of the data.
+        shapes: A dictionary containing the shape for a feature in a single
+          example.
 
     Returns:
         A record object.
@@ -18,19 +19,16 @@ def read_tfrecord(filename_queue, shape):
     reader = tf.TFRecordReader()
     _, serialized_example = reader.read(filename_queue)
 
-    features = tf.parse_single_example(
-        serialized_example,
-        features={
-            'data': tf.FixedLenFeature([], tf.string),
-            'label': tf.FixedLenFeature([], tf.int64),
-        })
+    features = {key: tf.FixedLenFEature([], tf.string) for key in shapes}
+    features['label'] = tf.FixedLenFeature([], tf.int64)
+    features = tf.parse_single_example(serialized_example, features=features)
 
-    data = tf.decode_raw(features['data'], tf.float32)
-    data = tf.reshape(data, shape)
+    data = {key: tf.decode_raw(features[key], tf.float32) for key in shapes}
+    data = {key: tf.reshape(data[key], shapes[key]) for key in shapes}
 
     label = tf.reshape(features['label'], [1])
 
-    return Record(data, shape, label)
+    return data, label
 
 
 def write_to_tfrecord(writer, data, label):
