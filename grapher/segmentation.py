@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+import tensorflow as tf
+
 from segmentation import feature_extraction, NUM_FEATURES,\
                          adjacency_euclidean_distance
 
@@ -17,7 +19,7 @@ class SegmentationGrapher(Grapher):
         return NUM_FEATURES
 
     @property
-    def num_adjacency_matrices(self):
+    def num_edge_channels(self):
         return 1
 
     def create_graph(self, image):
@@ -26,4 +28,4 @@ class SegmentationGrapher(Grapher):
         nodes = feature_extraction(segmentation, image)
         adjacency = self._adjacency_algorithm(segmentation)
 
-        return nodes, adjacency
+        return nodes, tf.expand_dims(adjacency, axis=1)

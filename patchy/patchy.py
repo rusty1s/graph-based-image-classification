@@ -32,9 +32,9 @@ class PatchySan(DataSet):
 
     def __init__(self, dataset, grapher, data_dir=DATA_DIR,
                  force_write=FORCE_WRITE, write_num_epochs=WRITE_NUM_EPOCHS,
-                 distort_inputs=DISTORT_INPUTS,
-                 node_labeling=None, num_nodes=NUM_NODES,
-                 node_stride=NODE_STRIDE, neighborhood_assembly=None,
+                 distort_inputs=DISTORT_INPUTS, node_labeling=None,
+                 num_nodes=NUM_NODES, node_stride=NODE_STRIDE,
+                 neighborhood_assembly=None,
                  neighborhood_size=NEIGHBORHOOD_SIZE, show_progress=True):
 
         node_labeling = identity if node_labeling is None else node_labeling
@@ -91,8 +91,9 @@ class PatchySan(DataSet):
                            'num_node_channels': grapher.num_node_channels,
                            'node_stride': node_stride,
                            'neighborhood_assembly':
-                            neighborhood_assembly.__name__,
-                           'neighborhood_size': neighborhood_size}, f)
+                           neighborhood_assembly.__name__,
+                           'neighborhood_size': neighborhood_size,
+                           'num_edge_channels': grapher.num_edge_channels}, f)
 
     @property
     def train_filenames(self):
@@ -172,7 +173,13 @@ def _write(dataset, grapher, eval_data, tfrecord_file, info_file,
                        num_epochs=write_num_epochs, shuffle=shuffle)
 
     def _before(image, label):
-        nodes, adjacency = grapher.create_graph(image)
+        nodes, adjacencies = grapher.create_graph(image)
+
+        # Only take the first adjacency matrix.
+        count = tf.shape(adjacencies)[0]
+        adjacency = tf.strided_slice(
+            adjacencies, [0, 0, 0], [count, count, 1], [1, 1, 1])
+        adjacency = tf.squeeze(adjacency, axis=2)
         sequence = node_labeling(adjacency)
         sequence = node_sequence(sequence, num_nodes, node_stride)
         neighborhood = neighborhood_assembly(adjacency, sequence,
