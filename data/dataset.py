@@ -74,6 +74,17 @@ class DataSet():
         pass
 
     @property
+    def train_eval_filenames(self):
+        """The filenames of the training batches from the dataset for
+        evaluating.
+
+        Returns:
+             A list of absolute filenames.
+        """
+
+        return self.train_filenames(self)
+
+    @property
     @abc.abstractmethod
     def labels(self):
         """The ordered labels of the dataset.
@@ -154,6 +165,18 @@ class DataSet():
         """
 
         pass
+
+    @property
+    @abc.abstractmethod
+    def num_examples_per_epoch_for_train_eval(self):
+        """The number of examples per epoch for evaluating the dataset using
+        the training data.
+
+        Returns:
+            A number.
+        """
+
+        return self.num_examples_per_epoch_for_train
 
     @abc.abstractmethod
     def read(self, filename_queue):

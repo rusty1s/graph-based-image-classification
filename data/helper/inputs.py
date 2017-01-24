@@ -39,10 +39,15 @@ def inputs(dataset, eval_data, batch_size=128, scale_inputs=1.0,
     else:
         distort = dataset.distort_for_eval
 
-    # Choose the right dataset.
+    # Choose the right dataset filenames.
     if not eval_data:
-        filenames = dataset.train_filenames
-        num_examples_per_epoch = dataset.num_examples_per_epoch_for_train
+        if shuffle:
+            filenames = dataset.train_filenames
+            num_examples_per_epoch = dataset.num_examples_per_epoch_for_train
+        else:
+            filenames = dataset.train_eval_filenames
+            num_examples_per_epoch =\
+                dataset.num_examples_per_epoch_for_train_eval
     else:
         filenames = dataset.eval_filenames
         num_examples_per_epoch = dataset.num_examples_per_epoch_for_eval

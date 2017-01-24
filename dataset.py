@@ -75,9 +75,6 @@ def save_images(dataset, eval_data):
 def main(argv=None):
     """Runs the script."""
 
-    if FLAGS.dataset not in datasets:
-        raise ValueError('{} is no valid dataset.'.format(FLAGS.dataset))
-
     if FLAGS.data_dir:
         dataset = datasets[FLAGS.dataset](FLAGS.data_dir)
     else:

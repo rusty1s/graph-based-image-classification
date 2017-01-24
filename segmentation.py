@@ -133,13 +133,6 @@ def save_segemented_images(dataset, algorithm, eval_data):
 def main(argv=None):
     """Runs the script."""
 
-    if FLAGS.dataset not in datasets:
-        raise ValueError('{} is no valid dataset.'.format(FLAGS.dataset))
-
-    if FLAGS.algorithm not in generators:
-        raise ValueError('{} is no valid segmentation algorithm.'
-                         .format(FLAGS.algorithm))
-
     if FLAGS.data_dir:
         dataset = datasets[FLAGS.dataset](FLAGS.data_dir)
     else:
