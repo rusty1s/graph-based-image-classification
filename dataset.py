@@ -4,8 +4,7 @@ import sys
 import tensorflow as tf
 from skimage.io import imsave
 
-from data import datasets
-from data import iterator
+from data import datasets, iterator
 
 
 FLAGS = tf.app.flags.FLAGS
@@ -40,7 +39,7 @@ def save_images(dataset, eval_data):
 
     image_names = {label: 0 for label in dataset.labels}
 
-    iterate = iterator(dataset, eval_data, distort_inputs=True, shuffle=True)
+    iterate = iterator(dataset, eval_data)
 
     def _before(image, label):
         # Cast image to uint8, so we can save it easily.

@@ -11,8 +11,7 @@ from skimage.measure import regionprops
 from skimage import draw
 
 
-from data import datasets
-from data import iterator
+from data import datasets, iterator
 from segmentation.algorithm import generators
 
 
@@ -31,7 +30,7 @@ tf.app.flags.DEFINE_boolean('draw_graph', False,
                             """Draws an additional region adjacency graph.""")
 
 
-def save_segemented_images(dataset, algorithm, eval_data):
+def save_segmented_images(dataset, algorithm, eval_data):
     """Saves images with computed segment boundaries for either training or
     evaluation to an images directory into the datasets data directory.
 

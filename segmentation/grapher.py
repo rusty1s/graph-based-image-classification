@@ -6,8 +6,7 @@ from .feature_extraction import feature_extraction, NUM_FEATURES
 from .adjacency import adjacencies
 
 
-def SegmentationGrapher(Grapher):
-
+class SegmentationGrapher(Grapher):
     def __init__(self, algorithm, adjacency_name):
         self._algorithm = algorithm
         self._adjacency_name = adjacency_name

@@ -63,7 +63,7 @@ class DataSet():
              A list of absolute filenames.
         """
 
-        return self.train_filenames(self)
+        return self.train_filenames
 
     @property
     @abc.abstractmethod

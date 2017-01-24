@@ -43,7 +43,7 @@ class PatchySan(DataSet):
 
         self._dataset = dataset
         self._grapher = grapher
-        self._num_nodes
+        self._num_nodes = num_nodes
         self._neighborhood_size = neighborhood_size
         self._distort_inputs = distort_inputs
 
@@ -142,7 +142,7 @@ def _write(dataset, grapher, eval_data, tfrecord_file, info_file,
            node_labeling, num_nodes, node_stride, neighborhood_assembly,
            neighborhood_size, show_progress=True):
 
-    writer = tf.python_io.TFRecordWriter(tfrecord_filename)
+    writer = tf.python_io.TFRecordWriter(tfrecord_file)
 
     iterate = iterator(dataset, eval_data, distort_inputs=distort_inputs,
                        num_epochs=write_num_epochs, shuffle=shuffle)
