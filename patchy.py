@@ -2,7 +2,7 @@ import tensorflow as tf
 
 from data import PascalVOC
 from patchy import PatchySan
-from segmentation import SegmentationGrapher
+from grapher import SegmentationGrapher
 from segmentation.algorithm import slic_generator
 from data import iterator
 

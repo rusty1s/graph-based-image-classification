@@ -5,8 +5,8 @@ import json
 import tensorflow as tf
 
 from data import DataSet, Record, iterator, read_tfrecord, write_tfrecord
-from .helper.labeling import labelings
-from .helper.neighborhood_assembly import neighborhood_assemblies
+from .helper.labeling import identity
+from .helper.neighborhood_assembly import neighborhoods_by_weight
 from .helper.node_sequence import node_sequence
 
 
@@ -15,10 +15,8 @@ FORCE_WRITE = False
 WRITE_NUM_EPOCHS = 1
 DISTORT_INPUTS = False
 
-NODE_LABELING = 'identity'
 NUM_NODES = 100
 NODE_STRIDE = 1
-NEIGHBORHOOD_ASSEMBLY = 'by_weight'
 NEIGHBORHOOD_SIZE = 7
 
 INFO_FILENAME = 'info.json'
@@ -30,18 +28,18 @@ EVAL_FILENAME = 'eval.tfrecords'
 EVAL_INFO_FILENAME = 'eval_info.json'
 
 
-
-
 class PatchySan(DataSet):
 
     def __init__(self, dataset, grapher, data_dir=DATA_DIR,
                  force_write=FORCE_WRITE, write_num_epochs=WRITE_NUM_EPOCHS,
                  distort_inputs=DISTORT_INPUTS,
-                 node_labeling=NODE_LABELING, num_nodes=NUM_NODES,
-                 node_stride=NODE_STRIDE,
-                 neighborhood_assembly=NEIGHBORHOOD_ASSEMBLY,
-                 neighborhood_size=NEIGHBORHOOD_SIZE,
-                 show_progress=True):
+                 node_labeling=None, num_nodes=NUM_NODES,
+                 node_stride=NODE_STRIDE, neighborhood_assembly=None,
+                 neighborhood_size=NEIGHBORHOOD_SIZE, show_progress=True):
+
+        node_labeling = identity if node_labeling is None else node_labeling
+        neighborhood_assembly = neighborhoods_by_weight if\
+            neighborhood_assembly is None else neighborhood_assembly
 
         self._dataset = dataset
         self._grapher = grapher
@@ -51,9 +49,6 @@ class PatchySan(DataSet):
 
         super().__init__(data_dir, show_progress)
 
-        _node_labeling = labelings[node_labeling]
-        _neighborhood_assembly = neighborhood_assemblies[neighborhood_assembly]
-
         tf.gfile.MakeDirs(data_dir)
 
         train_file = os.path.join(data_dir, TRAIN_FILENAME)
@@ -61,8 +56,8 @@ class PatchySan(DataSet):
 
         if not tf.gfile.Exists(train_file) or force_write:
             _write(dataset, grapher, False, train_file, train_info_file,
-                   write_num_epochs, distort_inputs, True, _node_labeling,
-                   num_nodes, node_stride, _neighborhood_assembly,
+                   write_num_epochs, distort_inputs, True, node_labeling,
+                   num_nodes, node_stride, neighborhood_assembly,
                    neighborhood_size, self._show_progress)
 
         eval_file = os.path.join(data_dir, EVAL_FILENAME)
@@ -70,8 +65,8 @@ class PatchySan(DataSet):
 
         if not tf.gfile.Exists(eval_file) or force_write:
             _write(dataset, grapher, True, eval_file, eval_info_file,
-                   1, distort_inputs, False, _node_labeling, num_nodes,
-                   node_stride, _neighborhood_assembly, neighborhood_size,
+                   1, distort_inputs, False, node_labeling, num_nodes,
+                   node_stride, neighborhood_assembly, neighborhood_size,
                    self._show_progress)
 
         train_eval_file = os.path.join(data_dir, TRAIN_EVAL_FILENAME)
@@ -81,8 +76,8 @@ class PatchySan(DataSet):
                                force_write):
 
             _write(dataset, grapher, False, train_eval_file,
-                   train_eval_info_file, 1, True, False, _node_labeling,
-                   num_nodes, node_stride, _neighborhood_assembly,
+                   train_eval_info_file, 1, True, False, node_labeling,
+                   num_nodes, node_stride, neighborhood_assembly,
                    neighborhood_size, self._show_progress)
 
         info_file = os.path.join(data_dir, INFO_FILENAME)
@@ -91,11 +86,12 @@ class PatchySan(DataSet):
             with open(info_file, 'w') as f:
                 json.dump({'max_num_epochs': write_num_epochs,
                            'distort_inputs': distort_inputs,
-                           'node_labeling': node_labeling,
+                           'node_labeling': node_labeling.__name__,
                            'num_nodes': num_nodes,
                            'num_node_channels': grapher.num_node_channels,
                            'node_stride': node_stride,
-                           'neighborhood_assembly': neighborhood_assembly,
+                           'neighborhood_assembly':
+                            neighborhood_assembly.__name__,
                            'neighborhood_size': neighborhood_size}, f)
 
     @property

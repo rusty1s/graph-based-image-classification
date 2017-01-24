@@ -27,7 +27,3 @@ def _labels_default(labels, adjacency):
         return tf.range(0, tf.shape(adjacency)[0], dtype=tf.int32)
     else:
         return labels
-
-
-labelings = {'identity': identity,
-             'betweenness_centrality': betweenness_centrality}
