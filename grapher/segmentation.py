@@ -28,4 +28,4 @@ class SegmentationGrapher(Grapher):
         nodes = feature_extraction(segmentation, image)
         adjacency = self._adjacency_algorithm(segmentation)
 
-        return nodes, tf.expand_dims(adjacency, axis=1)
+        return nodes, tf.expand_dims(adjacency, axis=2)
