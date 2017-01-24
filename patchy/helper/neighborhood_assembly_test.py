@@ -1,11 +1,11 @@
 import tensorflow as tf
 
-from .neighborhood_assembly import neighborhoods_by_distance
+from .neighborhood_assembly import neighborhoods_by_weight
 
 
 class NeighborhoodAssemblyTest(tf.test.TestCase):
 
-    def test_neighborhoods_by_distance(self):
+    def test_neighborhoods_by_weight(self):
         sequence = tf.constant([0, 2, 5, -1])
 
         adjacency = tf.constant([
@@ -28,8 +28,7 @@ class NeighborhoodAssemblyTest(tf.test.TestCase):
         ]
 
         with self.test_session() as sess:
-            neighborhoods = neighborhoods_by_distance(adjacency, sequence,
-                                                      size)
+            neighborhoods = neighborhoods_by_weight(adjacency, sequence, size)
             self.assertAllEqual(neighborhoods.eval(), expected)
 
         sequence = tf.constant([0, 1, 2, 3])
@@ -51,6 +50,5 @@ class NeighborhoodAssemblyTest(tf.test.TestCase):
         ]
 
         with self.test_session() as sess:
-            neighborhoods = neighborhoods_by_distance(adjacency, sequence,
-                                                      size)
+            neighborhoods = neighborhoods_by_weight(adjacency, sequence, size)
             self.assertAllEqual(neighborhoods.eval(), expected)

@@ -3,8 +3,8 @@ import networkx as nx
 import numpy as np
 
 
-def neighborhoods_by_distance(adjacency, sequence, size):
-    def _neighborhoods_by_distance(adjacency, sequence):
+def neighborhoods_by_weight(adjacency, sequence, size):
+    def _neighborhoods_by_weight(adjacency, sequence):
         graph = nx.from_numpy_matrix(adjacency)
 
         neighborhoods = np.zeros((sequence.shape[0], size), dtype=np.int32)
@@ -23,6 +23,5 @@ def neighborhoods_by_distance(adjacency, sequence, size):
 
         return neighborhoods
 
-    return tf.py_func(_neighborhoods_by_distance, [adjacency, sequence],
-                      tf.int32, stateful=False,
-                      name='neighborhoods_by_distance')
+    return tf.py_func(_neighborhoods_by_weight, [adjacency, sequence],
+                      tf.int32, stateful=False, name='neighborhoods_by_weight')
