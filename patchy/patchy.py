@@ -131,10 +131,23 @@ class PatchySan(DataSet):
             {'nodes': [-1, self._grapher.num_node_channels],
              'neighborhood': [self._num_nodes, self._neighborhood_size]})
 
-        # TODO Convert to feature map
-        return Record(data['neighborhood'],
-                      [self._num_nodes, self._neighborhood_size],
-                      label)
+        nodes = data['nodes']
+
+        # Convert the neighborhood to a feature map.
+        def _map_features(node):
+            i = tf.maximum(node, 0)
+            positive = tf.strided_slice(nodes, [i], [i+1], [1])
+            negative = tf.zeros([1, self._grapher.num_node_channels])
+
+            return tf.where(node_index < 0, negative, positive)
+
+        data = tf.reshape(data['neighborhood'], [-1])
+        data = tf.map_fn(_map_features, neighborhood, dtype=tf.float32)
+        shape = [self._num_nodes, self._neighborhood_size,
+                 self._grapher.num_node_channels]
+        data = tf.reshape(data, shape)
+
+        return Record(data, shape, label)
 
 
 def _write(dataset, grapher, eval_data, tfrecord_file, info_file,
