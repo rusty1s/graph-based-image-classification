@@ -47,14 +47,9 @@ def slic(image, num_segments=NUM_SEGMENTS, compactness=COMPACTNESS,
                                     max_size_factor=max_size_factor,
                                     enforce_connectivity=enforce_connectivity,
                                     slic_zero=False)
+        return segmentation.astype(np.int32)
 
-        # py_func expects a float as out type.
-        return segmentation.astype(np.float32)
-
-    segmentation = tf.py_func(
-        _slic, [image], tf.float32, stateful=False, name='slic')
-
-    return tf.cast(segmentation, tf.int32)
+    return tf.py_func(_slic, [image], tf.int32, stateful=False, name='slic')
 
 
 def slic_generator(num_segments=NUM_SEGMENTS, compactness=COMPACTNESS,

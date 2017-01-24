@@ -31,16 +31,13 @@ def quickshift(image, ratio=RATIO, kernel_size=KERNEL_SIZE,
     image = tf.cast(image, tf.uint8)
 
     def _quickshift(image):
-        segmentation = skimage_quickshift(
-            image, ratio, kernel_size, max_distance, sigma=sigma)
+        segmentation = skimage_quickshift(image, ratio, kernel_size,
+                                          max_distance, sigma=sigma)
+        return segmentation.astype(np.int32)
 
-        # py_func expects a float as out type.
-        return segmentation.astype(np.float32)
-
-    segmentation = tf.py_func(
-        _quickshift, [image], tf.float32, stateful=True, name='quickshift')
-
-    return tf.cast(segmentation, tf.int32)
+    # TODO quickshift is stateful?
+    return tf.py_func(_quickshift, [image], tf.int32, stateful=True,
+                      name='quickshift')
 
 
 def quickshift_generator(ratio=RATIO, kernel_size=KERNEL_SIZE,

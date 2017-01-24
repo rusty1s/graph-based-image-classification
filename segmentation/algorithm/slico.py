@@ -48,14 +48,9 @@ def slico(image, num_segments=NUM_SEGMENTS, compactness=COMPACTNESS,
                                     max_size_factor=max_size_factor,
                                     enforce_connectivity=enforce_connectivity,
                                     slic_zero=True)
+        return segmentation.astype(np.int32)
 
-        # py_func expects a float as out type.
-        return segmentation.astype(np.float32)
-
-    segmentation = tf.py_func(
-        _slico, [image], tf.float32, stateful=False, name='slico')
-
-    return tf.cast(segmentation, tf.int32)
+    return tf.py_func(_slico, [image], tf.int32, stateful=False, name='slico')
 
 
 def slico_generator(num_segments=NUM_SEGMENTS, compactness=COMPACTNESS,

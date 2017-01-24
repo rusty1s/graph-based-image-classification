@@ -30,7 +30,7 @@ def adjacency_unweighted(segmentation, connectivity=CONNECTIVITY):
 
     return tf.py_func(
         _adjacency, [segmentation], tf.float32, stateful=False,
-        name='adjacency')
+        name='adjacency_unweighted')
 
 
 def adjacency_euclidean_distance(segmentation, connectivity=CONNECTIVITY):
