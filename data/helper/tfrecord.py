@@ -21,29 +21,30 @@ def read_tfrecord(filename_queue, shapes={}):
 
     features = {key: tf.FixedLenFEature([], tf.string) for key in shapes}
     features['label'] = tf.FixedLenFeature([], tf.int64)
-    features = tf.parse_single_example(serialized_example, features=features)
 
-    data = {key: tf.decode_raw(features[key], tf.float32) for key in shapes}
+    example = tf.parse_single_example(serialized_example, features=features)
+
+    data = {key: tf.decode_raw(example[key], tf.float32) for key in shapes}
     data = {key: tf.reshape(data[key], shapes[key]) for key in shapes}
 
-    label = tf.reshape(features['label'], [1])
+    label = tf.reshape(example['label'], [1])
 
     return data, label
 
 
-def write_to_tfrecord(writer, data, label):
+def write_tfrecord(writer, data, label):
     """Writes the data and label as a TFRecord example.
 
     Args:
         writer: A TFRecordReader.
-        data: A numpy array holding the data.
+        data: A dictionary holding numpy arrays of data.
         label: An int64 label index.
     """
 
-    example = tf.train.Example(features=tf.train.Features(feature={
-        'data': _bytes_feature(data.astype(np.float32)),
-        'label': _int64_feature(label),
-    }))
+    features = {key: _bytes_feature(data[key]) for key in data}
+    features['label'] = _int64_feature(label)
+
+    example = tf.train.Example(features=tf.train.Features(feature=features))
 
     writer.write(example.SerializeToString())
 
@@ -58,7 +59,7 @@ def _int64_feature(value):
         A TensorFlow feature.
     """
 
-    return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
+    return tf.train.Feature(int64_list=tf.train.Int64List(value=[int(value)]))
 
 
 def _bytes_feature(value):
@@ -72,4 +73,5 @@ def _bytes_feature(value):
     """
 
     return tf.train.Feature(
-        bytes_list=tf.train.BytesList(value=[value.tostring()]))
+        bytes_list=tf.train.BytesList(
+            value=[value.astype(np.float32).tostring()]))

@@ -4,7 +4,7 @@ import json
 
 import tensorflow as tf
 
-from data import DataSet, iterator, read_tfrecord, write_to_tfrecord
+from data import DataSet, Record, iterator, read_tfrecord, write_tfrecord
 from patchy import labelings, neighborhood_assemblies
 from .helper.node_sequence import node_sequence
 
@@ -42,6 +42,7 @@ class PatchySan(DataSet):
 
         data_dir = DATA_DIR if data_dir is None else data_dir
         self._dataset = dataset
+        self._grapher = grapher
         self._num_nodes
         self._neighborhood_size = neighborhood_size
 
@@ -111,8 +112,14 @@ class PatchySan(DataSet):
 
     def read(self, filename_queue):
         # TODO Convert to feature map
-        return read_tfrecord(filename_queue,
-                             [self._num_nodes, self._neighborhood_size, 83])
+        data, label = read_tfrecord(
+            filename_queue,
+            {'nodes': [-1, self._grapher.num_node_channels],
+             'neighborhood': [self._num_nodes, self._neighborhood_size]})
+
+        return Record(data['neighborhood'],
+                      [self._num_nodes, self._neighborhood_size],
+                      label)
 
 
 def _write(dataset, grapher, eval_data, tfrecord_file, info_file,
@@ -126,7 +133,7 @@ def _write(dataset, grapher, eval_data, tfrecord_file, info_file,
                        num_epochs=write_num_epochs, shuffle=shuffle)
 
     def _before(image, label):
-        nodes, adjacency = grapher(image)
+        nodes, adjacency = grapher.create_graph(image)
         sequence = node_labeling(adjacency)
         sequence = node_sequence(sequence, num_nodes, node_stride)
         neighborhood = neighborhood_assembly(adjacency, sequence,
@@ -135,9 +142,9 @@ def _write(dataset, grapher, eval_data, tfrecord_file, info_file,
         return [nodes, neighborhood, label]
 
     def _each(output, index, last_index):
-        write_to_tfrecord(writer,
-                          {'nodes': output[0], 'neighborhood': output[1]},
-                          output[2])
+        write_tfrecord(writer,
+                       {'nodes': output[0], 'neighborhood': output[1]},
+                       output[2])
 
         if show_progress:
             sys.stdout.write(

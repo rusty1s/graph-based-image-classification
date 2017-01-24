@@ -6,7 +6,7 @@ from .pascal_voc import PascalVOC
 
 from .helper.inputs import inputs
 from .helper.iterator import iterator
-from .helper.tfrecord import read_tfrecord, write_to_tfrecord
+from .helper.tfrecord import read_tfrecord, write_tfrecord
 
 
 datasets = {'cifar_10': Cifar10,

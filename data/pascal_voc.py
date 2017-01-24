@@ -11,7 +11,7 @@ from skimage.io import imread
 from .dataset import DataSet
 from .helper.record import Record
 from .helper.download import maybe_download_and_extract
-from .helper.tfrecord import read_tfrecord, write_to_tfrecord
+from .helper.tfrecord import read_tfrecord, write_tfrecord
 from .helper.transform_image import crop_shape_from_box
 from .helper.distort_image import distort_image_for_train,\
                                   distort_image_for_eval
@@ -265,7 +265,7 @@ class PascalVOC(DataSet):
             label_index = self.label_index(label_name)
 
             # Write the cropped image as a TFRecord example.
-            write_to_tfrecord(writer, cropped_image, label_index)
+            write_tfrecord(writer, {'data': cropped_image}, label_index)
 
         return {
             'num_objects': num_objects,
