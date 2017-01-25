@@ -4,4 +4,4 @@ from .adjacency import adjacency_unweighted,\
 
 
 adjacencies = {'unweighted': adjacency_unweighted,
-               'euclid_distance': adjacency_euclidean_distance}
+               'euclidean_distance': adjacency_euclidean_distance}

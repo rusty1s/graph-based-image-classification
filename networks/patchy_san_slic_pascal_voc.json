@@ -16,7 +16,7 @@
         "sigma": 0.0
       },
       "adjacencies_from_segmentation": [
-        "euclidian_distance"
+        "euclidean_distance"
       ]
     },
     "force_write": false,

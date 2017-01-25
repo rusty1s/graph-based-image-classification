@@ -74,7 +74,7 @@ class SegmentationGrapher(Grapher):
 
         # Compute the nodes and adjacency matrices based on the segmentation.
         nodes = feature_extraction(segmentation, image)
-        adjacency = self._adjacency_from_segmentation[0](segmentation)
+        adjacency = self._adjacencies_from_segmentation[0](segmentation)
 
         # Till now, we only consider one adjacency matrix.
         return nodes, tf.expand_dims(adjacency, axis=2)

@@ -61,6 +61,21 @@ class PatchySan(DataSet):
 
         tf.gfile.MakeDirs(data_dir)
 
+        info_file = os.path.join(data_dir, INFO_FILENAME)
+
+        if not tf.gfile.Exists(info_file) or force_write:
+            with open(info_file, 'w') as f:
+                json.dump({'max_num_epochs': write_num_epochs,
+                           'distort_inputs': distort_inputs,
+                           'node_labeling': node_labeling.__name__,
+                           'num_nodes': num_nodes,
+                           'num_node_channels': grapher.num_node_channels,
+                           'node_stride': node_stride,
+                           'neighborhood_assembly':
+                           neighborhood_assembly.__name__,
+                           'neighborhood_size': neighborhood_size,
+                           'num_edge_channels': grapher.num_edge_channels}, f)
+
         train_file = os.path.join(data_dir, TRAIN_FILENAME)
         train_info_file = os.path.join(data_dir, TRAIN_INFO_FILENAME)
 
@@ -87,21 +102,6 @@ class PatchySan(DataSet):
                    train_eval_info_file, 1, True, False, node_labeling,
                    num_nodes, node_stride, neighborhood_assembly,
                    neighborhood_size, show_progress)
-
-        info_file = os.path.join(data_dir, INFO_FILENAME)
-
-        if not tf.gfile.Exists(info_file) or force_write:
-            with open(info_file, 'w') as f:
-                json.dump({'max_num_epochs': write_num_epochs,
-                           'distort_inputs': distort_inputs,
-                           'node_labeling': node_labeling.__name__,
-                           'num_nodes': num_nodes,
-                           'num_node_channels': grapher.num_node_channels,
-                           'node_stride': node_stride,
-                           'neighborhood_assembly':
-                           neighborhood_assembly.__name__,
-                           'neighborhood_size': neighborhood_size,
-                           'num_edge_channels': grapher.num_edge_channels}, f)
 
     @classmethod
     def create(cls, obj):
