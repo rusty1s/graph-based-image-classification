@@ -10,17 +10,19 @@ from .helper.record import Record
 class DataSet():
     """Abstract class for defining a dataset interface."""
 
-    def __init__(self, data_dir, show_progress=True):
+    def __init__(self, data_dir):
         """Creates a dataset.
 
         Args:
             data_dir: The path to the directory where the dataset is stored.
-            show_progress: Show a pretty progress bar for dataset computations
-              (optional).
         """
 
         self._data_dir = data_dir
-        self._show_progress = show_progress
+
+    @classmethod
+    @abc.abstractmethod
+    def create(cls, obj):
+        pass
 
     @property
     def data_dir(self):

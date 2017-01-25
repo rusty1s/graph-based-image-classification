@@ -36,11 +36,13 @@ TRAIN_INFO_FILENAME = 'train_info.json'
 EVAL_FILENAME = 'eval.tfrecords'
 EVAL_INFO_FILENAME = 'eval_info.json'
 
+SHOW_PROGRESS = True
+
 
 class PascalVOC(DataSet):
     """PascalVOC image classification dataset."""
 
-    def __init__(self, data_dir=DATA_DIR, show_progress=True):
+    def __init__(self, data_dir=DATA_DIR, show_progress=SHOW_PROGRESS):
         """Creates a PascalVOC image classification dataset.
 
         Args:
@@ -49,11 +51,19 @@ class PascalVOC(DataSet):
             show_progress: Show a pretty progress bar for dataset computations.
         """
 
-        super().__init__(data_dir, show_progress)
+        super().__init__(data_dir)
+
+        self._show_progress = show_progress
 
         # Download and extract dataset and write it to a tfrecord file.
         maybe_download_and_extract(DATA_URL, data_dir, show_progress)
         self._write_to_tfrecord()
+
+    @classmethod
+    def create(cls, obj):
+        return cls.__init__(
+            obj['data_dir'],
+            obj['show_progress'] if 'show_progress' in obj else SHOW_PROGRESS)
 
     @property
     def train_filenames(self):

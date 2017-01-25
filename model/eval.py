@@ -29,11 +29,12 @@ def evaluate(dataset, checkpoint_dir=CHECKPOINT_DIR, eval_dir=EVAL_DIR,
     tf.gfile.MakeDirs(eval_dir)
 
 
-def json_evaluate(dataset, json, eval_data=EVAL_DATA,
-                  eval_interval_secs=EVAL_INTERVAL_SECS, run_once=RUN_ONCE):
+def evaluate_per_config(dataset, obj, eval_data=EVAL_DATA,
+                        eval_interval_secs=EVAL_INTERVAL_SECS,
+                        run_once=RUN_ONCE):
 
     evaluate(
         dataset,
-        json['checkpoint_dir'] if 'checkpoint_dir' in json else CHECKPOINT_DIR,
-        json['eval_dir'] if 'eval_dir' in json else EVAL_DIR,
+        obj['checkpoint_dir'] if 'checkpoint_dir' in obj else CHECKPOINT_DIR,
+        obj['eval_dir'] if 'eval_dir' in obj else EVAL_DIR,
         eval_data, eval_interval_secs, run_once)

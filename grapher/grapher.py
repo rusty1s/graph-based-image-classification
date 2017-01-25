@@ -6,6 +6,11 @@ import six
 class Grapher(object):
     """Abstract class for defining a graph generator interface."""
 
+    @classmethod
+    @abc.abstractmethod
+    def create(cls, obj):
+        pass
+
     @property
     @abc.abstractmethod
     def num_node_channels(self):

@@ -3,6 +3,8 @@ from __future__ import absolute_import
 import tensorflow as tf
 
 from segmentation import feature_extraction, NUM_FEATURES
+from segmentation.algorithm import json_generators as segmentations
+from segmentation import adjacenies
 
 from .grapher import Grapher
 
@@ -22,6 +24,15 @@ class SegmentationGrapher(Grapher):
 
         self._segment = segment
         self._adjacencies_from_segmentation = adjacencies_from_segmentation
+
+    @classmethod
+    def create(cls, obj):
+        segmentation = obj['segmentation']
+        adj = obj['adjacencies_from_segmentation']
+
+        return cls.__init__(
+            segmentations[segmentation['name']](segmentation),
+            [adjacenies[i] for i in adj])
 
     @property
     def num_node_channels(self):

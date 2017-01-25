@@ -25,3 +25,6 @@ def neighborhoods_by_weight(adjacency, sequence, size):
 
     return tf.py_func(_neighborhoods_by_weight, [adjacency, sequence],
                       tf.int32, stateful=False, name='neighborhoods_by_weight')
+
+
+neighborhood_assemblies = {'by_weight': neighborhoods_by_weight}

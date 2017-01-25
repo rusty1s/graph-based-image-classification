@@ -29,11 +29,13 @@ RECORD_BYTES = LABEL_BYTES + IMAGE_BYTES
 NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
 NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 
+SHOW_PROGRESS = True
+
 
 class Cifar10(DataSet):
     """CIFAR-10 dataset."""
 
-    def __init__(self, data_dir=DATA_DIR, show_progress=True):
+    def __init__(self, data_dir=DATA_DIR, show_progress=SHOW_PROGRESS):
         """Creates a CIFAR-10 dataset.
 
         Args:
@@ -42,9 +44,15 @@ class Cifar10(DataSet):
             show_progress: Show a pretty progress bar for dataset computations.
         """
 
-        super().__init__(data_dir, show_progress)
+        super().__init__(data_dir)
 
         maybe_download_and_extract(DATA_URL, data_dir, show_progress)
+
+    @classmethod
+    def create(cls, obj):
+        return cls.__init__(
+            obj['data_dir'],
+            obj['show_progress'] if 'show_progress' in obj else SHOW_PROGRESS)
 
     @property
     def train_filenames(self):

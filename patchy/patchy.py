@@ -4,9 +4,13 @@ import json
 
 import tensorflow as tf
 
-from data import DataSet, Record, iterator, read_tfrecord, write_tfrecord
-from .helper.labeling import identity
-from .helper.neighborhood_assembly import neighborhoods_by_weight
+from data import DataSet, Record, datasets
+from data import iterator, read_tfrecord, write_tfrecord
+from grapher import graphers
+
+from .helper.labeling import labelings, identity
+from .helper.neighborhood_assembly import neighborhood_assemblies,\
+                                          neighborhoods_by_weight
 from .helper.node_sequence import node_sequence
 
 
@@ -27,6 +31,8 @@ TRAIN_EVAL_INFO_FILENAME = 'train_eval_info.json'
 EVAL_FILENAME = 'eval.tfrecords'
 EVAL_INFO_FILENAME = 'eval_info.json'
 
+SHOW_PROGRESS = True
+
 
 class PatchySan(DataSet):
 
@@ -35,7 +41,8 @@ class PatchySan(DataSet):
                  distort_inputs=DISTORT_INPUTS, node_labeling=None,
                  num_nodes=NUM_NODES, node_stride=NODE_STRIDE,
                  neighborhood_assembly=None,
-                 neighborhood_size=NEIGHBORHOOD_SIZE, show_progress=True):
+                 neighborhood_size=NEIGHBORHOOD_SIZE,
+                 show_progress=SHOW_PROGRESS):
 
         node_labeling = identity if node_labeling is None else node_labeling
         neighborhood_assembly = neighborhoods_by_weight if\
@@ -47,7 +54,7 @@ class PatchySan(DataSet):
         self._neighborhood_size = neighborhood_size
         self._distort_inputs = distort_inputs
 
-        super().__init__(data_dir, show_progress)
+        super().__init__(data_dir)
 
         if tf.gfile.Exists(data_dir) and force_write:
             tf.gfile.DeleteRecursively(data_dir)
@@ -61,7 +68,7 @@ class PatchySan(DataSet):
             _write(dataset, grapher, False, train_file, train_info_file,
                    write_num_epochs, distort_inputs, True, node_labeling,
                    num_nodes, node_stride, neighborhood_assembly,
-                   neighborhood_size, self._show_progress)
+                   neighborhood_size, show_progress)
 
         eval_file = os.path.join(data_dir, EVAL_FILENAME)
         eval_info_file = os.path.join(data_dir, EVAL_INFO_FILENAME)
@@ -70,7 +77,7 @@ class PatchySan(DataSet):
             _write(dataset, grapher, True, eval_file, eval_info_file,
                    1, distort_inputs, False, node_labeling, num_nodes,
                    node_stride, neighborhood_assembly, neighborhood_size,
-                   self._show_progress)
+                   show_progress)
 
         train_eval_file = os.path.join(data_dir, TRAIN_EVAL_FILENAME)
         train_eval_info_file = os.path.join(data_dir, TRAIN_EVAL_INFO_FILENAME)
@@ -79,7 +86,7 @@ class PatchySan(DataSet):
             _write(dataset, grapher, False, train_eval_file,
                    train_eval_info_file, 1, True, False, node_labeling,
                    num_nodes, node_stride, neighborhood_assembly,
-                   neighborhood_size, self._show_progress)
+                   neighborhood_size, show_progress)
 
         info_file = os.path.join(data_dir, INFO_FILENAME)
 
@@ -95,6 +102,30 @@ class PatchySan(DataSet):
                            neighborhood_assembly.__name__,
                            'neighborhood_size': neighborhood_size,
                            'num_edge_channels': grapher.num_edge_channels}, f)
+
+    @classmethod
+    def create(cls, obj):
+        dataset = obj['dataset']
+        grapher = obj['grapher']
+
+        return cls.__init__(
+            datasets[dataset['name']].create(dataset),
+            graphers[grapher['name']].create(grapher),
+            obj['data_dir'] if 'data_dir' in obj else DATA_DIR,
+            obj['force_write'] if 'force_write' in obj else FORCE_WRITE,
+            obj['write_num_epochs'] if 'write_num_epochs' in obj
+            else WRITE_NUM_EPOCHS,
+            obj['distort_inputs'] if 'distort_inputs' in obj
+            else DISTORT_INPUTS,
+            labelings[obj['node_labeling']] if 'node_labeling' in obj
+            else None,
+            obj['num_nodes'] if 'num_nodes' in obj else NUM_NODES,
+            obj['node_stride'] if 'node_stride' in obj else NODE_STRIDE,
+            neighborhood_assemblies[obj['neighborhood_assembly']]
+            if 'neighborhood_assembly' in obj else None,
+            obj['neighborhood_size'] if 'neighborhood_size' in obj
+            else NEIGHBORHOOD_SIZE,
+            obj['show_progress'] if 'show_progress' in obj else SHOW_PROGRESS)
 
     @property
     def train_filenames(self):

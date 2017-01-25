@@ -65,22 +65,22 @@ def train(dataset, network, checkpoint_dir=CHECKPOINT_DIR,
             pass
 
 
-def json_train(dataset, json, display_step=DISPLAY_STEP,
-               save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
-               save_summaries_steps=SAVE_SUMMARIES_STEPS):
+def train_per_config(dataset, obj, display_step=DISPLAY_STEP,
+                     save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
+                     save_summaries_steps=SAVE_SUMMARIES_STEPS):
 
     train(
         dataset,
-        json['network'],
-        json['checkpoint_dir'] if 'checkpoint_dir' in json else CHECKPOINT_DIR,
-        json['batch_size'] if 'batch_size' in json else BATCH_SIZE,
-        json['last_step'] if 'last_step' in json else LAST_STEP,
-        json['learning_rate'] if 'learning_rate' in json else LEARNING_RATE,
-        json['epsilon'] if 'epsilon' in json else EPSILON,
-        json['beta1'] if 'beta1' in json else BETA_1,
-        json['beta2'] if 'beta2' in json else BETA_2,
-        json['scale_inputs'] if 'scale_inputs' in json else SCALE_INPUTS,
-        json['distort_inputs'] if 'distort_inputs' in json else DISTORT_INPUTS,
-        json['zero_mean_inputs'] if 'zero_mean_inputs' in json
+        obj['network'],
+        obj['checkpoint_dir'] if 'checkpoint_dir' in obj else CHECKPOINT_DIR,
+        obj['batch_size'] if 'batch_size' in obj else BATCH_SIZE,
+        obj['last_step'] if 'last_step' in obj else LAST_STEP,
+        obj['learning_rate'] if 'learning_rate' in obj else LEARNING_RATE,
+        obj['epsilon'] if 'epsilon' in obj else EPSILON,
+        obj['beta1'] if 'beta1' in obj else BETA_1,
+        obj['beta2'] if 'beta2' in obj else BETA_2,
+        obj['scale_inputs'] if 'scale_inputs' in obj else SCALE_INPUTS,
+        obj['distort_inputs'] if 'distort_inputs' in obj else DISTORT_INPUTS,
+        obj['zero_mean_inputs'] if 'zero_mean_inputs' in obj
         else ZERO_MEAN_INPUTS,
         display_step, save_checkpoint_secs, save_summaries_steps)

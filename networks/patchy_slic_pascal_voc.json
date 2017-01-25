@@ -7,8 +7,8 @@
       "data_dir": "/tmp/pascal_voc_data"
     },
     "grapher": {
-      "name": "segmentation_grapher",
-      "segment": {
+      "name": "segmentation",
+      "segmentation": {
         "name": "slic",
         "num_segments": 300,
         "compactness": 30.0,
