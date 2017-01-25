@@ -56,7 +56,7 @@ def slic_generator(num_segments=NUM_SEGMENTS, compactness=COMPACTNESS,
                    max_iterations=MAX_ITERATIONS, sigma=SIGMA,
                    min_size_factor=MIN_SIZE_FACTOR,
                    max_size_factor=MAX_SIZE_FACTOR,
-                   enforce_connectivity=ENFORCE_CONNECTIVITY):
+                   enforce_connectivity=CONNECTIVITY):
     """Generator to segment an image using k-means clustering in Color-(x,y,z)
     space.
 
