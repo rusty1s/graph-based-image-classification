@@ -1,0 +1,42 @@
+{
+  "dataset": {
+    "name": "patchy_san",
+    "data_dir": "/tmp/patchy_san_slic_pascal_voc_data",
+    "dataset": {
+      "name": "pascal_voc",
+      "data_dir": "/tmp/pascal_voc_data"
+    },
+    "grapher": {
+      "name": "segmentation_grapher",
+      "segment": {
+        "name": "slic",
+        "num_segments": 300,
+        "compactness": 30.0,
+        "max_iterations": 10,
+        "sigma": 0.0
+      },
+      "adjacencies_from_segmentation": [
+        "euclidian_distance"
+      ]
+    },
+    "write_num_epochs": 10,
+    "distort_inputs": true,
+    "node_labeling": "identity",
+    "num_nodes": 300,
+    "node_stride": 1,
+    "neighborhood_assembly": "by_weight",
+    "neighborhood_size": 9
+  },
+  "checkpoint_dir": "/tmp/patchy_san_slic_pascal_voc_train",
+  "batch_size": 128,
+  "last_step": 20000,
+  "learning_rate": 0.1,
+  "epsilon": 1.0,
+  "beta1": 0.9,
+  "beta2": 0.999,
+  "scale_inputs": false,
+  "distort_inputs": false,
+  "zero_mean_inputs": true,
+  "structure": {
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "dataset": {
+    "name": "pascal_voc",
+    "data_dir": "/tmp/pascal_voc_data"
+  },
+  "checkpoint_dir": "/tmp/vgg19_pascal_voc_train",
+  "batch_size": 128,
+  "last_step": 20000,
+  "learning_rate": 0.1,
+  "epsilon": 1.0,
+  "beta1": 0.9,
+  "beta2": 0.999,
+  "scale_inputs": false,
+  "distort_inputs": true,
+  "zero_mean_inputs": true,
+  "structure": {
+  }
+}
