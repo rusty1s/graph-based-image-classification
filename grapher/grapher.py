@@ -8,7 +8,7 @@ class Grapher(object):
 
     @classmethod
     @abc.abstractmethod
-    def create(cls, obj):
+    def create(cls, config):
         pass
 
     @property

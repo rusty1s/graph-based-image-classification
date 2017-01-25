@@ -8,8 +8,6 @@ from xml.dom.minidom import parse
 import tensorflow as tf
 from skimage.io import imread
 
-from helper import prop
-
 from .dataset import DataSet
 from .helper.record import Record
 from .helper.download import maybe_download_and_extract
@@ -56,7 +54,7 @@ class PascalVOC(DataSet):
 
     @classmethod
     def create(cls, config):
-        return cls(prop(config, 'data_dir', DATA_DIR))
+        return cls(config.get('data_dir', DATA_DIR))
 
     @property
     def train_filenames(self):

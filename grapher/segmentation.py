@@ -26,13 +26,13 @@ class SegmentationGrapher(Grapher):
         self._adjacencies_from_segmentation = adjacencies_from_segmentation
 
     @classmethod
-    def create(cls, obj):
-        segmentation = obj['segmentation']
-        adj = obj['adjacencies_from_segmentation']
+    def create(cls, config):
+        segmentation_config = config['segmentation']
 
         return cls(
-            segmentations[segmentation['name']](segmentation),
-            [adjacencies[i] for i in adj])
+            segmentations[segmentation_config['name']](segmentation_config),
+            [adjacencies[name] for name in
+                prop(config, 'adjacencies_from_segmentation')])
 
     @property
     def num_node_channels(self):

@@ -2,8 +2,6 @@ import os
 
 import tensorflow as tf
 
-from helper import config_prop as prop
-
 from .dataset import DataSet
 from .helper.record import Record
 from .helper.download import maybe_download_and_extract
@@ -48,7 +46,7 @@ class Cifar10(DataSet):
 
     @classmethod
     def create(cls, config):
-        return cls(prop(config, 'data_dir', DATA_DIR))
+        return cls(config.get('data_dir', DATA_DIR))
 
     @property
     def train_filenames(self):

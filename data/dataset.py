@@ -3,7 +3,6 @@ import six
 
 import tensorflow as tf
 
-from helper import config_prop as prop
 from .helper.record import Record
 
 
@@ -23,7 +22,7 @@ class DataSet():
     @classmethod
     @abc.abstractmethod
     def create(cls, config):
-        return cls(prop(config, 'data_dir'))
+        pass
 
     @property
     def data_dir(self):

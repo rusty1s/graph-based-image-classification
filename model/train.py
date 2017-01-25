@@ -1,7 +1,6 @@
 import tensorflow as tf
 
 from data import inputs
-from helper import prop
 
 from .inference import inference
 from .model import train_step, cal_loss, cal_accuracy
@@ -70,15 +69,15 @@ def train_per_config(dataset, config, display_step=DISPLAY_STEP,
                      save_summaries_steps=SAVE_SUMMARIES_STEPS):
 
     train(dataset,
-          prop(config, 'network'),
-          prop(config, 'checkpoint_dir', CHECKPOINT_DIR),
-          prop(config, 'batch_size', BATCH_SIZE),
-          prop(config, 'last_step', LAST_STEP),
-          prop(config, 'learning_rate', LEARNING_RATE),
-          prop(config, 'epsilon', EPSILON),
-          prop(config, 'beta1', BETA_1),
-          prop(config, 'beta2', BETA_2),
-          prop(config, 'scale_inputs', SCALE_INPUTS),
-          prop(config, 'distort_inputs', DISTORT_INPUTS),
-          prop(config, 'zero_mean_inputs', ZERO_MEAN_INPUTS),
-          display_step, save_checkpoint_secs, save_summaries_steps)
+          config['network'],
+          config.get('checkpoint_dir', CHECKPOINT_DIR),
+          config.get('batch_size', BATCH_SIZE),
+          config.get('last_step', LAST_STEP),
+          config.get('learning_rate', LEARNING_RATE),
+          config.get('epsilon', EPSILON),
+          config.get('beta1', BETA_1),
+          config.get('beta2', BETA_2),
+          config.get('scale_inputs', SCALE_INPUTS),
+          config.get('distort_inputs', DISTORT_INPUTS),
+          config.get('zero_mean_inputs', ZERO_MEAN_INPUTS),
+          ay_step, save_checkpoint_secs, save_summaries_steps)
