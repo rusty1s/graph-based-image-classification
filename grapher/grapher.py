@@ -36,9 +36,9 @@ class Grapher(object):
             data: A numpy array that holds the data.
 
         Returns:
-            Nodes: A numpy array that holds the channels for each node in the
+            nodes: A numpy array that holds the channels for each node in the
               shape [num_nodes, num_node_channels].
-            Adjacencies: An numpy array that holds the (multiple) adjacency
+            adjacencies: An numpy array that holds the (multiple) adjacency
               matrices of the graph in the shape
               [num_nodes, num_nodes, num_edge_channels].
         """

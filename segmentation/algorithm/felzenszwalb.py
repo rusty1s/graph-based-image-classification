@@ -43,7 +43,7 @@ def felzenszwalb_generator(scale=SCALE, sigma=SIGMA, min_size=MIN_SIZE):
           (optional).
 
     Returns:
-        Segmentation algorithm that takes a single image as argument.
+        Segmentation algorithm that takes a single input image.
     """
 
     def _generator(image):
@@ -60,7 +60,7 @@ def felzenszwalb_json_generator(json):
         json: The json object with sensible defaults for missing values.
 
     Returns:
-        Segmentation algorithm that takes a single image as argument.
+        Segmentation algorithm that takes a single input image.
     """
 
     return felzenszwalb_generator(

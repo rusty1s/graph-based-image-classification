@@ -56,7 +56,7 @@ def quickshift_generator(ratio=RATIO, kernel_size=KERNEL_SIZE,
         sigma: Width of Gaussian kernel used in preprocessing (optional).
 
     Returns:
-        Segmentation algorithm that takes a single image as argument.
+        Segmentation algorithm that takes a single input image.
     """
 
     def _generator(image):
@@ -73,7 +73,7 @@ def quickshift_json_generator(json):
         json: The json object with sensible defaults for missing values.
 
     Returns:
-        Segmentation algorithm that takes a single image as argument.
+        Segmentation algorithm that takes a single input image.
     """
 
     return quickshift_generator(
