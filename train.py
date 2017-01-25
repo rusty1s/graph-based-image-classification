@@ -44,9 +44,6 @@ def dataset(config):
 def main(argv=None):
     """Runs the script."""
 
-    cifar10 = Cifar10(data_dir='/tmp/cifar10_data')
-    patchy = PatchySanDataSet(dataset=cifar10)
-
     with open(FLAGS.config, 'r') as f:
         config = json.load(f)
 

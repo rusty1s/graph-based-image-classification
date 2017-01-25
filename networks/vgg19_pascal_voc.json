@@ -10,8 +10,7 @@
   "epsilon": 1.0,
   "beta1": 0.9,
   "beta2": 0.999,
-  "scale_inputs": false,
-  "distort_inputs": true,
+  "scale_inputs": 1,
   "zero_mean_inputs": true,
   "network": {
   }

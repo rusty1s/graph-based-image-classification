@@ -3,7 +3,7 @@ import tensorflow as tf
 from .inputs import inputs
 
 
-def iterator(dataset, eval_data, batch_size=1, scale_inputs=1.0,
+def iterator(dataset, eval_data, batch_size=1, scale_inputs=1,
              distort_inputs=False, zero_mean_inputs=False, num_epochs=1,
              shuffle=False):
 

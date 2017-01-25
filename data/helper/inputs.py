@@ -8,7 +8,7 @@ MIN_FRACTION_OF_EXAMPLES_IN_QUEUE = 0.4
 NUM_THREADS = 16
 
 
-def inputs(dataset, eval_data, batch_size=128, scale_inputs=1.0,
+def inputs(dataset, eval_data, batch_size=128, scale_inputs=1,
            distort_inputs=False, zero_mean_inputs=False, num_epochs=None,
            shuffle=False):
     """Constructs inputs from a dataset.
@@ -62,7 +62,7 @@ def inputs(dataset, eval_data, batch_size=128, scale_inputs=1.0,
     # Read examples from files in the filename queue.
     record = dataset.read(filename_queue)
 
-    if scale_inputs != 1.0:
+    if scale_inputs != 1:
         record = _resize(record, scale=scale_inputs)
 
     if distort_inputs:
