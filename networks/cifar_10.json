@@ -1,4 +1,18 @@
 {
+  "dataset": {
+    "name": "cifar_10",
+    "data_dir": "/tmp/cifar_10_data"
+  },
+  "checkpoint_dir": "/tmp/cifar_10_train",
+  "batch_size": 128,
+  "last_step": 20000,
+  "learning_rate": 0.1,
+  "epsilon": 1.0,
+  "beta1": 0.9,
+  "beta2": 0.999,
+  "scale_inputs": false,
+  "distort_inputs": true,
+  "zero_mean_inputs": true,
   "batch_size": 128,
   "last_step": 20000,
   "structure": {
