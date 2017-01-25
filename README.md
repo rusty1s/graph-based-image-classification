@@ -76,21 +76,17 @@ Run the test suite:
 ## Package structure
 
 * `bin`: Shell scripts to test and install.
-* `ci`: TravisCI install script.
 * `data`: Contains the datasets and helper methods to access and write
   datasets.
+* `grapher`: Graph generating algorithms.
 * `model`: Wrapper for learning CNNs based on a simple JSON network structure
   file.
-* `superpixel.algorithm`: Superpixel algorithms.
-* `superpixel`: Extracts superpixel features and spatial neighborhood
-  information based on a given superpixel segmentation.
 * `networks`: Contains all network structures that were used for training and
   evaluation.
-
-## ToDos
-
-* PascalVOC TFRecords generation cleaner (maybe with Tensorflow)
-* Transform data helper methods
+* `patchy`: PatchySan implementation.
+* `segmentation.algorithm`: Segmentation algorithms.
+* `segmentation`: Extracts segment features and spatial neighborhood
+  information based on a given segmentation.
 
 [build-image]: https://travis-ci.org/rusty1s/graph-based-image-classification.svg?branch=master
 [build-url]: https://travis-ci.org/rusty1s/graph-based-image-classification
