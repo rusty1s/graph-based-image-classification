@@ -29,10 +29,10 @@ def distort_image_for_train(record):
         image = tf.image.random_flip_left_right(image)
 
         # Randomly adjust the saturation and the contrast of the image.
-        # image = tf.cast(image, tf.uint8)
-        # image = tf.image.random_saturation(image, lower=0.2, upper=0.8)
-        # image = tf.image.random_contrast(image, lower=0.2, upper=0.8)
-        # image = tf.cast(image, tf.float32)
+        image = tf.cast(image, tf.uint8)
+        image = tf.image.random_saturation(image, lower=0.4, upper=1.0)
+        image = tf.image.random_contrast(image, lower=0.4, upper=1.0)
+        image = tf.cast(image, tf.float32)
 
     return Record(image, crop_shape, record.label)
 
