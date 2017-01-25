@@ -49,12 +49,15 @@ class PatchySan(DataSet):
 
         super().__init__(data_dir, show_progress)
 
+        if tf.gfile.Exists(data_dir) and force_write:
+            tf.gfile.DeleteRecursively(data_dir)
+
         tf.gfile.MakeDirs(data_dir)
 
         train_file = os.path.join(data_dir, TRAIN_FILENAME)
         train_info_file = os.path.join(data_dir, TRAIN_INFO_FILENAME)
 
-        if not tf.gfile.Exists(train_file) or force_write:
+        if not tf.gfile.Exists(train_file):
             _write(dataset, grapher, False, train_file, train_info_file,
                    write_num_epochs, distort_inputs, True, node_labeling,
                    num_nodes, node_stride, neighborhood_assembly,
@@ -63,7 +66,7 @@ class PatchySan(DataSet):
         eval_file = os.path.join(data_dir, EVAL_FILENAME)
         eval_info_file = os.path.join(data_dir, EVAL_INFO_FILENAME)
 
-        if not tf.gfile.Exists(eval_file) or force_write:
+        if not tf.gfile.Exists(eval_file):
             _write(dataset, grapher, True, eval_file, eval_info_file,
                    1, distort_inputs, False, node_labeling, num_nodes,
                    node_stride, neighborhood_assembly, neighborhood_size,
@@ -72,9 +75,7 @@ class PatchySan(DataSet):
         train_eval_file = os.path.join(data_dir, TRAIN_EVAL_FILENAME)
         train_eval_info_file = os.path.join(data_dir, TRAIN_EVAL_INFO_FILENAME)
 
-        if distort_inputs and (not tf.gfile.Exists(train_eval_file) or
-                               force_write):
-
+        if distort_inputs and not tf.gfile.Exists(train_eval_file):
             _write(dataset, grapher, False, train_eval_file,
                    train_eval_info_file, 1, True, False, node_labeling,
                    num_nodes, node_stride, neighborhood_assembly,

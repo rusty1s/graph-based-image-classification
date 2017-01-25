@@ -19,6 +19,7 @@
         "euclidian_distance"
       ]
     },
+    "force_write": false,
     "write_num_epochs": 10,
     "distort_inputs": true,
     "node_labeling": "identity",
