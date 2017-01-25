@@ -26,6 +26,8 @@ def adjacency_unweighted(segmentation, connectivity=CONNECTIVITY):
 
     def _adjacency(segmentation):
         graph = RAG(segmentation, connectivity=connectivity)
+
+        # Simply return the unweighted adjacency matrix of the computed graph.
         return nx.to_numpy_matrix(graph, dtype=np.float32)
 
     return tf.py_func(
@@ -56,23 +58,30 @@ def adjacency_euclidean_distance(segmentation, connectivity=CONNECTIVITY):
     def _adjacency_euclidean_distance(segmentation):
         graph = RAG(segmentation, connectivity=connectivity)
 
+        # Initialize the node's data for computing their centroids.
         for n in graph:
             graph.node[n].update({'count': 0,
                                   'centroid': np.zeros((2), dtype=np.float32)})
 
+        # Run through each segmentation pixel and add the pixel's coordinates
+        # to the centroid data.
         for index in np.ndindex(segmentation.shape):
             current = segmentation[index]
             graph.node[current]['count'] += 1
             graph.node[current]['centroid'] += index
 
+        # Centroid is the sum of all pixel coordinates / pixel count.
         for n in graph:
             graph.node[n]['centroid'] = (graph.node[n]['centroid'] /
                                          graph.node[n]['count'])
 
+        # Run through each edge and calculate the euclidian distance based on
+        # the two node's centroids.
         for n1, n2, d in graph.edges_iter(data=True):
             diff = graph.node[n1]['centroid'] - graph.node[n2]['centroid']
             d['weight'] = np.linalg.norm(diff)
 
+        # Return graph as adjacency matrix.
         return nx.to_numpy_matrix(graph, dtype=np.float32)
 
     return tf.py_func(
