@@ -1,6 +1,8 @@
 import tensorflow as tf
 
 from data import inputs
+from helper import prop
+
 from .inference import inference
 from .model import train_step, cal_loss, cal_accuracy
 from .hooks import hooks
@@ -63,22 +65,20 @@ def train(dataset, network, checkpoint_dir=CHECKPOINT_DIR,
             pass
 
 
-def train_per_config(dataset, obj, display_step=DISPLAY_STEP,
+def train_per_config(dataset, config, display_step=DISPLAY_STEP,
                      save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
                      save_summaries_steps=SAVE_SUMMARIES_STEPS):
 
-    train(
-        dataset,
-        obj['network'],
-        obj['checkpoint_dir'] if 'checkpoint_dir' in obj else CHECKPOINT_DIR,
-        obj['batch_size'] if 'batch_size' in obj else BATCH_SIZE,
-        obj['last_step'] if 'last_step' in obj else LAST_STEP,
-        obj['learning_rate'] if 'learning_rate' in obj else LEARNING_RATE,
-        obj['epsilon'] if 'epsilon' in obj else EPSILON,
-        obj['beta1'] if 'beta1' in obj else BETA_1,
-        obj['beta2'] if 'beta2' in obj else BETA_2,
-        obj['scale_inputs'] if 'scale_inputs' in obj else SCALE_INPUTS,
-        obj['distort_inputs'] if 'distort_inputs' in obj else DISTORT_INPUTS,
-        obj['zero_mean_inputs'] if 'zero_mean_inputs' in obj
-        else ZERO_MEAN_INPUTS,
-        display_step, save_checkpoint_secs, save_summaries_steps)
+    train(dataset,
+          prop(config, 'network'),
+          prop(config, 'checkpoint_dir', CHECKPOINT_DIR),
+          prop(config, 'batch_size', BATCH_SIZE),
+          prop(config, 'last_step', LAST_STEP),
+          prop(config, 'learning_rate', LEARNING_RATE),
+          prop(config, 'epsilon', EPSILON),
+          prop(config, 'beta1', BETA_1),
+          prop(config, 'beta2', BETA_2),
+          prop(config, 'scale_inputs', SCALE_INPUTS),
+          prop(config, 'distort_inputs', DISTORT_INPUTS),
+          prop(config, 'zero_mean_inputs', ZERO_MEAN_INPUTS),
+          display_step, save_checkpoint_secs, save_summaries_steps)

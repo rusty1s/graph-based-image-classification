@@ -8,6 +8,8 @@ from xml.dom.minidom import parse
 import tensorflow as tf
 from skimage.io import imread
 
+from helper import prop
+
 from .dataset import DataSet
 from .helper.record import Record
 from .helper.download import maybe_download_and_extract
@@ -36,40 +38,30 @@ TRAIN_INFO_FILENAME = 'train_info.json'
 EVAL_FILENAME = 'eval.tfrecords'
 EVAL_INFO_FILENAME = 'eval_info.json'
 
-SHOW_PROGRESS = True
-
 
 class PascalVOC(DataSet):
     """PascalVOC image classification dataset."""
 
-    def __init__(self, data_dir=DATA_DIR, show_progress=SHOW_PROGRESS):
+    def __init__(self, data_dir=DATA_DIR):
         """Creates a PascalVOC image classification dataset.
 
         Args:
             data_dir: The path to the directory where the PascalVOC dataset is
             stored.
-            show_progress: Show a pretty progress bar for dataset computations.
         """
 
         super().__init__(data_dir)
-
-        self._show_progress = show_progress
-
-        # Download and extract dataset and write it to a tfrecord file.
-        maybe_download_and_extract(DATA_URL, data_dir, show_progress)
+        maybe_download_and_extract(DATA_URL, data_dir)
         self._write_to_tfrecord()
 
     @classmethod
-    def create(cls, obj):
-        return cls(
-            obj['data_dir'],
-            obj['show_progress'] if 'show_progress' in obj else SHOW_PROGRESS)
+    def create(cls, config):
+        return cls(prop(config, 'data_dir', DATA_DIR))
 
     @property
     def train_filenames(self):
         """The filenames of the training batches from the PascalVOC dataset."""
 
-        # All the training data is stored in a single TFRecord.
         return [os.path.join(self.data_dir, TRAIN_FILENAME)]
 
     @property
@@ -77,7 +69,6 @@ class PascalVOC(DataSet):
         """The filenames of the evaluation batches from the PascalVOC
         dataset."""
 
-        # All the evaluation data is stored in a single TFRecord.
         return [os.path.join(self.data_dir, EVAL_FILENAME)]
 
     @property
@@ -108,7 +99,6 @@ class PascalVOC(DataSet):
     def read(self, filename_queue):
         """Reads and parses examples from PascalVOC data files."""
 
-        # Use the global reader operation for TFRecords.
         data, label = read_tfrecord(filename_queue, {'data': SHAPE})
         return Record(data['data'], SHAPE, label)
 
@@ -194,13 +184,12 @@ class PascalVOC(DataSet):
                 num_objects += statistic['num_objects']
                 num_objects_bypassed += statistic['num_objects_bypassed']
 
-                if self._show_progress:
-                    percent = 100.0 * i / num_image_names
+                percent = 100.0 * i / num_image_names
 
-                    sys.stdout.write(
-                        '\r>> Extracting objects to {} {:.1f}%'
-                        .format(tfrecord_filename, percent))
-                    sys.stdout.flush()
+                sys.stdout.write(
+                    '\r>> Extracting objects to {} {:.1f}%'
+                    .format(tfrecord_filename, percent))
+                sys.stdout.flush()
 
         except KeyboardInterrupt:
             pass
@@ -210,9 +199,7 @@ class PascalVOC(DataSet):
 
             self._write_num_examples_per_epoch(info_filename, num_objects)
 
-            if self._show_progress:
-                print('')
-
+            print('')
             print(' '.join([
                 'Successfully extracted {} objects'.format(num_objects),
                 'from {} images'.format(i),

@@ -2,6 +2,8 @@ import os
 
 import tensorflow as tf
 
+from helper import config_prop as prop
+
 from .dataset import DataSet
 from .helper.record import Record
 from .helper.download import maybe_download_and_extract
@@ -29,30 +31,24 @@ RECORD_BYTES = LABEL_BYTES + IMAGE_BYTES
 NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
 NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
 
-SHOW_PROGRESS = True
-
 
 class Cifar10(DataSet):
     """CIFAR-10 dataset."""
 
-    def __init__(self, data_dir=DATA_DIR, show_progress=SHOW_PROGRESS):
+    def __init__(self, data_dir=DATA_DIR):
         """Creates a CIFAR-10 dataset.
 
         Args:
             data_dir: The path to the directory where the CIFAR-10 dataset is
             stored.
-            show_progress: Show a pretty progress bar for dataset computations.
         """
 
         super().__init__(data_dir)
-
-        maybe_download_and_extract(DATA_URL, data_dir, show_progress)
+        maybe_download_and_extract(DATA_URL, data_dir)
 
     @classmethod
-    def create(cls, obj):
-        return cls(
-            obj['data_dir'],
-            obj['show_progress'] if 'show_progress' in obj else SHOW_PROGRESS)
+    def create(cls, config):
+        return cls(prop(config, 'data_dir', DATA_DIR))
 
     @property
     def train_filenames(self):

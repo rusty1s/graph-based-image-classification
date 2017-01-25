@@ -4,13 +4,12 @@ import tarfile
 from six.moves import urllib
 
 
-def maybe_download_and_extract(url, data_dir, show_progress=True):
+def maybe_download_and_extract(url, data_dir):
     """Downloads and extracts a tar file.
 
     Args:
         url: The url to download from.
         data_dir: The path to download to.
-        show_progress: Show a pretty progress bar.
 
     Returns:
         The path to the extracted directory.
@@ -25,19 +24,16 @@ def maybe_download_and_extract(url, data_dir, show_progress=True):
     # Only download if file doesn't exist.
     if not os.path.exists(filepath):
         def _progress(count, block_size, total_size):
-            if show_progress:
-                percent = 100.0 * count * block_size / total_size
+            percent = 100.0 * count * block_size / total_size
 
-                sys.stdout.write(
-                    '\r>> Downloading {} {:.1f}%'.format(filename, percent))
-                sys.stdout.flush()
+            sys.stdout.write('\r>> Downloading {} {:.1f}%'
+                             .format(filename, percent))
+            sys.stdout.flush()
 
         filepath, _ = urllib.request.urlretrieve(url, filepath, _progress)
         size = os.stat(filepath).st_size
 
-        if show_progress:
-            print('')
-
+        print('')
         print('Successfully downloaded {} ({} bytes).'.format(filename, size))
 
     mode = 'r:gz' if filename.split('.')[-1] == 'gz' else 'r'
