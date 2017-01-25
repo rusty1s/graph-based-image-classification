@@ -11,7 +11,128 @@
   "beta1": 0.9,
   "beta2": 0.999,
   "scale_inputs": 1,
+  "distort_inputs": true,
   "zero_mean_inputs": true,
   "network": {
+    "conv": [
+      {
+        "output_channels": 64,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 64,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] },
+        "max_pool": { "size": [2, 2], "strides": [2, 2] }
+      },
+      {
+        "output_channels": 128,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 128,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] },
+        "max_pool": { "size": [2, 2], "strides": [2, 2] }
+      },
+      {
+        "output_channels": 256,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 256,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 256,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 256,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] },
+        "max_pool": { "size": [2, 2], "strides": [2, 2] }
+      },
+      {
+        "output_channels": 512,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 512,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 512,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 512,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] },
+        "max_pool": { "size": [2, 2], "strides": [2, 2] }
+      },
+      {
+        "output_channels": 512,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 512,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 512,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] }
+      },
+      {
+        "output_channels": 512,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [3, 3], "strides": [1, 1] },
+        "max_pool": { "size": [2, 2], "strides": [2, 2] }
+      }
+    ],
+    "fully_connected": [
+      {
+        "output_channels": 4096,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": {"constant": 1.0 }
+      },
+      {
+        "output_channels": 4096,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": {"constant": 1.0 }
+      }
+    ],
+    "softmax_linear": {
+      "output_channels": 10,
+      "weights": { "stddev": 1e-1, "decay": 0.0 },
+      "biases": { "constant": 1.0 }
+    }
   }
 }

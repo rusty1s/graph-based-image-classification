@@ -83,11 +83,11 @@ def inference(data, network):
 
     output = tf.reshape(output, [output.get_shape()[0].value, -1])
 
-    for layer in network['local']:
+    for layer in network['fully_connected']:
         input_channels = output.get_shape()[1].value
         output_channels = layer['output_channels']
 
-        with tf.variable_scope('local_{}'.format(i)) as scope:
+        with tf.variable_scope('fc_{}'.format(i)) as scope:
 
             weights = _weight_variable(
                 name='weights',

@@ -32,7 +32,7 @@
         "max_pool": { "size": [3, 3], "strides": [2, 2] }
       }
     ],
-    "local": [
+    "fully_connected": [
       {
         "output_channels": 384,
         "weights": { "stddev": 0.04, "decay": 0.004 },
