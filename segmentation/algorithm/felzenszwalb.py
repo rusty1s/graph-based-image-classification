@@ -52,18 +52,18 @@ def felzenszwalb_generator(scale=SCALE, sigma=SIGMA, min_size=MIN_SIZE):
     return _generator
 
 
-def felzenszwalb_json_generator(json):
+def felzenszwalb_json_generator(config):
     """Generator to compute Felsenszwalb's efficient graph based image
     segmentation based on a json object.
 
     Args:
-        json: The json object with sensible defaults for missing values.
+        config: A configuration object with sensible defaults for
+          missing values.
 
     Returns:
         Segmentation algorithm that takes a single input image.
     """
 
-    return felzenszwalb_generator(
-        json['scale'] if 'scale' in json else SCALE,
-        json['sigma'] if 'sigma' in json else SIGMA,
-        json['min_size'] if 'min_size' in json else MIN_SIZE)
+    return felzenszwalb_generator(config.get('scale', SCALE),
+                                  config.get('sigma', SIGMA),
+                                  config.get('min_size', MIN_SIZE))

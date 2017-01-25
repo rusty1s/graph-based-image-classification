@@ -65,7 +65,7 @@ def quickshift_generator(ratio=RATIO, kernel_size=KERNEL_SIZE,
     return _generator
 
 
-def quickshift_json_generator(json):
+def quickshift_json_generator(config):
     """Generator to segment an image using quickshift clustering in Color-(x,y)
     space based on a json object.
 
@@ -76,8 +76,7 @@ def quickshift_json_generator(json):
         Segmentation algorithm that takes a single input image.
     """
 
-    return quickshift_generator(
-        json['ratio'] if 'ratio' in json else RATIO,
-        json['kernel_size'] if 'kernel_size' in json else KERNEL_SIZE,
-        json['max_distance'] if 'max_distance' in json else MAX_DISTANCE,
-        json['sigma'] if 'sigma' in json else SIGMA)
+    return quickshift_generator(config.get('ratio', RATIO),
+                                config.get('kernel_size', KERNEL_SIZE),
+                                config.get('max_distance', MAX_DISTANCE),
+                                config.get('sigma', SIGMA))

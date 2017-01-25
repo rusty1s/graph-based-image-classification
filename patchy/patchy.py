@@ -9,7 +9,7 @@ from data import iterator, read_tfrecord, write_tfrecord
 from grapher import graphers
 
 from .helper.labeling import labelings, identity
-from .helper.neighborhood_assembly import neighborhood_assemblies,\
+from .helper.neighborhood_assembly import neighborhood_assemblies as neighb,\
                                           neighborhoods_by_weight
 from .helper.node_sequence import node_sequence
 
@@ -31,8 +31,6 @@ TRAIN_EVAL_INFO_FILENAME = 'train_eval_info.json'
 EVAL_FILENAME = 'eval.tfrecords'
 EVAL_INFO_FILENAME = 'eval_info.json'
 
-SHOW_PROGRESS = True
-
 
 class PatchySan(DataSet):
 
@@ -41,8 +39,7 @@ class PatchySan(DataSet):
                  distort_inputs=DISTORT_INPUTS, node_labeling=None,
                  num_nodes=NUM_NODES, node_stride=NODE_STRIDE,
                  neighborhood_assembly=None,
-                 neighborhood_size=NEIGHBORHOOD_SIZE,
-                 show_progress=SHOW_PROGRESS):
+                 neighborhood_size=NEIGHBORHOOD_SIZE):
 
         node_labeling = identity if node_labeling is None else node_labeling
         neighborhood_assembly = neighborhoods_by_weight if\
@@ -83,7 +80,7 @@ class PatchySan(DataSet):
             _write(dataset, grapher, False, train_file, train_info_file,
                    write_num_epochs, distort_inputs, True, node_labeling,
                    num_nodes, node_stride, neighborhood_assembly,
-                   neighborhood_size, show_progress)
+                   neighborhood_size)
 
         eval_file = os.path.join(data_dir, EVAL_FILENAME)
         eval_info_file = os.path.join(data_dir, EVAL_INFO_FILENAME)
@@ -91,8 +88,7 @@ class PatchySan(DataSet):
         if not tf.gfile.Exists(eval_file):
             _write(dataset, grapher, True, eval_file, eval_info_file,
                    1, distort_inputs, False, node_labeling, num_nodes,
-                   node_stride, neighborhood_assembly, neighborhood_size,
-                   show_progress)
+                   node_stride, neighborhood_assembly, neighborhood_size)
 
         train_eval_file = os.path.join(data_dir, TRAIN_EVAL_FILENAME)
         train_eval_info_file = os.path.join(data_dir, TRAIN_EVAL_INFO_FILENAME)
@@ -101,31 +97,24 @@ class PatchySan(DataSet):
             _write(dataset, grapher, False, train_eval_file,
                    train_eval_info_file, 1, True, False, node_labeling,
                    num_nodes, node_stride, neighborhood_assembly,
-                   neighborhood_size, show_progress)
+                   neighborhood_size)
 
     @classmethod
-    def create(cls, obj):
-        dataset = obj['dataset']
-        grapher = obj['grapher']
+    def create(cls, config):
+        dataset_config = config['dataset']
+        grapher_config = config['grapher']
 
-        return cls(
-            datasets[dataset['name']].create(dataset),
-            graphers[grapher['name']].create(grapher),
-            obj['data_dir'] if 'data_dir' in obj else DATA_DIR,
-            obj['force_write'] if 'force_write' in obj else FORCE_WRITE,
-            obj['write_num_epochs'] if 'write_num_epochs' in obj
-            else WRITE_NUM_EPOCHS,
-            obj['distort_inputs'] if 'distort_inputs' in obj
-            else DISTORT_INPUTS,
-            labelings[obj['node_labeling']] if 'node_labeling' in obj
-            else None,
-            obj['num_nodes'] if 'num_nodes' in obj else NUM_NODES,
-            obj['node_stride'] if 'node_stride' in obj else NODE_STRIDE,
-            neighborhood_assemblies[obj['neighborhood_assembly']]
-            if 'neighborhood_assembly' in obj else None,
-            obj['neighborhood_size'] if 'neighborhood_size' in obj
-            else NEIGHBORHOOD_SIZE,
-            obj['show_progress'] if 'show_progress' in obj else SHOW_PROGRESS)
+        return cls(datasets[dataset_config['name']].create(dataset_config),
+                   graphers[grapher_config['name']].create(grapher_config),
+                   config.get('data_dir', DATA_DIR),
+                   config.get('force_write', FORCE_WRITE),
+                   config.get('write_num_epochs', WRITE_NUM_EPOCHS),
+                   config.get('distort_inputs', DISTORT_INPUTS),
+                   labelings.get(config.get('node_labeling')),
+                   config.get('num_nodes', NUM_NODES),
+                   config.get('node_stride', NODE_STRIDE),
+                   neighb.get(config.get('neighborhood_assembly')),
+                   config.get('neighborhood_size', NEIGHBORHOOD_SIZE))
 
     @property
     def train_filenames(self):
@@ -197,7 +186,7 @@ class PatchySan(DataSet):
 def _write(dataset, grapher, eval_data, tfrecord_file, info_file,
            write_num_epochs, distort_inputs, shuffle,
            node_labeling, num_nodes, node_stride, neighborhood_assembly,
-           neighborhood_size, show_progress=True):
+           neighborhood_size):
 
     writer = tf.python_io.TFRecordWriter(tfrecord_file)
 
@@ -224,16 +213,13 @@ def _write(dataset, grapher, eval_data, tfrecord_file, info_file,
                        {'nodes': output[0], 'neighborhood': output[1]},
                        output[2])
 
-        if show_progress:
-            sys.stdout.write(
-                '\r>> Saving graphs to {} {:.1f}%'
-                .format(tfrecord_file, 100.0 * index / last_index))
-            sys.stdout.flush()
+        sys.stdout.write(
+            '\r>> Saving graphs to {} {:.1f}%'
+            .format(tfrecord_file, 100.0 * index / last_index))
+        sys.stdout.flush()
 
     def _done(index, last_index):
-        if show_progress:
-            print('')
-
+        print('')
         print('Successfully saved {} graphs to {}.'
               .format(index, tfrecord_file))
 

@@ -9,13 +9,13 @@ MAX_ITERATIONS = 10
 SIGMA = 0.0
 MIN_SIZE_FACTOR = 0.5
 MAX_SIZE_FACTOR = 3.0
-ENFORCE_CONNECTIVITY = True
+CONNECTIVITY = True
 
 
 def slico(image, num_segments=NUM_SEGMENTS, compactness=COMPACTNESS,
           max_iterations=MAX_ITERATIONS, sigma=SIGMA,
           min_size_factor=MIN_SIZE_FACTOR, max_size_factor=MAX_SIZE_FACTOR,
-          enforce_connectivity=ENFORCE_CONNECTIVITY):
+          enforce_connectivity=CONNECTIVITY):
     """Segments an image using k-means clustering in Color-(x,y,z) space.
 
     Args:
@@ -88,26 +88,22 @@ def slico_generator(num_segments=NUM_SEGMENTS, compactness=COMPACTNESS,
     return _generator
 
 
-def slico_json_generator(json):
+def slico_json_generator(config):
     """Generator to segment an image using k-means clustering in Color-(x,y,z)
     space based on a json object.
 
     Args:
-        json: The json object with sensible defaults for missing values.
+        config: A configuration object with sensible defaults for
+          missing values.
 
     Returns:
         Segmentation algorithm that takes a single input image.
     """
 
-    return slico_generator(
-        json['num_segments'] if 'num_segments' in json
-        else NUM_SEGMENTS,
-        json['compactness'] if 'compactness' in json else COMPACTNESS,
-        json['max_iterations'] if 'max_iterations' in json else MAX_ITERATIONS,
-        json['sigma'] if 'sigma' in json else SIGMA,
-        json['min_size_factor'] if 'min_size_factor' in json
-        else MIN_SIZE_FACTOR,
-        json['max_size_factor'] if 'max_size_factor' in json
-        else MAX_SIZE_FACTOR,
-        json['enforce_connectivity'] if 'enforce_connectivity' in json
-        else ENFORCE_CONNECTIVITY)
+    return slico_generator(config.get('num_segments', NUM_SEGMENTS),
+                           config.get('compactness', COMPACTNESS),
+                           config.get('max_iterations', MAX_ITERATIONS),
+                           config.get('sigma', SIGMA),
+                           config.get('min_size_factor', MIN_SIZE_FACTOR),
+                           config.get('max_size_factor', MAX_SIZE_FACTOR),
+                           config.get('enforce_connectivity', CONNECTIVITY))
