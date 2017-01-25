@@ -11,7 +11,7 @@ from data import iterator
 def main(argv=None):
     pascal = PascalVOC()
     grapher = SegmentationGrapher(
-        slic_generator(300), adjacency_euclidean_distance)
+        slic_generator(300), [adjacency_euclidean_distance])
 
     patchy = PatchySan(pascal, grapher, distort_inputs=True, num_nodes=300,
                        write_num_epochs=10)

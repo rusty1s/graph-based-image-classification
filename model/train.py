@@ -41,7 +41,7 @@ def train(dataset, structure, checkpoint_dir=CHECKPOINT_DIR,
     with tf.Graph().as_default():
         global_step = tf.contrib.framework.get_or_create_global_step()
 
-        data, labels = inputs(dataset, batch_size, scale_inputs,
+        data, labels = inputs(dataset, False, batch_size, scale_inputs,
                               distort_inputs, zero_mean_inputs, shuffle=True)
 
         logits = inference(data, structure)

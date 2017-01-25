@@ -3,7 +3,6 @@ from __future__ import absolute_import
 import tensorflow as tf
 
 from segmentation import feature_extraction, NUM_FEATURES
-from segmentation import adjacency_euclidean_distance
 
 from .grapher import Grapher
 
@@ -11,17 +10,18 @@ from .grapher import Grapher
 class SegmentationGrapher(Grapher):
     """A graph generator by segmenting input images."""
 
-    def __init__(self, segment, adjacency_from_segmentation):
+    def __init__(self, segment, adjacencies_from_segmentation):
         """Creates a graph generator by segmenting input images.
 
         Args:
             segment: A segmentation algorithm that takes a sinle input image.
-            adjacency_from_segmentation: An adjacency generation algorithm
-              that produces an adjacency matrix based on a given segmentation.
+            adjacencies_from_segmentation: An array of adjacency generation
+              algorithms which each produces an adjacency matrix based on a
+              computed segmentation.
         """
 
         self._segment = segment
-        self._adjacency_from_segmentation = adjacency_from_segmentation
+        self._adjacencies_from_segmentation = adjacencies_from_segmentation
 
     @property
     def num_node_channels(self):
@@ -41,7 +41,7 @@ class SegmentationGrapher(Grapher):
             A number.
         """
 
-        return 1
+        return len(self._adjacencies_from_segmentation)
 
     def create_graph(self, image):
         """Generates a graph based on the passed data. Note that the number of
@@ -61,9 +61,9 @@ class SegmentationGrapher(Grapher):
 
         segmentation = self._segment(image)
 
-        # Compute the nodes and adjacency matrix based on the segmentation.
+        # Compute the nodes and adjacency matrices based on the segmentation.
         nodes = feature_extraction(segmentation, image)
-        adjacency = self._adjacency_from_segmentation(segmentation)
+        adjacency = self._adjacency_from_segmentation[0](segmentation)
 
         # Till now, we only consider one adjacency matrix.
         return nodes, tf.expand_dims(adjacency, axis=2)
