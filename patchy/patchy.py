@@ -108,7 +108,7 @@ class PatchySan(DataSet):
         dataset = obj['dataset']
         grapher = obj['grapher']
 
-        return cls.__init__(
+        return cls(
             datasets[dataset['name']].create(dataset),
             graphers[grapher['name']].create(grapher),
             obj['data_dir'] if 'data_dir' in obj else DATA_DIR,

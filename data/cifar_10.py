@@ -50,7 +50,7 @@ class Cifar10(DataSet):
 
     @classmethod
     def create(cls, obj):
-        return cls.__init__(
+        return cls(
             obj['data_dir'],
             obj['show_progress'] if 'show_progress' in obj else SHOW_PROGRESS)
 

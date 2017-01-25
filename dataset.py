@@ -9,7 +9,8 @@ from patchy import PatchySan
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string('config', None,
-                           """Configuration of the dataset.""")
+                           """Path to the configuration json file of the
+                           dataset.""")
 
 
 def dataset(config):
