@@ -43,11 +43,11 @@ def _bias_variable(name, shape, constant):
 #      biases: { constant: 0.1 },
 #   }
 # }
-def inference(data, structure):
+def inference(data, network):
     output = data
     i = 1
 
-    for layer in structure['conv']:
+    for layer in network['conv']:
         input_channels = output.get_shape()[3].value
         output_channels = layer['output_channels']
 
@@ -83,7 +83,7 @@ def inference(data, structure):
 
     output = tf.reshape(output, [output.get_shape()[0].value, -1])
 
-    for layer in structure['local']:
+    for layer in network['local']:
         input_channels = output.get_shape()[1].value
         output_channels = layer['output_channels']
 
@@ -105,7 +105,7 @@ def inference(data, structure):
 
         i += 1
 
-    layer = structure['softmax_linear']
+    layer = network['softmax_linear']
     input_channels = output.get_shape()[1].value
     output_channels = layer['output_channels']
 

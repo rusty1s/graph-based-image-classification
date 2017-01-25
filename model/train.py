@@ -26,7 +26,7 @@ SAVE_CHECKPOINT_SECS = 30
 SAVE_SUMMARIES_STEPS = 100
 
 
-def train(dataset, structure, checkpoint_dir=CHECKPOINT_DIR,
+def train(dataset, network, checkpoint_dir=CHECKPOINT_DIR,
           batch_size=BATCH_SIZE, last_step=LAST_STEP,
           learning_rate=LEARNING_RATE, epsilon=EPSILON, beta1=BETA_1,
           beta2=BETA_2, scale_inputs=SCALE_INPUTS,
@@ -44,7 +44,7 @@ def train(dataset, structure, checkpoint_dir=CHECKPOINT_DIR,
         data, labels = inputs(dataset, False, batch_size, scale_inputs,
                               distort_inputs, zero_mean_inputs, shuffle=True)
 
-        logits = inference(data, structure)
+        logits = inference(data, network)
         loss = cal_loss(logits, labels)
         acc = cal_accuracy(logits, labels)
 
@@ -71,7 +71,7 @@ def json_train(dataset, json, display_step=DISPLAY_STEP,
 
     train(
         dataset,
-        json['structure'],
+        json['network'],
         json['checkpoint_dir'] if 'checkpoint_dir' in json else CHECKPOINT_DIR,
         json['batch_size'] if 'batch_size' in json else BATCH_SIZE,
         json['last_step'] if 'last_step' in json else LAST_STEP,

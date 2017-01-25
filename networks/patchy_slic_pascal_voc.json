@@ -37,6 +37,6 @@
   "scale_inputs": false,
   "distort_inputs": false,
   "zero_mean_inputs": true,
-  "structure": {
+  "network": {
   }
 }
