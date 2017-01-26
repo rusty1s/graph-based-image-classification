@@ -70,7 +70,8 @@ def quickshift_json_generator(config):
     space based on a json object.
 
     Args:
-        json: The json object with sensible defaults for missing values.
+        config: A configuration object with sensible defaults for
+          missing values.
 
     Returns:
         Segmentation algorithm that takes a single input image.
