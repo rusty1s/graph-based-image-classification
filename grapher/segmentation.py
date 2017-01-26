@@ -32,7 +32,7 @@ class SegmentationGrapher(Grapher):
         return cls(
             segmentations[segmentation_config['name']](segmentation_config),
             [adjacencies[name] for name in
-                prop(config, 'adjacencies_from_segmentation')])
+                config['adjacencies_from_segmentation']])
 
     @property
     def num_node_channels(self):

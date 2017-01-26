@@ -80,4 +80,4 @@ def train_per_config(dataset, config, display_step=DISPLAY_STEP,
           config.get('scale_inputs', SCALE_INPUTS),
           config.get('distort_inputs', DISTORT_INPUTS),
           config.get('zero_mean_inputs', ZERO_MEAN_INPUTS),
-          ay_step, save_checkpoint_secs, save_summaries_steps)
+          display_step, save_checkpoint_secs, save_summaries_steps)

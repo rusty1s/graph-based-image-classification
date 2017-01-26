@@ -73,11 +73,12 @@ def inference(data, network):
             output = tf.nn.bias_add(output, biases)
             output = tf.nn.relu(output, name=scope.name)
 
-        max_pool_size = [1] + layer['max_pool']['size'] + [1]
-        max_pool_strides = [1] + layer['max_pool']['strides'] + [1]
+        if 'max_pool' in layer:
+            max_pool_size = [1] + layer['max_pool']['size'] + [1]
+            max_pool_strides = [1] + layer['max_pool']['strides'] + [1]
 
-        output = tf.nn.max_pool(output, max_pool_size, max_pool_strides,
-                                padding='SAME', name='pool_{}'.format(i))
+            output = tf.nn.max_pool(output, max_pool_size, max_pool_strides,
+                                    padding='SAME', name='pool_{}'.format(i))
 
         i += 1
 

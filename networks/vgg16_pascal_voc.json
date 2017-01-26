@@ -112,7 +112,7 @@
       }
     ],
     "softmax_linear": {
-      "output_channels": 10,
+      "output_channels": 20,
       "weights": { "stddev": 1e-1, "decay": 0.0 },
       "biases": { "constant": 1.0 }
     }
