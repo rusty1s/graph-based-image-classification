@@ -9,6 +9,16 @@ class Grapher(object):
     @classmethod
     @abc.abstractmethod
     def create(cls, config):
+        """Static constructor to create a grapher based on a json object.
+
+        Args:
+            config: A configuration object with sensible defaults for
+              missing values.
+
+        Returns:
+            A grapher.
+        """
+
         pass
 
     @property

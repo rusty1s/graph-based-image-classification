@@ -27,6 +27,17 @@ class SegmentationGrapher(Grapher):
 
     @classmethod
     def create(cls, config):
+        """Static constructor to create a segmentation grapher based on a json
+        object.
+
+        Args:
+            config: A configuration object with sensible defaults for
+              missing values.
+
+        Returns:
+            A segmentation grapher.
+        """
+
         segmentation_config = config['segmentation']
 
         return cls(
