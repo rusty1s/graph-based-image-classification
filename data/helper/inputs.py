@@ -4,7 +4,7 @@ import tensorflow as tf
 
 from .record import Record
 
-MIN_FRACTION_OF_EXAMPLES_IN_QUEUE = 0.4
+MIN_FRACTION_OF_EXAMPLES_IN_QUEUE = 0.1
 NUM_THREADS = 16
 
 

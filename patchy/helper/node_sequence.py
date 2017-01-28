@@ -16,7 +16,7 @@ def node_sequence(sequence, width, stride):
     """
 
     with tf.name_scope('node_sequence', values=[sequence, width, stride]):
-        # Stride the sequence based on the given stride width.
+        # Stride the sequence based on the given stride size.
         sequence = tf.strided_slice(sequence, [0], [width*stride], [stride])
 
         # Pad right with -1 if the sequence length is lower than width.

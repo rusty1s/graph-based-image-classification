@@ -99,34 +99,34 @@ def feature_extraction(segmentation, image):
             # TODO a few pictures haw intensity images of all zeros, so these
             # operations results in nans.
             wlc = prop['weighted_local_centroid']
-            features[i][44] = wlc[0] if isnan(wlc[0]) else 0.0
-            features[i][44] = wlc[1] if isnan(wlc[1]) else 0.0
+            features[i][44] = wlc[0] if not isnan(wlc[0]) else 0.0
+            features[i][45] = wlc[1] if not isnan(wlc[1]) else 0.0
 
             wm = prop['weighted_moments_central']
-            features[i][46] = wm[0][0] if isnan(wm[0][0]) else 0.0
-            features[i][47] = wm[1][1] if isnan(wm[1][1]) else 0.0
-            features[i][48] = wm[2][0] if isnan(wm[2][0]) else 0.0
-            features[i][49] = wm[0][2] if isnan(wm[0][2]) else 0.0
-            features[i][50] = wm[2][1] if isnan(wm[2][1]) else 0.0
-            features[i][51] = wm[1][2] if isnan(wm[1][2]) else 0.0
-            features[i][52] = wm[2][2] if isnan(wm[2][2]) else 0.0
+            features[i][46] = wm[0][0] if not isnan(wm[0][0]) else 0.0
+            features[i][47] = wm[1][1] if not isnan(wm[1][1]) else 0.0
+            features[i][48] = wm[2][0] if not isnan(wm[2][0]) else 0.0
+            features[i][49] = wm[0][2] if not isnan(wm[0][2]) else 0.0
+            features[i][50] = wm[2][1] if not isnan(wm[2][1]) else 0.0
+            features[i][51] = wm[1][2] if not isnan(wm[1][2]) else 0.0
+            features[i][52] = wm[2][2] if not isnan(wm[2][2]) else 0.0
 
             we = prop['weighted_moments_normalized']
-            features[i][53] = we[1][1] if isnan(we[1][1]) else 0.0
-            features[i][54] = we[2][0] if isnan(we[2][0]) else 0.0
-            features[i][55] = we[0][2] if isnan(we[0][2]) else 0.0
-            features[i][56] = we[2][1] if isnan(we[2][1]) else 0.0
-            features[i][57] = we[1][2] if isnan(we[1][2]) else 0.0
-            features[i][58] = we[2][2] if isnan(we[2][2]) else 0.0
+            features[i][53] = we[1][1] if not isnan(we[1][1]) else 0.0
+            features[i][54] = we[2][0] if not isnan(we[2][0]) else 0.0
+            features[i][55] = we[0][2] if not isnan(we[0][2]) else 0.0
+            features[i][56] = we[2][1] if not isnan(we[2][1]) else 0.0
+            features[i][57] = we[1][2] if not isnan(we[1][2]) else 0.0
+            features[i][58] = we[2][2] if not isnan(we[2][2]) else 0.0
 
             wh = prop['moments_hu']
-            features[i][59] = wh[0] if isnan(wh[0]) else 0.0
-            features[i][60] = wh[1] if isnan(wh[1]) else 0.0
-            features[i][61] = wh[2] if isnan(wh[2]) else 0.0
-            features[i][62] = wh[3] if isnan(wh[3]) else 0.0
-            features[i][63] = wh[4] if isnan(wh[4]) else 0.0
-            features[i][64] = wh[5] if isnan(wh[5]) else 0.0
-            features[i][65] = wh[6] if isnan(wh[6]) else 0.0
+            features[i][59] = wh[0] if not isnan(wh[0]) else 0.0
+            features[i][60] = wh[1] if not isnan(wh[1]) else 0.0
+            features[i][61] = wh[2] if not isnan(wh[2]) else 0.0
+            features[i][62] = wh[3] if not isnan(wh[3]) else 0.0
+            features[i][63] = wh[4] if not isnan(wh[4]) else 0.0
+            features[i][64] = wh[5] if not isnan(wh[5]) else 0.0
+            features[i][65] = wh[6] if not isnan(wh[6]) else 0.0
 
             circularity = (4 * PI * area) / (perimeter**2)
             features[i][67] = circularity
