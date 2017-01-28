@@ -95,9 +95,9 @@ class PatchySan(DataSet):
 
         if distort_inputs and not tf.gfile.Exists(train_eval_file):
             _write(dataset, grapher, False, train_eval_file,
-                   train_eval_info_file, 1, True, False, node_labeling,
-                   num_nodes, node_stride, neighborhood_assembly,
-                   neighborhood_size)
+                   train_eval_info_file, 1, distort_inputs, False,
+                   node_labeling, num_nodes, node_stride,
+                   neighborhood_assembly, neighborhood_size)
 
     @classmethod
     def create(cls, config):
