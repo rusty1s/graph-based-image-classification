@@ -1,4 +1,4 @@
-from math import sqrt, pi as PI
+from math import sqrt, pi as PI, isnan
 
 import tensorflow as tf
 import numpy as np
@@ -6,7 +6,7 @@ from skimage.measure import regionprops
 
 
 # Static number of features to generate for one segment.
-NUM_FEATURES = 83
+NUM_FEATURES = 81
 
 
 # TODO Oriented Bounding Box missing
@@ -96,35 +96,37 @@ def feature_extraction(segmentation, image):
             features[i][42] = prop['orientation']
             features[i][43] = prop['solidity']
 
-            weighted_local_centroid = prop['weighted_local_centroid']
-            features[i][44] = weighted_local_centroid[0]
-            features[i][45] = weighted_local_centroid[1]
+            # TODO a few pictures haw intensity images of all zeros, so these
+            # operations results in nans.
+            wlc = prop['weighted_local_centroid']
+            features[i][44] = wlc[0] if isnan(wlc[0]) else 0.0
+            features[i][44] = wlc[1] if isnan(wlc[1]) else 0.0
 
-            weighted_mu = prop['weighted_moments_central']
-            features[i][46] = weighted_mu[0][0]
-            features[i][47] = weighted_mu[1][1]
-            features[i][48] = weighted_mu[2][0]
-            features[i][49] = weighted_mu[0][2]
-            features[i][50] = weighted_mu[2][1]
-            features[i][51] = weighted_mu[1][2]
-            features[i][52] = weighted_mu[2][2]
+            wm = prop['weighted_moments_central']
+            features[i][46] = wm[0][0] if isnan(wm[0][0]) else 0.0
+            features[i][47] = wm[1][1] if isnan(wm[1][1]) else 0.0
+            features[i][48] = wm[2][0] if isnan(wm[2][0]) else 0.0
+            features[i][49] = wm[0][2] if isnan(wm[0][2]) else 0.0
+            features[i][50] = wm[2][1] if isnan(wm[2][1]) else 0.0
+            features[i][51] = wm[1][2] if isnan(wm[1][2]) else 0.0
+            features[i][52] = wm[2][2] if isnan(wm[2][2]) else 0.0
 
-            weighted_eta = prop['weighted_moments_normalized']
-            features[i][53] = weighted_eta[1][1]
-            features[i][54] = weighted_eta[2][0]
-            features[i][55] = weighted_eta[0][2]
-            features[i][56] = weighted_eta[2][1]
-            features[i][57] = weighted_eta[1][2]
-            features[i][58] = weighted_eta[2][2]
+            we = prop['weighted_moments_normalized']
+            features[i][53] = we[1][1] if isnan(we[1][1]) else 0.0
+            features[i][54] = we[2][0] if isnan(we[2][0]) else 0.0
+            features[i][55] = we[0][2] if isnan(we[0][2]) else 0.0
+            features[i][56] = we[2][1] if isnan(we[2][1]) else 0.0
+            features[i][57] = we[1][2] if isnan(we[1][2]) else 0.0
+            features[i][58] = we[2][2] if isnan(we[2][2]) else 0.0
 
-            weighted_hu = prop['moments_hu']
-            features[i][59] = weighted_hu[0]
-            features[i][60] = weighted_hu[1]
-            features[i][61] = weighted_hu[2]
-            features[i][62] = weighted_hu[3]
-            features[i][63] = weighted_hu[4]
-            features[i][64] = weighted_hu[5]
-            features[i][65] = weighted_hu[6]
+            wh = prop['moments_hu']
+            features[i][59] = wh[0] if isnan(wh[0]) else 0.0
+            features[i][60] = wh[1] if isnan(wh[1]) else 0.0
+            features[i][61] = wh[2] if isnan(wh[2]) else 0.0
+            features[i][62] = wh[3] if isnan(wh[3]) else 0.0
+            features[i][63] = wh[4] if isnan(wh[4]) else 0.0
+            features[i][64] = wh[5] if isnan(wh[5]) else 0.0
+            features[i][65] = wh[6] if isnan(wh[6]) else 0.0
 
             circularity = (4 * PI * area) / (perimeter**2)
             features[i][67] = circularity
