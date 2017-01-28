@@ -54,6 +54,17 @@ class PascalVOC(DataSet):
 
     @classmethod
     def create(cls, config):
+        """Static constructor to create a PascalVOC dataset based on a json
+        object.
+
+        Args:
+            config: A configuration object with sensible defaults for
+              missing values.
+
+        Returns:
+            A PascalVOC dataset.
+        """
+
         return cls(config.get('data_dir', DATA_DIR))
 
     @property

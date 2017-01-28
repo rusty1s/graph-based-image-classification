@@ -22,6 +22,16 @@ class DataSet():
     @classmethod
     @abc.abstractmethod
     def create(cls, config):
+        """Static constructor to create a dataset based on a json object.
+
+        Args:
+            config: A configuration object with sensible defaults for
+              missing values.
+
+        Returns:
+            A dataset.
+        """
+
         pass
 
     @property

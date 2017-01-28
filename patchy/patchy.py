@@ -101,6 +101,17 @@ class PatchySan(DataSet):
 
     @classmethod
     def create(cls, config):
+        """Static constructor to create a PatchySan dataset based on a json
+        object.
+
+        Args:
+            config: A configuration object with sensible defaults for
+              missing values.
+
+        Returns:
+            A PatchySan dataset.
+        """
+
         dataset_config = config['dataset']
         grapher_config = config['grapher']
 
