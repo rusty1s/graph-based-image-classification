@@ -8,9 +8,9 @@ from data import DataSet, Record, datasets
 from data import iterator, read_tfrecord, write_tfrecord
 from grapher import graphers
 
-from .helper.labeling import labelings, identity
+from .helper.labeling import labelings, scanline
 from .helper.neighborhood_assembly import neighborhood_assemblies as neighb,\
-                                          neighborhoods_by_weight
+                                          neighborhoods_weights_to_root
 from .helper.node_sequence import node_sequence
 
 
@@ -41,8 +41,8 @@ class PatchySan(DataSet):
                  neighborhood_assembly=None,
                  neighborhood_size=NEIGHBORHOOD_SIZE):
 
-        node_labeling = identity if node_labeling is None else node_labeling
-        neighborhood_assembly = neighborhoods_by_weight if\
+        node_labeling = scanline if node_labeling is None else node_labeling
+        neighborhood_assembly = neighborhoods_weights_to_root if\
             neighborhood_assembly is None else neighborhood_assembly
 
         self._dataset = dataset

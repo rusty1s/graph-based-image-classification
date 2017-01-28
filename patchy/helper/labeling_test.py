@@ -1,11 +1,11 @@
 import tensorflow as tf
 
-from .labeling import identity, betweenness_centrality
+from .labeling import scanline, betweenness_centrality
 
 
 class LabelingTest(tf.test.TestCase):
 
-    def test_identity(self):
+    def test_scanline(self):
         adjacency = tf.constant([
             [0, 1, 1, 1],
             [1, 0, 1, 1],
@@ -16,7 +16,7 @@ class LabelingTest(tf.test.TestCase):
         expected = [0, 1, 2, 3]
 
         with self.test_session() as sess:
-            labeling = identity(adjacency)
+            labeling = scanline(adjacency)
             self.assertAllEqual(labeling.eval(), expected)
 
     def test_betweenness_centrality(self):

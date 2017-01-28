@@ -10,7 +10,7 @@
       "name": "segmentation",
       "segmentation": {
         "name": "slic",
-        "num_segments": 300,
+        "num_segments": 400,
         "compactness": 30.0,
         "max_iterations": 10,
         "sigma": 0.0
@@ -20,24 +20,24 @@
       ]
     },
     "force_write": false,
-    "write_num_epochs": 10,
-    "distort_inputs": true,
-    "node_labeling": "identity",
-    "num_nodes": 300,
+    "write_num_epochs": 1,
+    "distort_inputs": false,
+    "node_labeling": "scanline",
+    "num_nodes": 440,
     "node_stride": 1,
-    "neighborhood_assembly": "by_weight",
+    "neighborhood_assembly": "weights_to_root",
     "neighborhood_size": 9
   },
   "checkpoint_dir": "/tmp/patchy_san_slic_pascal_voc_train",
   "batch_size": 128,
   "last_step": 20000,
-  "learning_rate": 0.001,
+  "learning_rate": 0.1,
   "epsilon": 1,
   "beta1": 0.9,
   "beta2": 0.999,
   "scale_inputs": 1,
   "distort_inputs": false,
-  "zero_mean_inputs": false,
+  "zero_mean_inputs": true,
   "network": {
     "conv": [
       {

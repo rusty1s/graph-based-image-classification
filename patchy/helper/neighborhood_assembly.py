@@ -3,8 +3,8 @@ import networkx as nx
 import numpy as np
 
 
-def neighborhoods_by_weight(adjacency, sequence, size):
-    def _neighborhoods_by_weight(adjacency, sequence):
+def neighborhoods_weights_to_root(adjacency, sequence, size):
+    def _neighborhoods_weights_to_root(adjacency, sequence):
         graph = nx.from_numpy_matrix(adjacency)
 
         neighborhoods = np.zeros((sequence.shape[0], size), dtype=np.int32)
@@ -23,8 +23,24 @@ def neighborhoods_by_weight(adjacency, sequence, size):
 
         return neighborhoods
 
-    return tf.py_func(_neighborhoods_by_weight, [adjacency, sequence],
-                      tf.int32, stateful=False, name='neighborhoods_by_weight')
+    return tf.py_func(_neighborhoods_weights_to_root, [adjacency, sequence],
+                      tf.int32, stateful=False,
+                      name='neighborhoods_weights_to_root')
 
 
-neighborhood_assemblies = {'by_weight': neighborhoods_by_weight}
+def neighborhoods_nearest_scanline(adjacency, sequence, size):
+    with tf.name_scope('neighborhoods_nearest_scanline',
+                       values=[adjacency, sequence, size]):
+
+        neighborhoods = neighborhoods_weights_to_root(
+            adjacency, sequence, size)
+
+        def _sort(array):
+            return np.sort(array)
+
+        return tf.py_func(_sort, [neighborhoodse], tf.int32, stateful=False,
+                          name='sort')
+
+
+neighborhood_assemblies = {'weights_to_root': neighborhoods_weight_to_roots,
+                           'nearest_scanline': neighborhoods_nearest_scanline}

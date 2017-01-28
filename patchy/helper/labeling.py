@@ -3,7 +3,7 @@ import networkx as nx
 import numpy as np
 
 
-def identity(adjacency, labels=None):
+def scanline(adjacency, labels=None):
     return _labels_default(labels, adjacency)
 
 
@@ -29,5 +29,5 @@ def _labels_default(labels, adjacency):
         return labels
 
 
-labelings = {'identity': identity,
+labelings = {'scanline': scanline,
              'betweenness_centrality': betweenness_centrality}

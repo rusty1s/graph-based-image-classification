@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .neighborhood_assembly import neighborhoods_by_weight
+from .neighborhood_assembly import neighborhoods_weights_to_root
 
 
 class NeighborhoodAssemblyTest(tf.test.TestCase):
@@ -28,7 +28,8 @@ class NeighborhoodAssemblyTest(tf.test.TestCase):
         ]
 
         with self.test_session() as sess:
-            neighborhoods = neighborhoods_by_weight(adjacency, sequence, size)
+            neighborhoods = neighborhoods_weights_to_root(
+                adjacency, sequence, size)
             self.assertAllEqual(neighborhoods.eval(), expected)
 
         sequence = tf.constant([0, 1, 2, 3])
@@ -50,5 +51,6 @@ class NeighborhoodAssemblyTest(tf.test.TestCase):
         ]
 
         with self.test_session() as sess:
-            neighborhoods = neighborhoods_by_weight(adjacency, sequence, size)
+            neighborhoods = neighborhoods_weights_to_root(
+                adjacency, sequence, size)
             self.assertAllEqual(neighborhoods.eval(), expected)
