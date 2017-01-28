@@ -42,5 +42,5 @@ def neighborhoods_nearest_scanline(adjacency, sequence, size):
                           name='sort')
 
 
-neighborhood_assemblies = {'weights_to_root': neighborhoods_weight_to_roots,
+neighborhood_assemblies = {'weights_to_root': neighborhoods_weights_to_root,
                            'nearest_scanline': neighborhoods_nearest_scanline}
