@@ -126,7 +126,7 @@ class PatchySan(DataSet):
 
     @property
     def train_eval_filenames(self):
-        if distort_inputs:
+        if self._distort_inputs:
             return [os.path.join(self.data_dir, TRAIN_EVAL_FILENAME)]
         else:
             return [os.path.join(self.data_dir, TRAIN_FILENAME)]
@@ -149,7 +149,7 @@ class PatchySan(DataSet):
 
     @property
     def num_examples_per_epoch_for_train_eval(self):
-        if distort_inputs:
+        if self._distort_inputs:
             filename = os.path.join(self._data_dir, TRAIN_EVAL_INFO_FILENAME)
             with open(filename, 'r') as f:
                 count = json.load(f)['count']
@@ -172,10 +172,11 @@ class PatchySan(DataSet):
             positive = tf.strided_slice(nodes, [i], [i+1], [1])
             negative = tf.zeros([1, self._grapher.num_node_channels])
 
-            return tf.where(node_index < 0, negative, positive)
+            return tf.where(i < 0, negative, positive)
 
         data = tf.reshape(data['neighborhood'], [-1])
-        data = tf.map_fn(_map_features, neighborhood, dtype=tf.float32)
+        data = tf.cast(data, tf.int32)
+        data = tf.map_fn(_map_features, data, dtype=tf.float32)
         shape = [self._num_nodes, self._neighborhood_size,
                  self._grapher.num_node_channels]
         data = tf.reshape(data, shape)

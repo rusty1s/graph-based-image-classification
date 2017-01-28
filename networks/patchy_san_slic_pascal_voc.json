@@ -31,13 +31,54 @@
   "checkpoint_dir": "/tmp/patchy_san_slic_pascal_voc_train",
   "batch_size": 128,
   "last_step": 20000,
-  "learning_rate": 0.1,
-  "epsilon": 1.0,
+  "learning_rate": 0.001,
+  "epsilon": 1,
   "beta1": 0.9,
   "beta2": 0.999,
   "scale_inputs": 1,
   "distort_inputs": false,
-  "zero_mean_inputs": true,
+  "zero_mean_inputs": false,
   "network": {
+    "conv": [
+      {
+        "output_channels": 64,
+        "output_channels": 64,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [1, 3], "strides": [1, 1] },
+        "max_pool": { "size": [1, 2], "strides": [1, 2] }
+      },
+      {
+        "output_channels": 128,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [1, 3], "strides": [1, 1] },
+        "max_pool": { "size": [1, 2], "strides": [1, 2] }
+      },
+      {
+        "output_channels": 256,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": { "constant": 0.0 },
+        "fields": { "size": [1, 3], "strides": [1, 1] },
+        "max_pool": { "size": [1, 3], "strides": [1, 3] }
+      }
+    ],
+    "fully_connected": [
+      {
+        "output_channels": 1024,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": {"constant": 1.0 }
+      },
+      {
+        "output_channels": 1024,
+        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "biases": {"constant": 1.0 }
+      }
+    ],
+    "softmax_linear": {
+      "output_channels": 20,
+      "weights": { "stddev": 1e-1, "decay": 0.0 },
+      "biases": { "constant": 1.0 }
+    }
   }
 }
