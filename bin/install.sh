@@ -74,10 +74,6 @@ source activate "$NAME"
 
 # Install conda packages.
 conda install numpy scipy matplotlib
-conda install -c https://conda.binstar.org/menpo opencv3
-
-# Install codecov for code coverage.
-pip install codecov
 
 # Install TensorFlow.
 if [[ $PYTHON == "2.7" ]]; then
