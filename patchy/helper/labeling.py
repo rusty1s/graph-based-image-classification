@@ -4,7 +4,8 @@ import numpy as np
 
 
 def scanline(adjacency, labels=None):
-    return _labels_default(labels, adjacency)
+    with tf.name_scope('scanline', values=[adjacency, labels]):
+        return _labels_default(labels, adjacency)
 
 
 def betweenness_centrality(adjacency, labels=None):
