@@ -38,7 +38,7 @@ def neighborhoods_nearest_scanline(adjacency, sequence, size):
         def _sort(array):
             return np.sort(array)
 
-        return tf.py_func(_sort, [neighborhoodse], tf.int32, stateful=False,
+        return tf.py_func(_sort, [neighborhoods], tf.int32, stateful=False,
                           name='sort')
 
 
