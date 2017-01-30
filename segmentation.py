@@ -108,7 +108,7 @@ def iterate(dataset, segmentation_algorithm, adjacency_algorithm, eval_data,
 
     image_names = {label: 0 for label in dataset.labels}
 
-    _iterate = iterator(dataset, eval_data, shuffle=True, distort_inputs=True)
+    _iterate = iterator(dataset, eval_data)
 
     def _before(image, label):
         segmentation = segmentation_algorithm(image)
