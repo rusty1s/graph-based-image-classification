@@ -6,4 +6,4 @@ from .helper.labeling import labelings,\
 
 from .helper.neighborhood_assembly import neighborhood_assemblies,\
                                           neighborhoods_weights_to_root,\
-                                          neighborhoods_nearest_scanline
+                                          neighborhoods_grid_spiral

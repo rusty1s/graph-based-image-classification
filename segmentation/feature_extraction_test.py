@@ -40,6 +40,8 @@ class FeaturesTest(tf.test.TestCase):
 
         with self.test_session() as sess:
             f = feature_extraction(segmentation, image).eval()[0]
+            self.assertEqual(len(f), 45)
+
             self.assertAllEqual(f[0:4], M[0])
             self.assertAllEqual(f[4:8], M[1])
             self.assertAllEqual(f[8:12], M[2])
