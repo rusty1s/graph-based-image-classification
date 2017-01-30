@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from six.moves import xrange
 import tensorflow as tf
 import networkx as nx
 import numpy as np
@@ -10,17 +13,17 @@ def neighborhoods_weights_to_root(adjacency, sequence, size):
         neighborhoods = np.zeros((sequence.shape[0], size), dtype=np.int32)
         neighborhoods.fill(-1)
 
-        for i, n in enumerate(sequence):
-            # Pass if we iterate over an invalid node.
+        for i in xrange(0, sequence.shape[0]):
+            n = sequence[i]
             if n < 0:
-                continue
+                break
 
             shortest = nx.single_source_dijkstra_path_length(graph, n).items()
             shortest = sorted(shortest, key=lambda v: v[1])
             shortest = shortest[:size]
 
-            for j, k in enumerate(shortest):
-                neighborhoods[i][j] = k[0]
+            for j in xrange(0, min(size, len(shortest))):
+                neighborhoods[i][j] = shortest[j][0]
 
         return neighborhoods
 
@@ -47,36 +50,32 @@ def neighborhoods_grid_spiral(adjacency, sequence, size):
         # set x = y
         # repeat until arr.length == size
 
-        for i, root in enumerate(sequence):
-            # Pass if we iterate over an invalid node.
+        for i in xrange(0, sequence.shape[0]):
+            root = sequence[i]
             if root < 0:
-                continue
+                break
 
             # Add root node to the beginning of the neighborhood.
             neighborhoods[i][0] = root
+            x = root
 
-            # Find the nearest neighbor x to root.
-            x = -1
-            weight = float('inf')
-            for _, n, d in graph.edges_iter(nbunch=[root], data=True):
-                if d['weight'] < weight:
-                    x = n
-                    weight = d['weight']
+            ws = nx.single_source_dijkstra_path_length(graph, root)
+            ws = list(ws.items())
 
-            neighborhoods[i][1] = x
-
-            for j in range(2, size):
+            for j in xrange(1, size):
                 if x == -1:
-                    pass
+                    break
 
                 y = -1
                 weight = float('inf')
-                for _, n, d, in graph.edges_iter(nbunch=[x], data=True):
-                    length = nx.shortest_path_length(graph, root, n, 'weight')
-                    if d['weight'] + length < weight and\
-                       n not in neighborhoods[i]:
+                for _, n, d, in graph.edges_iter(x, data=True):
+                    if n in neighborhoods[i]:
+                        continue
+
+                    w = ws[n][1] + d['weight']
+                    if w < weight:
                         y = n
-                        weight = d['weight'] + length
+                        weight = w
 
                 neighborhoods[i][j] = y
                 x = y
