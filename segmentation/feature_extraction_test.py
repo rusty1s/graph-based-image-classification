@@ -34,9 +34,9 @@ class FeaturesTest(tf.test.TestCase):
               [0, 0, 0, 0],
               [0, 0, 0, 0]]
 
-        mean = [0.2, 0, 0]
+        mean = [51, 0, 0]
         minimum = [0, 0, 0]
-        maximum = [1, 0, 0]
+        maximum = [255, 0, 0]
 
         with self.test_session() as sess:
             f = feature_extraction(segmentation, image).eval()[0]
@@ -53,7 +53,6 @@ class FeaturesTest(tf.test.TestCase):
             self.assertAllEqual(f[24:28], Mw[1])
             self.assertAllEqual(f[28:32], Mw[2])
             self.assertAllEqual(f[32:36], Mw[3])
-            self.assertAllEqual(round(f[36]*100), round(mean[0]*100))
-            self.assertAllEqual(f[37:39], mean[1:3])
+            self.assertAllEqual(f[36:39], mean[0:3])
             self.assertAllEqual(f[39:42], minimum)
             self.assertAllEqual(f[42:45], maximum)

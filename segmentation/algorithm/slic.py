@@ -3,7 +3,7 @@ import numpy as np
 from skimage.segmentation import slic as skimage_slic
 
 
-NUM_SEGMENTS = 100
+NUM_SEGMENTS = 400
 COMPACTNESS = 30.0
 MAX_ITERATIONS = 10
 SIGMA = 0.0

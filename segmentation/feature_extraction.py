@@ -67,15 +67,13 @@ def feature_extraction(segmentation, image):
     # ignored when calling regionprops.
     segmentation = segmentation + tf.ones_like(segmentation)
 
-    # Convert to uint8 image to float representation in the range [0, 1].
-    with tf.name_scope('image_to_float', values=[image]):
-        image = tf.cast(image, dtype=tf.uint8)
-        image = tf.image.convert_image_dtype(image, dtype=tf.float32)
-
     # Get the intensity image with shape [height, width] of the image by
     # converting it to the HSV Colorspace.
     with tf.name_scope('intensity_image', values=[image]):
-        intensity_image = tf.image.rgb_to_hsv(image)
+        intensity_image = tf.cast(image, dtype=tf.uint8)
+        intensity_image = tf.image.convert_image_dtype(intensity_image,
+                                                       dtype=tf.float32)
+        intensity_image = tf.image.rgb_to_hsv(intensity_image)
         intensity_image = tf.strided_slice(
             intensity_image,
             [0, 0, 2],
