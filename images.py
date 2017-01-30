@@ -9,7 +9,7 @@ from data import datasets, iterator
 
 FLAGS = tf.app.flags.FLAGS
 
-tf.app.flags.DEFINE_string('dataset', 'cifar_10',
+tf.app.flags.DEFINE_string('dataset', 'pascal_voc',
                            """The dataset. See dataset/__init__.py for a list
                            of all available datasets.""")
 tf.app.flags.DEFINE_string('data_dir', None,
@@ -74,10 +74,10 @@ def save_images(dataset, eval_data):
 def main(argv=None):
     """Runs the script."""
 
-    if FLAGS.data_dir:
-        dataset = datasets[FLAGS.dataset](FLAGS.data_dir)
-    else:
+    if FLAGS.data_dir is None:
         dataset = datasets[FLAGS.dataset]()
+    else:
+        dataset = datasets[FLAGS.dataset](FLAGS.data_dir)
 
     # Save images for training and evaluation.
     save_images(dataset, eval_data=False)
