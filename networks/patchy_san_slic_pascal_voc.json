@@ -20,8 +20,8 @@
       ]
     },
     "force_write": false,
-    "write_num_epochs": 1,
-    "distort_inputs": false,
+    "write_num_epochs": 5,
+    "distort_inputs": true,
     "node_labeling": "scanline",
     "num_nodes": 150,
     "node_stride": 2,
