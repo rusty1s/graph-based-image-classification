@@ -67,12 +67,12 @@ def neighborhoods_grid_spiral(adjacency, sequence, size):
 
             for j in range(2, size):
                 if x == -1:
-                    continue
+                    pass
 
                 y = -1
                 weight = float('inf')
                 for _, n, d, in graph.edges_iter(nbunch=[x], data=True):
-                    length = nx.shortest_path_length(graph, root, n)
+                    length = nx.shortest_path_length(graph, root, n, 'weight')
                     if d['weight'] + length < weight and\
                        n not in neighborhoods[i]:
                         y = n

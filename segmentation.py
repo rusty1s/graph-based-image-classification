@@ -39,6 +39,8 @@ tf.app.flags.DEFINE_string('neighborhood_assembly', 'grid_spiral',
 
 
 def draw_image(image, segmentation, adjacency, neighborhood):
+    neighborhood = list(neighborhood)
+
     image = mark_boundaries(image, segmentation, (0, 0, 0))
 
     graph = nx.from_numpy_matrix(adjacency)
@@ -56,20 +58,26 @@ def draw_image(image, segmentation, adjacency, neighborhood):
         y2, x2 = map(int, graph.node[n2]['centroid'])
         line = draw.line(y1, x1, y2, x2)
 
-        if n1 in neighborhood and n2 in neighborhood:
+        n1_idx = neighborhood.index(n1) if n1 in neighborhood else -1
+        n2_idx = neighborhood.index(n2) if n2 in neighborhood else -1
+        if abs(n1_idx - n2_idx) == 1 and n1_idx != -1 and n2_idx != -1:
             image[line] = [1, 0, 0]
         else:
             image[line] = [0, 1, 0]
 
     # Draw a circle at the root node.
-    for i in range(0, neighborhood.shape[0]):
+    for i in range(0, len(neighborhood)):
         if neighborhood[i] < 0:
             continue
 
         y1, x1 = graph.node[neighborhood[i]]['centroid']
         circle = draw.circle(y1, x1, 2)
-        j = i/(neighborhood.shape[0] - 1)
-        image[circle] = [j, j, j]
+
+        if i == 0:
+            image[circle] = [1, 1, 0]
+        else:
+            j = (i-1)/(len(neighborhood) - 2)
+            image[circle] = [j, j, j]
 
     return image
 
@@ -100,7 +108,7 @@ def iterate(dataset, segmentation_algorithm, adjacency_algorithm, eval_data,
 
     image_names = {label: 0 for label in dataset.labels}
 
-    _iterate = iterator(dataset, eval_data)
+    _iterate = iterator(dataset, eval_data, shuffle=True, distort_inputs=True)
 
     def _before(image, label):
         segmentation = segmentation_algorithm(image)
@@ -150,10 +158,10 @@ def iterate(dataset, segmentation_algorithm, adjacency_algorithm, eval_data,
 def main(argv=None):
     """Runs the script."""
 
-    if FLAGS.data_dir:
-        dataset = datasets[FLAGS.dataset](FLAGS.data_dir)
-    else:
+    if FLAGS.data_dir is None:
         dataset = datasets[FLAGS.dataset]()
+    else:
+        dataset = datasets[FLAGS.dataset](FLAGS.data_dir)
 
     segmentation_algorithm = segmentations[FLAGS.segmentation_algorithm]()
     adjacency_algorithm = adjacencies[FLAGS.adjacency_algorithm]
