@@ -48,7 +48,7 @@
         "fields": { "size": [1, 1], "strides": [1, 1] }
       },
       {
-        "comment": "Reduces input to [300, 9, 128]",
+        "comment": "Reduces input to [150, 9, 128]",
         "output_channels": 128,
         "weights": { "stddev": 1e-1, "decay": 0.0 },
         "biases": { "constant": 0.0 },
@@ -56,7 +56,7 @@
         "max_pool": { "size": [1, 2], "strides": [1, 2] }
       },
       {
-        "comment": "Reduces input to [300, 5, 256]",
+        "comment": "Reduces input to [150, 5, 256]",
         "output_channels": 256,
         "weights": { "stddev": 1e-1, "decay": 0.0 },
         "biases": { "constant": 0.0 },
@@ -64,7 +64,7 @@
         "max_pool": { "size": [1, 2], "strides": [1, 2] }
       },
       {
-        "comment": "Reduces input to [300, 3, 256]",
+        "comment": "Reduces input to [150, 3, 256]",
         "output_channels": 256,
         "weights": { "stddev": 1e-1, "decay": 0.0 },
         "biases": { "constant": 0.0 },
@@ -72,7 +72,7 @@
         "max_pool": { "size": [1, 2], "strides": [1, 2] }
       },
       {
-        "comment": "Reduces input to [300, 1, 512]",
+        "comment": "Reduces input to [150, 1, 512]",
         "output_channels": 512,
         "weights": { "stddev": 1e-1, "decay": 0.0 },
         "biases": { "constant": 0.0 },
