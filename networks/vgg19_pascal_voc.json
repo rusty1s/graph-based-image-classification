@@ -4,6 +4,7 @@
     "data_dir": "/tmp/pascal_voc_data"
   },
   "checkpoint_dir": "/tmp/vgg19_pascal_voc_train",
+  "eval_dir": "/tmp/vgg19_pascal_voc_eval",
   "batch_size": 128,
   "last_step": 20000,
   "learning_rate": 0.1,

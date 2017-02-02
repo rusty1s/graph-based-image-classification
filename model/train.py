@@ -7,7 +7,6 @@ from .model import train_step, cal_loss, cal_accuracy
 from .hooks import hooks
 
 
-CHECKPOINT_DIR = '/tmp/train'
 BATCH_SIZE = 128
 LAST_STEP = 20000
 
@@ -21,7 +20,7 @@ DISTORT_INPUTS = True
 ZERO_MEAN_INPUTS = True
 
 DISPLAY_STEP = 10
-SAVE_CHECKPOINT_SECS = 30
+SAVE_CHECKPOINT_SECS = 60*60
 SAVE_SUMMARIES_STEPS = 100
 
 
@@ -64,13 +63,13 @@ def train(dataset, network, checkpoint_dir=CHECKPOINT_DIR,
             pass
 
 
-def train_per_config(dataset, config, display_step=DISPLAY_STEP,
-                     save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
-                     save_summaries_steps=SAVE_SUMMARIES_STEPS):
+def train_from_config(dataset, config, display_step=DISPLAY_STEP,
+                      save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
+                      save_summaries_steps=SAVE_SUMMARIES_STEPS):
 
     train(dataset,
           config['network'],
-          config.get('checkpoint_dir', CHECKPOINT_DIR),
+          config['checkpoint_dir'],
           config.get('batch_size', BATCH_SIZE),
           config.get('last_step', LAST_STEP),
           config.get('learning_rate', LEARNING_RATE),

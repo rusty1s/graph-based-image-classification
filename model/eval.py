@@ -1,11 +1,9 @@
 import tensorflow as tf
 
 
-CHECKPOINT_DIR = '/tmp/train'
-EVAL_DIR = '/tmp/eval'
 BATCH_SIZE = 128
 
-EVAL_DATA = False
+EVAL_DATA = True
 EVAL_INTERVAL_SECS = 60 * 5
 RUN_ONCE = False
 
@@ -13,12 +11,11 @@ SCALE_INPUTS = 1.0
 DISTORT_INPUTS = True
 ZERO_MEAN_INPUTS = True
 
-DISPLAY_STEP = 10
 
-
-def evaluate(dataset, checkpoint_dir=CHECKPOINT_DIR, eval_dir=EVAL_DIR,
-             eval_data=EVAL_DATA, eval_interval_secs=EVAL_INTERVAL_SECS,
-             run_once=RUN_ONCE):
+def evaluate(dataset, checkpoint_dir, eval_dir=EVAL_DIR,
+             scale_inputs=SCALE_INPUTS, distort_inputs=DISTORT_INPUTS,
+             zero_mean_inputs=ZERO_MEAN_INPUTS, eval_data=EVAL_DATA,
+             eval_interval_secs=EVAL_INTERVAL_SECS, run_once=RUN_ONCE):
 
     if not tf.gfile.Exists(checkpoint_dir):
         raise ValueError('Checkpoint directory {} doesn\'t exist.'
@@ -29,12 +26,14 @@ def evaluate(dataset, checkpoint_dir=CHECKPOINT_DIR, eval_dir=EVAL_DIR,
     tf.gfile.MakeDirs(eval_dir)
 
 
-def evaluate_per_config(dataset, obj, eval_data=EVAL_DATA,
-                        eval_interval_secs=EVAL_INTERVAL_SECS,
-                        run_once=RUN_ONCE):
+def evaluate_from_config(dataset, config, eval_data=EVAL_DATA,
+                         eval_interval_secs=EVAL_INTERVAL_SECS,
+                         run_once=RUN_ONCE):
 
-    evaluate(
-        dataset,
-        obj['checkpoint_dir'] if 'checkpoint_dir' in obj else CHECKPOINT_DIR,
-        obj['eval_dir'] if 'eval_dir' in obj else EVAL_DIR,
-        eval_data, eval_interval_secs, run_once)
+    evaluate(dataset,
+             config['checkpoint_dir'],
+             config['eval_dir'],
+             config.get('scale_inputs', SCALE_INPUTS),
+             config.get('distort_inputs', DISTORT_INPUTS),
+             config.get('zero_mean_inputs', ZERO_MEAN_INPUTS),
+             eval_data, eval_interval_secs, run_once)

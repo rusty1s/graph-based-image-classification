@@ -4,7 +4,7 @@ import tensorflow as tf
 
 from data import datasets
 from patchy import PatchySan
-from model import train_per_config
+from model import train_from_config
 
 
 FLAGS = tf.app.flags.FLAGS
@@ -50,10 +50,9 @@ def main(argv=None):
     with open(FLAGS.config, 'r') as f:
         config = json.load(f)
 
-    train_per_config(dataset(config['dataset']), config,
-                     display_step=FLAGS.display_step,
-                     save_checkpoint_secs=FLAGS.save_checkpoint_secs,
-                     save_summaries_steps=FLAGS.save_summaries_steps)
+    train_from_config(dataset(config['dataset']), config,
+                      FLAGS.display_step, FLAGS.save_checkpoint_secs,
+                      FLAGS.save_summaries_steps)
 
 
 if __name__ == '__main__':

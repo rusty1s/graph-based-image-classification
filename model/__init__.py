@@ -1,2 +1,2 @@
-from .train import train, train_per_config
-from .eval import evaluate, evaluate_per_config
+from .train import train, train_from_config
+from .eval import evaluate, evaluate_from_config
