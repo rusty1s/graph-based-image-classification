@@ -15,7 +15,7 @@ tf.app.flags.DEFINE_string('config', None,
 tf.app.flags.DEFINE_integer('display_step', 10,
                             """The frequency, in number of global steps, that
                             the network training is logged.""")
-tf.app.flags.DEFINE_integer('save_checkpoint_secs', 30,
+tf.app.flags.DEFINE_integer('save_checkpoint_secs', 60*60,
                             """The frequency, in seconds, that a checkpoint is
                             saved.""")
 tf.app.flags.DEFINE_integer('save_summaries_steps', 100,
