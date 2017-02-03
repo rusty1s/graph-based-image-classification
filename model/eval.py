@@ -12,10 +12,10 @@ DISTORT_INPUTS = True
 ZERO_MEAN_INPUTS = True
 
 
-def evaluate(dataset, checkpoint_dir, eval_dir=EVAL_DIR,
-             scale_inputs=SCALE_INPUTS, distort_inputs=DISTORT_INPUTS,
-             zero_mean_inputs=ZERO_MEAN_INPUTS, eval_data=EVAL_DATA,
-             eval_interval_secs=EVAL_INTERVAL_SECS, run_once=RUN_ONCE):
+def evaluate(dataset, checkpoint_dir, eval_dir, scale_inputs=SCALE_INPUTS,
+             distort_inputs=DISTORT_INPUTS, zero_mean_inputs=ZERO_MEAN_INPUTS,
+             eval_data=EVAL_DATA, eval_interval_secs=EVAL_INTERVAL_SECS,
+             run_once=RUN_ONCE):
 
     if not tf.gfile.Exists(checkpoint_dir):
         raise ValueError('Checkpoint directory {} doesn\'t exist.'
