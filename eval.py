@@ -4,7 +4,7 @@ import tensorflow as tf
 
 from data import datasets
 from patchy import PatchySan
-from model import eval_from_config
+from model import evaluate_from_config
 
 
 FLAGS = tf.app.flags.FLAGS
@@ -47,8 +47,8 @@ def main(argv=None):
     with open(FLAGS.config, 'r') as f:
         config = json.load(f)
 
-    eval_from_config(dataset(config['dataset']), config, FLAGS.eval_data,
-                     FLAGS.eval_interval_secs, FLAGS.run_once)
+    evaluate_from_config(dataset(config['dataset']), config, FLAGS.eval_data,
+                         FLAGS.eval_interval_secs, FLAGS.run_once)
 
 
 if __name__ == '__main__':

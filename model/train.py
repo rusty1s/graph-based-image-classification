@@ -24,10 +24,9 @@ SAVE_CHECKPOINT_SECS = 60*60
 SAVE_SUMMARIES_STEPS = 100
 
 
-def train(dataset, network, checkpoint_dir=CHECKPOINT_DIR,
-          batch_size=BATCH_SIZE, last_step=LAST_STEP,
-          learning_rate=LEARNING_RATE, epsilon=EPSILON, beta1=BETA_1,
-          beta2=BETA_2, scale_inputs=SCALE_INPUTS,
+def train(dataset, network, checkpoint_dir, batch_size=BATCH_SIZE,
+          last_step=LAST_STEP, learning_rate=LEARNING_RATE, epsilon=EPSILON,
+          beta1=BETA_1, beta2=BETA_2, scale_inputs=SCALE_INPUTS,
           distort_inputs=DISTORT_INPUTS, zero_mean_inputs=ZERO_MEAN_INPUTS,
           display_step=DISPLAY_STEP, save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
           save_summaries_steps=SAVE_SUMMARIES_STEPS):
