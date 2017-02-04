@@ -9,7 +9,6 @@ Installs all requirements in a new conda environment with name <name>. Miniconda
 Options:
  -h, --help        This help text.
  -p, --python      The python version to use. (Default: 3.5)
-     --tensorflow  The TensorFlow version to install. (Default: 0.11.0)
      --nauty       The nauty version to install. (Default: 26r7)
      --pynauty     The pynauty version to install. (Default: 0.6.0)"
 
@@ -27,10 +26,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     -p|--python)
       PYTHON="$2"
-      shift
-      ;;
-    --tensorflow)
-      TENSORFLOW="$TENSORFLOW"
       shift
       ;;
     --nauty)
@@ -51,7 +46,6 @@ done
 
 # Set default values.
 PYTHON="${PYTHON:-3.5}"
-TENSORFLOW="${TENSORFLOW:-0.12.0}"
 NAUTY="${NAUTY:-26r7}"
 PYNAUTY="${PYNAUTY:-0.6.0}"
 
@@ -74,15 +68,6 @@ source activate "$NAME"
 
 # Install conda packages.
 conda install numpy scipy matplotlib
-
-# Install TensorFlow.
-if [[ $PYTHON == "2.7" ]]; then
-  pip install "https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-$TENSORFLOW-cp27-none-linux_x86_64.whl"
-elif [[ $PYTHON == "3.4" ]]; then
-  pip install "https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-$TENSORFLOW-cp34-cp34m-linux_x86_64.whl"
-elif [[ $PYTHON == "3.5" ]]; then
-  pip install "https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-$TENSORFLOW-cp35-cp35m-linux_x86_64.whl"
-fi
 
 # Install nauty and its python wrapper pynauty.
 if [[ ! -d "$HOME/.sources/pynauty" ]]; then
