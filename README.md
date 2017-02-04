@@ -14,23 +14,11 @@ master thesis.
 
 Project is tested on Python 2.7, 3.4 and 3.5.
 
-[TensorFlow](https://www.tensorflow.org/versions/r0.11/get_started/os_setup.html#pip-installation),
-[nauty](http://pallini.di.uniroma1.it/) and its python wrapper
-[pynauty](https://web.cs.dal.ca/~peter/software/pynauty/html/install.html)
-need to be installed before running the script.
-
 To install the additional required python packages, run:
 
 ```bash
 pip install -r requirements.txt
 ```
-
-### Tested Versions
-
-* **TensorFlow**: 0.12.0
-* **nauty**: 26r7
-* **pynauty**: 0.6.0
-* **OpenCV**: 3.1.0
 
 ## Miniconda
 
@@ -39,11 +27,11 @@ installed](http://conda.pydata.org/docs/install/quick.html#miniconda-quick-insta
 you can simply run
 
 ```bash
-./bin/install.sh graph
+./bin/install.sh <name>
 ```
 
 to install all dependencies (including TensorFlow and nauty/pynauty) in a new
-conda environment with name `"graph"`.
+conda environment with name `<name>`.
 
 For configuration and usage of the install script, run:
 
