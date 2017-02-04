@@ -31,12 +31,19 @@ def train(dataset, network, checkpoint_dir, batch_size=BATCH_SIZE,
           display_step=DISPLAY_STEP, save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
           save_summaries_steps=SAVE_SUMMARIES_STEPS):
 
-    if tf.gfile.Exists(checkpoint_dir):
-        tf.gfile.DeleteRecursively(checkpoint_dir)
-    tf.gfile.MakeDirs(checkpoint_dir)
+    if not tf.gfile.Exists(checkpoint_dir):
+        tf.gfile.MakeDirs(checkpoint_dir)
 
     with tf.Graph().as_default():
-        global_step = tf.contrib.framework.get_or_create_global_step()
+
+        ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
+        if ckpt and ckpt.model_checkpoint_path:
+            global_step = int(
+                ckpt.model_checkpoint_path.split('/')[-1].split('-')[-1])
+            global_step = tf.Variable(global_step, name='global_step',
+                                      dtype=tf.int64)
+        else:
+            global_step = tf.contrib.framework.get_or_create_global_step()
 
         data, labels = inputs(dataset, False, batch_size, scale_inputs,
                               distort_inputs, zero_mean_inputs, shuffle=True)
