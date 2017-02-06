@@ -1,3 +1,5 @@
+import sys
+
 import tensorflow as tf
 import numpy as np
 
@@ -31,14 +33,23 @@ def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
     tf.gfile.MakeDirs(eval_dir)
 
     with tf.Graph().as_default() as g:
-        data, labels = inputs(dataset, batch_size, scale_inputs,
+        data, labels = inputs(dataset, eval_data, batch_size, scale_inputs,
                               distort_inputs, zero_mean_inputs, num_epochs=1,
                               shuffle=False)
 
         logits = inference(data, network)
         top_k_op = tf.nn.in_top_k(logits, labels, 1)
 
+        variable_averages = tf.train.ExponentialMovingAverage(0.99999)
+        variables_to_restore = variable_averages.variables_to_restore()
+        saver = tf.train.Saver(variables_to_restore)
+
+        init_op = [tf.global_variables_initializer(),
+                   tf.local_variables_initializer()]
+
         with tf.Session() as sess:
+            sess.run(init_op)
+
             ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
             if ckpt and ckpt.model_checkpoint_path:
                 path = ckpt.model_checkpoint_path
@@ -64,18 +75,25 @@ def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
             else:
                 total_count = dataset.num_examples_per_epoch_for_train_eval
 
-            step = 0
+            num_examples = 0
 
             try:
                 while(True):
                     predictions = sess.run([top_k_op])
                     true_count += np.sum(predictions)
-                    step += 1
-                    print(step)
+                    num_examples += batch_size
+                    num_examples = min(num_examples, total_count)
 
-            except tf.errors.OutOfRange:
-                precision = true_count / total_count
-                print('precision', precision)
+                    percentage = 100.0 * num_examples / total_count
+                    sys.stdout.write('\r>> Calculating accuracy {:.1f}%'
+                                     .format(percentage))
+                    sys.stdout.flush()
+
+            except (KeyboardInterrupt, tf.errors.OutOfRangeError):
+                precision = 100.0 * true_count / total_count
+
+                print('')
+                print('Accuracy: {:.2f}%'.format(precision))
 
                 coord.request_stop()
                 coord.join(threads)

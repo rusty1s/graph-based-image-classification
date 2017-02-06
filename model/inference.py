@@ -82,7 +82,8 @@ def inference(data, network):
 
         i += 1
 
-    output = tf.reshape(output, [output.get_shape()[0].value, -1])
+    shape = output.get_shape().as_list()
+    output = tf.reshape(output, [-1, shape[1] * shape[2] * shape[3]])
 
     for layer in network['fully_connected']:
         input_channels = output.get_shape()[1].value

@@ -41,7 +41,7 @@ def train(dataset, network, checkpoint_dir, batch_size=BATCH_SIZE,
             global_step = int(
                 ckpt.model_checkpoint_path.split('/')[-1].split('-')[-1])
             global_step = tf.Variable(global_step, name='global_step',
-                                      dtype=tf.int64)
+                                      dtype=tf.int64, trainable=False)
         else:
             global_step = tf.contrib.framework.get_or_create_global_step()
 
