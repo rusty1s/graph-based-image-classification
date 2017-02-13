@@ -11,6 +11,7 @@
   "epsilon": 1.0,
   "beta1": 0.9,
   "beta2": 0.999,
+  "dropout": 0.5,
   "scale_inputs": 1,
   "distort_inputs": true,
   "zero_mean_inputs": true,

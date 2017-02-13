@@ -14,6 +14,7 @@ LEARNING_RATE = 0.1
 EPSILON = 1.0
 BETA_1 = 0.9
 BETA_2 = 0.999
+DROPOUT = 0.5
 
 SCALE_INPUTS = 1
 DISTORT_INPUTS = True
@@ -26,9 +27,10 @@ SAVE_SUMMARIES_STEPS = 100
 
 def train(dataset, network, checkpoint_dir, batch_size=BATCH_SIZE,
           last_step=LAST_STEP, learning_rate=LEARNING_RATE, epsilon=EPSILON,
-          beta1=BETA_1, beta2=BETA_2, scale_inputs=SCALE_INPUTS,
-          distort_inputs=DISTORT_INPUTS, zero_mean_inputs=ZERO_MEAN_INPUTS,
-          display_step=DISPLAY_STEP, save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
+          beta1=BETA_1, beta2=BETA_2, dropout=DROPOUT,
+          scale_inputs=SCALE_INPUTS, distort_inputs=DISTORT_INPUTS,
+          zero_mean_inputs=ZERO_MEAN_INPUTS, display_step=DISPLAY_STEP,
+          save_checkpoint_secs=SAVE_CHECKPOINT_SECS,
           save_summaries_steps=SAVE_SUMMARIES_STEPS):
 
     if not tf.gfile.Exists(checkpoint_dir):
@@ -37,10 +39,11 @@ def train(dataset, network, checkpoint_dir, batch_size=BATCH_SIZE,
     with tf.Graph().as_default():
 
         ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
+        global_step_init = -1
         if ckpt and ckpt.model_checkpoint_path:
-            global_step = int(
+            global_step_init = int(
                 ckpt.model_checkpoint_path.split('/')[-1].split('-')[-1])
-            global_step = tf.Variable(global_step, name='global_step',
+            global_step = tf.Variable(global_step_init, name='global_step',
                                       dtype=tf.int64, trainable=False)
         else:
             global_step = tf.contrib.framework.get_or_create_global_step()
@@ -48,7 +51,7 @@ def train(dataset, network, checkpoint_dir, batch_size=BATCH_SIZE,
         data, labels = inputs(dataset, False, batch_size, scale_inputs,
                               distort_inputs, zero_mean_inputs, shuffle=True)
 
-        logits = inference(data, network)
+        logits = inference(data, network, dropout)
         loss = cal_loss(logits, labels)
         acc = cal_accuracy(logits, labels)
 
@@ -82,6 +85,7 @@ def train_from_config(dataset, config, display_step=DISPLAY_STEP,
           config.get('epsilon', EPSILON),
           config.get('beta1', BETA_1),
           config.get('beta2', BETA_2),
+          config.get('dropout', DROPOUT),
           config.get('scale_inputs', SCALE_INPUTS),
           config.get('distort_inputs', DISTORT_INPUTS),
           config.get('zero_mean_inputs', ZERO_MEAN_INPUTS),

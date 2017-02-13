@@ -43,7 +43,7 @@ def _bias_variable(name, shape, constant):
 #      biases: { constant: 0.1 },
 #   }
 # }
-def inference(data, network):
+def inference(data, network, dropout):
     output = data
     i = 1
 
@@ -110,6 +110,9 @@ def inference(data, network):
     layer = network['softmax_linear']
     input_channels = output.get_shape()[1].value
     output_channels = layer['output_channels']
+
+    # Apply dropout.
+    output = tf.nn.dropout(output, dropout)
 
     with tf.variable_scope('softmax_linear') as scope:
 

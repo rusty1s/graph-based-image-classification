@@ -37,7 +37,7 @@ def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
                               distort_inputs, zero_mean_inputs, num_epochs=1,
                               shuffle=False)
 
-        logits = inference(data, network)
+        logits = inference(data, network, drouput=1.0)
         top_k_op = tf.nn.in_top_k(logits, labels, 1)
 
         variable_averages = tf.train.ExponentialMovingAverage(0.99999)
