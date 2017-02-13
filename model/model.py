@@ -1,6 +1,9 @@
 import tensorflow as tf
 
 
+MOVING_AVERAGE_DECAY = 0.9999  # The decay to use for the moving average.
+
+
 def train_step(loss, step, learning_rate, beta1, beta2, epsilon):
     loss_averages_op = _add_loss_summaries(loss)
 
@@ -10,7 +13,8 @@ def train_step(loss, step, learning_rate, beta1, beta2, epsilon):
 
     apply_gradient_op = opt.apply_gradients(grads, global_step=step)
 
-    variable_averages = tf.train.ExponentialMovingAverage(0.9999, step)
+    variable_averages = tf.train.ExponentialMovingAverage(
+        MOVING_AVERAGE_DECAY, step)
     variables_averages_op = variable_averages.apply(tf.trainable_variables())
 
     with tf.control_dependencies([apply_gradient_op, variables_averages_op]):

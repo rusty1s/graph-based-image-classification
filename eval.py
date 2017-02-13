@@ -14,10 +14,6 @@ tf.app.flags.DEFINE_string('config', None,
                            network.""")
 tf.app.flags.DEFINE_boolean('eval_data', True,
                             """Whether to use the eval data or not to eval.""")
-tf.app.flags.DEFINE_integer('eval_interval_secs', 60*5,
-                            """How often to run the eval.""")
-tf.app.flags.DEFINE_boolean('run_once', False,
-                            """Whether to run eval only once.""")
 
 
 def dataset(config):
@@ -47,8 +43,7 @@ def main(argv=None):
     with open(FLAGS.config, 'r') as f:
         config = json.load(f)
 
-    evaluate_from_config(dataset(config['dataset']), config, FLAGS.eval_data,
-                         FLAGS.eval_interval_secs, FLAGS.run_once)
+    evaluate_from_config(dataset(config['dataset']), config, FLAGS.eval_data)
 
 
 if __name__ == '__main__':

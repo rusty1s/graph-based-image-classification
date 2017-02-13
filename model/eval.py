@@ -6,13 +6,12 @@ import numpy as np
 from data import inputs
 
 from .inference import inference
+from .model import MOVING_AVERAGE_DECAY
 
 
 BATCH_SIZE = 128
 
 EVAL_DATA = True
-EVAL_INTERVAL_SECS = 60 * 5
-RUN_ONCE = False
 
 SCALE_INPUTS = 1.0
 DISTORT_INPUTS = True
@@ -21,8 +20,7 @@ ZERO_MEAN_INPUTS = True
 
 def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
              scale_inputs=SCALE_INPUTS, distort_inputs=DISTORT_INPUTS,
-             zero_mean_inputs=ZERO_MEAN_INPUTS, eval_data=EVAL_DATA,
-             eval_interval_secs=EVAL_INTERVAL_SECS, run_once=RUN_ONCE):
+             zero_mean_inputs=ZERO_MEAN_INPUTS, eval_data=EVAL_DATA):
 
     if not tf.gfile.Exists(checkpoint_dir):
         raise ValueError('Checkpoint directory {} doesn\'t exist.'
@@ -40,7 +38,8 @@ def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
         logits = inference(data, network)
         top_k_op = tf.nn.in_top_k(logits, labels, 1)
 
-        variable_averages = tf.train.ExponentialMovingAverage(0.99999)
+        variable_averages = tf.train.ExponentialMovingAverage(
+            MOVING_AVERAGE_DECAY)
         variables_to_restore = variable_averages.variables_to_restore()
         saver = tf.train.Saver(variables_to_restore)
 
@@ -100,9 +99,7 @@ def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
                 coord.join(threads)
 
 
-def evaluate_from_config(dataset, config, eval_data=EVAL_DATA,
-                         eval_interval_secs=EVAL_INTERVAL_SECS,
-                         run_once=RUN_ONCE):
+def evaluate_from_config(dataset, config, eval_data=EVAL_DATA)
 
     evaluate(dataset,
              config['network'],
@@ -111,5 +108,4 @@ def evaluate_from_config(dataset, config, eval_data=EVAL_DATA,
              config.get('batch_size', BATCH_SIZE),
              config.get('scale_inputs', SCALE_INPUTS),
              config.get('distort_inputs', DISTORT_INPUTS),
-             config.get('zero_mean_inputs', ZERO_MEAN_INPUTS),
-             eval_data, eval_interval_secs, run_once)
+             config.get('zero_mean_inputs', ZERO_MEAN_INPUTS))
