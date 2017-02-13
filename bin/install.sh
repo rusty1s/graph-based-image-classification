@@ -77,6 +77,9 @@ if [[ ! -d "$HOME/.sources/pynauty" ]]; then
   mv "nauty$NAUTY" "pynauty-$PYNAUTY/nauty"
   mkdir -p "$HOME/.sources"
   mv "pynauty-$PYNAUTY" "$HOME/.sources/pynauty"
+
+  ln -sf "__pynauty__/graph.py" "$HOME/.sources/pynauty/src/graph.py"
+  ln -sf "__pynauty__/nautywrap.c" "$HOME/.sources/pynauty/src/nautywrap.c"
 fi
 
 make pynauty -C "$HOME/.sources/pynauty"
