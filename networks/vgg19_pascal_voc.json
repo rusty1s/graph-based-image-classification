@@ -122,12 +122,12 @@
     "fully_connected": [
       {
         "output_channels": 4096,
-        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "weights": { "stddev": 1e-1, "decay": 0.004 },
         "biases": {"constant": 1.0 }
       },
       {
         "output_channels": 4096,
-        "weights": { "stddev": 1e-1, "decay": 0.0 },
+        "weights": { "stddev": 1e-1, "decay": 0.004 },
         "biases": {"constant": 1.0 }
       }
     ],

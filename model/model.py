@@ -37,6 +37,8 @@ def cal_loss(logits, labels):
         cross_entropy_per_example, name='cross_entropy')
     tf.add_to_collection('losses', cross_entropy)
 
+    # The total loss is deined as the cross entropy loss plus all of the weight
+    # decay terms (L2 loss).
     return tf.add_n(tf.get_collection('losses'), name='total_loss')
 
 
