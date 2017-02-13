@@ -51,7 +51,7 @@ def train(dataset, network, checkpoint_dir, batch_size=BATCH_SIZE,
         data, labels = inputs(dataset, False, batch_size, scale_inputs,
                               distort_inputs, zero_mean_inputs, shuffle=True)
 
-        logits = inference(data, network, dropout)
+        logits = inference(data, network)
         loss = cal_loss(logits, labels)
         acc = cal_accuracy(logits, labels)
 
@@ -63,10 +63,12 @@ def train(dataset, network, checkpoint_dir, batch_size=BATCH_SIZE,
                     checkpoint_dir=checkpoint_dir,
                     save_checkpoint_secs=save_checkpoint_secs,
                     save_summaries_steps=save_summaries_steps,
-                    hooks=hooks(display_step, last_step, batch_size, loss, acc)
+                    hooks=hooks(display_step, last_step, batch_size, loss, acc,
+                                dropout)
                     ) as monitored_session:
                 while not monitored_session.should_stop():
-                    monitored_session.run(train_op)
+                    monitored_session.run(train_op,
+                                          feed_dict={'keep_prob': dropout})
 
         except KeyboardInterrupt:
             pass
