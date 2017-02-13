@@ -78,7 +78,6 @@ if [[ ! -d "$HOME/.sources/pynauty" ]]; then
   mkdir -p "$HOME/.sources"
   mv "pynauty-$PYNAUTY" "$HOME/.sources/pynauty"
 
-  echo "Copy modified source to destination."
   cp -f "__pynauty__/graph.py" "$HOME/.sources/pynauty/src/graph.py"
   cp -f "__pynauty__/nautywrap.c" "$HOME/.sources/pynauty/src/nautywrap.c"
 fi
