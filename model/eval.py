@@ -46,6 +46,9 @@ def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
         init_op = [tf.global_variables_initializer(),
                    tf.local_variables_initializer()]
 
+        summary_op = tf.summary.merge_all()
+        summary_writer = tf.summary.FileWriter(eval_dir, g)
+
         with tf.Session() as sess:
             sess.run(init_op)
 
@@ -90,17 +93,24 @@ def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
                     sys.stdout.flush()
 
             except (KeyboardInterrupt, tf.errors.OutOfRangeError):
+                pass
+
+            finally:
                 precision = 100.0 * true_count / total_count
 
                 print('')
                 print('Accuracy: {:.2f}%'.format(precision))
 
+                summary = tf.Summary()
+                summary.ParseFromString(sess.run(summary_op))
+                summary.value.add(tag='Precision', simple_value=precision)
+                summary_writer.add_summary(summary, global_step)
+
                 coord.request_stop()
                 coord.join(threads)
 
 
-def evaluate_from_config(dataset, config, eval_data=EVAL_DATA)
-
+def evaluate_from_config(dataset, config, eval_data=EVAL_DATA):
     evaluate(dataset,
              config['network'],
              config['checkpoint_dir'],
