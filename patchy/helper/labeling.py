@@ -26,7 +26,7 @@ def betweenness_centrality(adjacency, labels=None):
                       stateful=False, name='betweenness_centrality')
 
 
-def canonical(adjacency, labels=None):
+def canonize(adjacency, labels=None):
     def _canonical(adjacency, labels):
         count = adjacency.shape[0]
         adjacency_dict = {}
@@ -55,4 +55,4 @@ def _labels_default(labels, adjacency):
 
 labelings = {'scanline': scanline,
              'betweenness_centrality': betweenness_centrality,
-             'canonical': canonical}
+             'canonize': canonize}

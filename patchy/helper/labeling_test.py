@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .labeling import scanline, betweenness_centrality, canonical
+from .labeling import scanline, betweenness_centrality, canonize
 
 
 class LabelingTest(tf.test.TestCase):
@@ -38,7 +38,7 @@ class LabelingTest(tf.test.TestCase):
             labeling = betweenness_centrality(adjacency, labels)
             self.assertAllEqual(labeling.eval(), expected)
 
-    def test_canonical(self):
+    def test_canonize(self):
         adjacency = tf.constant([
             [0, 1, 1, 0, 1, 1, 0, 0],
             [1, 0, 1, 0, 0, 1, 1, 0],
@@ -55,21 +55,23 @@ class LabelingTest(tf.test.TestCase):
         expected = [4, 7, 5, 8, 6, 2, 1, 3]
 
         with self.test_session() as sess:
-            labeling = canonical(adjacency, labels)
+            labeling = canonize(adjacency, labels)
             self.assertAllEqual(labeling.eval(), expected)
 
         # Create isomorph graph and check for equal canonical labeling.
-        # adjacency = tf.constant([
-        #     [0, 1, 0, 0, 0, 0, 0, 1],
-        #     [1, 0, 1, 1, 0, 0, 1, 0],
-        #     [0, 1, 0, 1, 1, 0, 1, 0],
-        #     [0, 1, 1, 0, 0, 1, 1, 0],
-        #     [0, 0, 1, 0, 0, 1, 0, 0],
-        #     [0, 0, 0, 1, 1, 0, 0, 0],
-        #     [0, 1, 1, 1, 0, 0, 0, 1],
-        #     [1, 0, 0, 0, 0, 0, 1, 0],
-        # ])
+        adjacency = tf.constant([
+            [0, 1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 0, 0, 1, 0],
+            [0, 1, 0, 1, 1, 0, 1, 0],
+            [0, 1, 1, 0, 0, 1, 1, 0],
+            [0, 0, 1, 0, 0, 1, 0, 0],
+            [0, 0, 0, 1, 1, 0, 0, 0],
+            [0, 1, 1, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1, 0],
+        ])
 
-        # with self.test_session() as sess:
-        #     labeling = canonical(adjacency, labels)
-        #     self.assertAllEqual(labeling.eval(), expected)
+        expected = [0, 7, 4, 5, 1, 6, 2, 3]
+
+        with self.test_session() as sess:
+            labeling = canonize(adjacency)
+            self.assertAllEqual(labeling.eval(), expected)
