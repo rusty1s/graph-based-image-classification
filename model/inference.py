@@ -12,7 +12,7 @@ def _activation_summary(x):
     """
 
     tf.summary.histogram(x.op.name + '/activations', x)
-    tf.summary.scalar(x.op.name + '/sparsity', x)
+    tf.summary.scalar(x.op.name + '/sparsity', tf.nn.zero_fraction(x))
 
 
 def _weight_variable(name, shape, stddev, decay):
