@@ -35,6 +35,7 @@ def train_step(loss, step, learning_rate, beta1, beta2, epsilon):
 def _add_loss_summaries(total_loss):
     loss_averages = tf.train.ExponentialMovingAverage(0.9, name='avg')
     losses = tf.get_collection('losses')
+    loss_averages_op = loss_averages.apply(losses + [total_loss])
 
     # Attach a scalar summary to all individual losses and the total loss; do
     # the same for the averaged version of the losses.
@@ -44,7 +45,7 @@ def _add_loss_summaries(total_loss):
         tf.summary.scalar(l.op.name + ' (raw)', l)
         tf.summary.scalar(l.op.name, loss_averages.average(l))
 
-    return loss_averages.apply(losses + [total_loss])
+    return loss_averages_op
 
 
 def cal_loss(logits, labels):

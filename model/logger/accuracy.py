@@ -7,15 +7,13 @@ from .logger import LoggerHook
 
 class AccuracyLoggerHook(LoggerHook):
 
-    def __init__(self, display_step, accuracy, dropout):
+    def __init__(self, display_step, accuracy):
         super().__init__(display_step)
 
         self._accuracy = accuracy
-        self._dropout = dropout
 
     def before_display_step_run(self, run_context):
-        return tf.train.SessionRunArgs(self._accuracy,
-                                       feed_dict={'keep_prob': self._dropout})
+        return tf.train.SessionRunArgs(self._accuracy)
 
     def after_display_step_run(self, run_context, run_values):
         accuracy = run_values.results

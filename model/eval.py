@@ -35,7 +35,8 @@ def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
                               distort_inputs, zero_mean_inputs, num_epochs=1,
                               shuffle=False)
 
-        logits = inference(data, network)
+        keep_prob = tf.placeholder(tf.float32)
+        logits = inference(data, network, keep_prob)
         top_k_op = tf.nn.in_top_k(logits, labels, 1)
 
         variable_averages = tf.train.ExponentialMovingAverage(
@@ -82,7 +83,7 @@ def evaluate(dataset, network, checkpoint_dir, eval_dir, batch_size=BATCH_SIZE,
             try:
                 while(True):
                     predictions = sess.run([top_k_op],
-                                           feed_dict={'keep_prob': 1.0})
+                                           feed_dict={keep_prob: 1.0})
                     true_count += np.sum(predictions)
                     num_examples += batch_size
                     num_examples = min(num_examples, total_count)
