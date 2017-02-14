@@ -39,7 +39,7 @@
   "dropout": 0.5,
   "scale_inputs": 1,
   "distort_inputs": false,
-  "zero_mean_inputs": false,
+  "zero_mean_inputs": true,
   "network": {
     "conv": [
       {
