@@ -20,6 +20,22 @@ def scale_invariant_adj(adj):
     return r_mat_inv.dot(adj)
 
 
+def self_loop_adj(adj, value=1.0):
+    return adj + value * sp.eye(adj.shape[0])
+
+
+def normalize_adj(adj):
+    with np.errstate(divide='ignore'):
+        # Calculate D^(-1/2).
+        d = np.array(adj.sum(1))
+        d_inv_sqrt = np.power(d, -0.5).flatten()
+        d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0  # Correct x/0 results.
+        d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
+
+    # Calculate D^(-1/2) * A * D^(-1/2).
+    return d_mat_inv_sqrt.dot(adj).dot(d_mat_inv_sqrt)
+
+
 def partition_adj(adj_dist, adj_rad, num=1, start_deg=0.0):
     shape = (num * adj_dist.shape[0], adj_dist.shape[1])
     adjs = sp.coo_matrix(shape)
@@ -55,22 +71,6 @@ def partition_adj(adj_dist, adj_rad, num=1, start_deg=0.0):
     return adjs
 
 
-def self_loops(adj, value=1.0):
-    return adj + value * sp.eye(adj.shape[0])
-
-
 def gaussian(value, sigma=1.0):
     coef = 1 / np.sqrt(2 * np.pi * sigma ** 2)
     return coef * np.exp(- value ** 2 / (2 * sigma ** 2))
-
-
-def normalize_adj(adj):
-    with np.errstate(divide='ignore'):
-        # Calculate D^(-1/2).
-        d = np.array(adj.sum(1))
-        d_inv_sqrt = np.power(d, -0.5).flatten()
-        d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0  # Correct x/0 results.
-        d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
-
-    # Calculate D^(-1/2) * A * D^(-1/2).
-    return d_mat_inv_sqrt.dot(adj).dot(d_mat_inv_sqrt)
