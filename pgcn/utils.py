@@ -4,7 +4,7 @@ import numpy as np
 import scipy.sparse as sp
 
 
-def _scale_invariant_adj(adj):
+def scale_invariant_adj(adj):
     # We normalize our graph by making it scale invariant, so that the weight
     # of a neighbors node is max one. Note that this transforms an undirected
     # graph to a directed graph.
@@ -20,8 +20,7 @@ def _scale_invariant_adj(adj):
     return r_mat_inv.dot(adj)
 
 
-def _partition_adj(adj_dist, adj_rad, num=1, start_deg=0.0):
-    # TODO: Efficiency, maybe reduce adj_dist too.
+def partition_adj(adj_dist, adj_rad, num=1, start_deg=0.0):
     shape = (num * adj_dist.shape[0], adj_dist.shape[1])
     adjs = sp.coo_matrix(shape)
 
@@ -56,20 +55,13 @@ def _partition_adj(adj_dist, adj_rad, num=1, start_deg=0.0):
     return adjs
 
 
-def preprocess_adj(adj_dist, adj_rad, sigma=1.0, num_partitions=2,
-                   start_angle=0.0):
-    # Preprocess distance adjacency.
-    adj = _scale_invariant_adj(adj_dist)
+def self_loops(adj, value=1.0):
+    return adj + value * sp.eye(adj.shape[0])
 
-    # Apply gaussian elementwise.
+
+def gaussian(value, sigma=1.0):
     coef = 1 / np.sqrt(2 * np.pi * sigma ** 2)
-    adj.data = coef * np.exp(- adj.data ** 2 / (2 * sigma ** 2))
-
-    # Add self loops with value of gaussian(0).
-    # adj = adj + coef * sp.eye(adj.shape[0])
-
-    # Derive partitions.
-    return _partition_adj(adj, adj_rad, num_partitions)
+    return coef * np.exp(- value ** 2 / (2 * sigma ** 2))
 
 
 def normalize_adj(adj):
