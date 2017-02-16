@@ -42,18 +42,63 @@ class UtilsTest(TestCase):
                         [1.0, 0.0, 1.0],
                         [0.0, 1.0, 0.0]])
 
-        d_sqrt = np.array([[1.0, 0.0, 0.0],
+        d_sqrt = np.array([[1.0, 0.0,         0.0],
                            [0.0, 2.0 ** -0.5, 0.0],
-                           [0.0, 0.0, 1.0]])
+                           [0.0, 0.0,         1.0]])
 
         assert_equal(normalize_adj(sp.coo_matrix(adj)).toarray(),
                      d_sqrt.dot(adj).dot(d_sqrt))
 
     def test_partition_adj(self):
-        pass
+        adj_dist = ([[0.0, 1.0, 2.0],
+                     [3.0, 0.0, 4.0],
+                     [5.0, 6.0, 0.0]])
+
+        adj_deg = ([[0.0,   45.0,  90.0],
+                    [225.0, 0.0,   135.0],
+                    [270.0, 315.0, 0.0]])
+
+        adjs = partition_adj(sp.coo_matrix(np.array(adj_dist)),
+                             sp.coo_matrix(np.array(adj_deg)).deg2rad())
+
+        assert_equal(adjs.toarray(), adj_dist)
+
+        adjs = partition_adj(sp.coo_matrix(np.array(adj_dist)),
+                             sp.coo_matrix(np.array(adj_deg)).deg2rad(),
+                             num=4)
+
+        assert_equal(adjs.toarray(), [[0.0, 1.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 2.0],
+                                      [0.0, 0.0, 4.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [3.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [5.0, 6.0, 0.0]])
+
+        adjs = partition_adj(sp.coo_matrix(np.array(adj_dist)),
+                             sp.coo_matrix(np.array(adj_deg)).deg2rad(),
+                             num=4, start_rad=np.pi * 0.25)
+
+        assert_equal(adjs.toarray(), [[0.0, 1.0, 2.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 4.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [3.0, 0.0, 0.0],
+                                      [5.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 0.0, 0.0],
+                                      [0.0, 6.0, 0.0]])
 
     def test_gaussian(self):
-        self.assertEqual(gaussian(0), 0.3989422804014327)
-        self.assertEqual(gaussian(1), 0.24197072451914337)
-        self.assertEqual(gaussian(1, sigma=2.0), 0.17603266338214976)
+        self.assertEqual(round(gaussian(0), 4), 0.3989)
+        self.assertEqual(round(gaussian(1), 4), 0.242)
+        self.assertEqual(round(gaussian(1, sigma=2.0), 4), 0.176)
         self.assertEqual(gaussian(1), gaussian(-1))

@@ -36,16 +36,16 @@ def normalize_adj(adj):
     return d_mat_inv_sqrt.dot(adj).dot(d_mat_inv_sqrt)
 
 
-def partition_adj(adj_dist, adj_rad, num=1, start_deg=0.0):
+def partition_adj(adj_dist, adj_rad, num=1, start_rad=0.0):
     shape = (num * adj_dist.shape[0], adj_dist.shape[1])
     adjs = sp.coo_matrix(shape)
 
     max_rad = 2 * np.pi
     i = max_rad / num
-    act_rad = max_rad - i + (start_deg % i)
+    act_rad = max_rad - i + (start_rad % i)
 
     def _extract_greater(value, adj_dist, adj_rad):
-        mask = adj_rad > value
+        mask = adj_rad >= value if value > 0 else adj_rad > value
         adj = adj_dist.multiply(mask)
         return adj, adj_dist - adj, adj_rad - adj_rad.multiply(mask)
 
@@ -62,8 +62,8 @@ def partition_adj(adj_dist, adj_rad, num=1, start_deg=0.0):
         act_rad -= i
 
     # If the start radian is greater than 0, we need to collect the last nodes
-    # from the interval [0, start_deg] and add them to the last adjacency
-    # matrix with interval [2π - start_deg, 2π].
+    # from the interval [0, start_rad] and add them to the last adjacency
+    # matrix with interval [2π - start_rad, 2π].
     if adj_rad.count_nonzero() > 0:
         adj, _ = _extract_greater(0, adj_dist, adj_rad)
         adjs = _add_adj(adj, adjs, num-1)
