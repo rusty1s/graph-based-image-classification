@@ -47,7 +47,8 @@ def _partition_adj(adj_dist, adj_rad, num=1, start_deg=0.0):
         act_rad -= i
 
     # If the start radian is greater than 0, we need to collect the last nodes
-    # and add them to the last adjacency matrix in the adjacency collection.
+    # from the interval [0, start_deg] and add them to the last adjacency
+    # matrix with interval [2π - start_deg, 2π].
     if adj_rad.count_nonzero() > 0:
         adj, _ = _extract_greater(0, adj_dist, adj_rad)
         adjs = _add_adj(adj, adjs, num-1)
