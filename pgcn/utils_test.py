@@ -67,35 +67,45 @@ class UtilsTest(TestCase):
                              sp.coo_matrix(np.array(adj_deg)).deg2rad(),
                              num=4)
 
-        assert_equal(adjs.toarray(), [[0.0, 1.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 2.0],
-                                      [0.0, 0.0, 4.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [3.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [5.0, 6.0, 0.0]])
+        expected = [[0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 2.0],
+                    [0.0, 0.0, 4.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [3.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [5.0, 6.0, 0.0]]
+
+        assert_equal(adjs.toarray(), expected)
 
         adjs = partition_adj(sp.coo_matrix(np.array(adj_dist)),
                              sp.coo_matrix(np.array(adj_deg)).deg2rad(),
                              num=4, start_rad=np.pi * 0.25)
 
-        assert_equal(adjs.toarray(), [[0.0, 1.0, 2.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 4.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [3.0, 0.0, 0.0],
-                                      [5.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 0.0, 0.0],
-                                      [0.0, 6.0, 0.0]])
+        expected = [[0.0, 1.0, 2.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 4.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [3.0, 0.0, 0.0],
+                    [5.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0],
+                    [0.0, 6.0, 0.0]]
+
+        assert_equal(adjs.toarray(), expected)
+
+        adjs = partition_adj(sp.coo_matrix(np.array(adj_dist)),
+                             sp.coo_matrix(np.array(adj_deg)).deg2rad(),
+                             num=4, start_rad=np.pi * 0.75)
+
+        assert_equal(adjs.toarray(), expected)
 
     def test_gaussian(self):
         self.assertEqual(round(gaussian(0), 4), 0.3989)
